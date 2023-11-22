@@ -1,0 +1,169 @@
+package com.form76.generator;
+
+import com.form76.generator.model.DoorEvent;
+import com.form76.generator.model.Employee;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbookType;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+
+public class TestDataGenerator {
+
+  public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_FILE_NAME = new SimpleDateFormat("yyyyMMddHHmmss");
+  public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_DATA = new SimpleDateFormat(Form76XlsxReportBuilder.DATE_TIME_FORMAT);
+
+  private final static List<String> menNames = Arrays.asList("Ivan", "Dragan", "Petkan", "Petar", "Pavel", "Anton", "Angelov");
+  private final static List<String> menFamilies = Arrays.asList("Ivanov", "Draganov", "Petkanov", "Petrov", "Pavel", "Antonov", "Angelpv");
+  private final static List<String> womenNames = Arrays.asList("Anna", "Boyana", "Vania", "Gergana", "Maria", "Nia", "Stela");
+  private final static List<String> womenFamilies = Arrays.asList("Ivanova", "Ptrova", "Kirova", "Angelova", "Savova", "Radeva", "Mineva");
+
+
+  static Random random;
+
+
+  // ------------- Private -----------
+  public static Map<String, Employee> generateEmployees(int month, int numberOfEmployees) throws ParseException {
+    random = new Random(System.currentTimeMillis());
+
+    Map<String, Employee> employees = new HashMap<String, Employee>();
+
+    for (int i = 0; i < numberOfEmployees; i++) {
+      Employee employee = generateEmployee(month);
+
+      employees.put(employee.id, employee);
+    }
+
+    Form76ReportGenerator generator = new Form76ReportGenerator();
+    generator.calculateWorkedHours(employees);
+
+    return employees;
+  }
+
+  public static Employee generateEmployee(int month) {
+
+    int employeeId = random.nextInt(10000000, 40000000);
+    boolean man = random.nextBoolean();
+    int indxName = random.nextInt(1, 7);
+    int indxFamilyName = random.nextInt(1, 7);
+
+    Employee employee = new Employee();
+    employee.id = Integer.toString(employeeId);
+    employee.names = man ? menNames.get(indxName) + " " + menFamilies.get(indxFamilyName) :
+        womenNames.get(indxName) + " " + womenFamilies.get(indxFamilyName);
+
+    int maxDays = 31;
+    if (month == 2) {
+      maxDays = 28;
+    } else if ( month < 8 && (month % 2 == 0) || month > 8 && (month % 2 != 0)) {
+      maxDays = 30;
+    }
+    for (int dayOfMonth = 1; dayOfMonth <= maxDays; dayOfMonth++) {
+
+      employee.doorEvents.addAll(Objects.requireNonNull(generateEventsForDate(month, dayOfMonth)));
+    }
+
+    return employee;
+  }
+
+  public static List<DoorEvent> generateEventsForDate(int month, int dayOfMonth) {
+    List<DoorEvent> doorEvents = new ArrayList<>();
+
+    LocalDateTime localDateTime = LocalDateTime.now();
+    localDateTime = localDateTime.withMonth(month);
+    localDateTime = localDateTime.withDayOfMonth(dayOfMonth);
+
+    int numberOfEvents = 8; // random.nextInt(2, 10);
+    int hour = 0;
+    for (int i = 0; i < numberOfEvents; i++) {
+      hour += Math.min(random.nextInt(1, 4), 23);
+      localDateTime = localDateTime.withHour(hour);
+      localDateTime = localDateTime.withMinute(random.nextInt(0, 59));
+
+      DoorEvent doorEvent = new DoorEvent(
+          Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()),
+          i % 2 == 0 ? "IN_door" : "OUT_door"); // random.nextBoolean() ? "IN_door" : "OUT_door";
+
+      doorEvents.add(doorEvent);
+    }
+
+    return doorEvents;
+  }
+
+
+  public static void createDoorEventsSourceFile(int month, int numberOfEmployees, String srcFileName) throws ParseException, IOException {
+    System.out.printf("Generating test file %s for month[%d] and empls[%d]\n", srcFileName, month, numberOfEmployees);
+    final List<String> tableHeaders = Arrays.asList(
+        "Open door time", "Person ID", "Name", "Person No", "Cert No", "Dept Name", "bodyTemperature", "Device Name", "Event Code", "Event Points", "Open Door Type", "Captur"
+    );
+
+    Map<String, Employee> employees = generateEmployees(month, numberOfEmployees);
+
+    XSSFWorkbook workbook = new XSSFWorkbook(XSSFWorkbookType.XLSX);
+    Font defaultFont = workbook.createFont();
+    defaultFont.setFontHeightInPoints((short)12);
+    defaultFont.setFontName("Arial");
+
+    XSSFSheet sheet = workbook.createSheet("Normal door opening record");
+
+    int rowNum = 0;
+    Row row = sheet.createRow(rowNum++);
+    for (int i = 0; i < tableHeaders.size(); i++) {
+      Cell cell = row.createCell(i);
+      cell.setCellValue(tableHeaders.get(i));
+    }
+
+    Map<DoorEvent, Employee> allEventsMap = new HashMap<>();
+    for (Employee employee : employees.values().stream().toList()) {
+      for (DoorEvent doorEvent : employee.doorEvents) {
+        allEventsMap.put(doorEvent, employee);
+      }
+    }
+    List<DoorEvent> allEvents = new ArrayList<>(allEventsMap.keySet().stream().toList());
+    allEvents.sort(Comparator.comparing(de -> de.timestamp));
+
+    for (DoorEvent doorEvent : allEvents) {
+      row = sheet.createRow(rowNum++);
+      for (int i = 0; i < tableHeaders.size(); i++) {
+        Cell cell = row.createCell(i);
+      }
+
+      Employee employee = allEventsMap.get(doorEvent);
+
+      String timeStamp = SIMPLE_DATE_FORMAT_FOR_DATA.format(doorEvent.timestamp);
+      row.createCell(0).setCellValue(timeStamp);
+      row.createCell(1).setCellValue(employee.id);
+      row.createCell(2).setCellValue(employee.names);
+      for (int i = 3; i <= 6; i++) {
+        row.createCell(i).setCellValue("");
+      }
+      row.createCell(7).setCellValue(doorEvent.doorName);
+      row.createCell(8).setCellValue("2011141576");
+      row.createCell(9).setCellValue("my link samokov 11A/BUILDING1/building 1 DOOR1" + (doorEvent.isInEvent ? "-IN" : "-OUT"));
+      row.createCell(10).setCellValue("Open door card");
+      row.createCell(11).setCellValue("");
+    }
+
+    for (int i = 0; i < 12; i++) {
+      sheet.autoSizeColumn(i);
+    }
+    System.out.printf("Ready to save test file %s for month[%d] and empls[%d]\n", srcFileName, month, numberOfEmployees);
+
+    OutputStream reportFileOutputStream = new FileOutputStream(srcFileName);
+    workbook.write(reportFileOutputStream);
+    reportFileOutputStream.flush();
+    reportFileOutputStream.close();
+    System.out.printf("Generated successfully test file %s for month[%d] and empls[%d]\n", srcFileName, month, numberOfEmployees);
+
+  }
+}

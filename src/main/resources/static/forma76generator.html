@@ -6,14 +6,28 @@
 </head>
 <body>
 
-<form action="/report/generate" method="POST" id="uploadFileForm" enctype="multipart/form-data">
+<form action="/testsrcfile/generate" method="GET" id="generateTestFileForm" enctype="multipart/form-data">
     <div>
-        <span style="font-weight: bold;">Моля, качете файл за обработка:</span>
+        <span style="font-weight: bold;">Генериране на тестов файл:</span>
     </div>
     <div>
-        <label for="fileField">Файл за обработка:</label>
-        <input type="file" name="fileField" id="fileField">
-        <button>Upload!</button>
+        <label for="month">Месец:</label>
+        <input type="text" name="month" id="month" style="margin-right: 30px;">
+        <label for="employeesCount">Брой служители:</label>
+        <input type="text" name="employeesCount" id="employeesCount" style="margin-right: 30px;">
+        <button>Генерирай Тестов Файл</button>
+    </div>
+
+</form>
+<hr style="margin: 10px 0;"/>
+<form action="/report/generate" method="POST" id="uploadFileForm" enctype="multipart/form-data">
+    <div>
+        <span style="font-weight: bold;">Генериране на "Форма 76" Репорт от файл с данни:</span>
+    </div>
+    <div>
+        <label for="srcFile">Файл за обработка:</label>
+        <input type="file" name="srcFile" id="srcFile">
+        <button>Генерирай "Форма 76"</button>
     </div>
 </form>
 </body>
