@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.FileSystemResource;
@@ -32,6 +33,9 @@ public class Form76GeneratorApplication {
   public static void main(String[] args) {
     SpringApplication.run(Form76GeneratorApplication.class, args);
   }
+
+  @Autowired
+  Form76ReportGenerator form76ReportGenerator;
 
   @GetMapping("/ping")
   @ResponseBody
@@ -66,14 +70,13 @@ public class Form76GeneratorApplication {
   }
 
   @PostMapping(path = "/report/generate", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-  public ResponseEntity<Resource> generateReport(@RequestParam("srcFile") MultipartFile file) throws Exception {
-    System.out.println(String.format("Going to generate Form 76 report file for srcFile[%s]", file.getName()));
+  public ResponseEntity<Resource> generateReport(@RequestParam("srcFile") MultipartFile file, @RequestParam(name = "firstLast", required = false) Boolean firstLast) throws Exception {
 
     if (file == null || file.isEmpty()) {
       throw new IllegalArgumentException("File not uploaded successfully");
     }
-
     System.out.println(String.format("Received file %s", file.getOriginalFilename()));
+    System.out.println(String.format("Going to generate Form 76 report file for srcFile[%s] and firstLast[%s]", file.getName(), firstLast));
 
     String error = "";
     try {
@@ -83,8 +86,8 @@ public class Form76GeneratorApplication {
 
       System.out.println(String.format("Start processing file %s!", receivedFile));
 
-      Form76ReportGenerator form76ReportGenerator = new Form76ReportGenerator();
-      String generatedFileName = form76ReportGenerator.generateReportFromSource(receivedFile);
+      //Form76ReportGenerator form76ReportGenerator = new Form76ReportGenerator();
+      String generatedFileName = form76ReportGenerator.generateReportFromSource(receivedFile, firstLast != null ? firstLast : false);
 
       Resource resource = new FileSystemResource(generatedFileName);
 

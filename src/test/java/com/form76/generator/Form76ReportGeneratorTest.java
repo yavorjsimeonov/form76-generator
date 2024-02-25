@@ -27,9 +27,10 @@ public class Form76ReportGeneratorTest {
   @Test
   public void testReportGenerationFromFile() throws Exception {
     String srcFileName = String.format("/users/maya/Downloads/test-door-events-%s.xlsx", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
-    TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
+    //TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
 
+    srcFileName = "/users/maya/Downloads/_001_tmp_test-door-events-20240225110339.xlsx";
     Form76ReportGenerator form76ReportGenerator = new Form76ReportGenerator();
-    form76ReportGenerator.generateReportFromSource(srcFileName);
+    form76ReportGenerator.generateReportFromSource(srcFileName, false);
   }
 }

@@ -21,13 +21,23 @@
 </form>
 <hr style="margin: 10px 0;"/>
 <form action="/report/generate" method="POST" id="uploadFileForm" enctype="multipart/form-data">
-    <div>
-        <span style="font-weight: bold;">Генериране на "Форма 76" Репорт от файл с данни:</span>
-    </div>
-    <div>
-        <label for="srcFile">Файл за обработка:</label>
-        <input type="file" name="srcFile" id="srcFile">
-        <button>Генерирай "Форма 76"</button>
+    <div style="width: 600px">
+
+        <div>
+            <span style="font-weight: bold;">Генериране на "Форма 76" Репорт от файл с данни:</span>
+        </div>
+        <div style="margin: 20px 0 10px 0;">
+            <input type="checkbox" id="firstLast" name="firstLast" value="true">
+            <label for="firstLast">Отчитане само на първо влизане и последно излизане за деня</label><br>
+        </div>
+        <div>
+            <label for="srcFile">Файл за обработка:</label>
+            <input type="file" name="srcFile" id="srcFile">
+        </div>
+        <div style="text-align: right;">
+            <button>Генерирай "Форма 76"</button>
+        </div>
+
     </div>
 </form>
 </body>

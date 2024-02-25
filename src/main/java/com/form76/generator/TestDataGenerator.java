@@ -45,7 +45,7 @@ public class TestDataGenerator {
     }
 
     Form76ReportGenerator generator = new Form76ReportGenerator();
-    generator.calculateWorkedHours(employees);
+    generator.calculateWorkedHours(employees, false);
 
     return employees;
   }
