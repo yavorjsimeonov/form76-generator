@@ -1,5 +1,6 @@
 package com.form76.generator;
 
+import com.form76.generator.model.DoorEvent;
 import com.form76.generator.model.Employee;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -30,7 +31,6 @@ public class Form76XlsxReportBuilder {
   public static final String WORKED_HOURS_FORMAT = "%dh %dm";
   public static final short DEFAULT_FONT_HEIGHT = 10;
   public static final short SMALL_FONT_HEIGHT = 9;
-
   private static final String SHEET_NAME = "Forma76";
 
   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -98,7 +98,41 @@ public class Form76XlsxReportBuilder {
     form76Sheet.createEmptyCells(1, 39, 47, defaultStyle);
 
     form76Sheet.createEmptyCells(2, 0, 4, defaultStyle);
-    form76Sheet.createCell(2, 5, "за отчитане явяването/неявяването на работа през месец ....................... 20..г.", sheetHeaderCenterStyle);
+
+    //prepared month & year string and use it on the row bellow
+
+    //ArrayList<> arrayList = new ArrayList<>(employeesData.values());
+
+    Iterator<Employee> employeeIterator = employeesData.values().iterator();
+    Employee firstEmployee = employeeIterator.next();
+
+    DoorEvent firstDoorEvent = firstEmployee.getDoorEvents().get(0);
+    Date timestamp = firstDoorEvent.timestamp;
+
+    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+    calendar.setTime(timestamp);
+
+    int yearNumber  = calendar.get(Calendar.YEAR);
+    int monthNumber = calendar.get(Calendar.MONTH);
+
+    String monthName = switch (monthNumber) {
+      case 0 -> "Януари";
+      case 1 -> "Февруари";
+      case 2 -> "Март";
+      case 3 -> "Април";
+      case 4 -> "Май";
+      case 5 -> "Юни";
+      case 6 -> "Юли";
+      case 7 -> "Август";
+      case 8 -> "Септември";
+      case 9 -> "Октомври";
+      case 10 -> "Ноември";
+      case 11 -> "Декември";
+      default -> "Invalid month number";
+    };
+
+
+    form76Sheet.createCell(2, 5, "за отчитане явяването/неявяването на работа през месец " + monthName + " " + yearNumber, sheetHeaderCenterStyle);
     form76Sheet.createEmptyCells(2, 6, 33, defaultStyle);
     form76Sheet.mergeCells(new CellRangeAddress(2, 2, 5, 33));
 
@@ -195,7 +229,7 @@ public class Form76XlsxReportBuilder {
 
   private void addEmployeeRow(int row, int indx, Employee employee) {
     form76Sheet.createCell(row, 0, "" + (indx + 1), dataTableHeaderStyle);
-    form76Sheet.createCell(row, 1, employee.id + " " + employee.names, dataTableStyle);
+    form76Sheet.createCell(row, 1, /*employee.id + " " +*/ employee.names, dataTableStyle);
     form76Sheet.createEmptyCells(row, 2, 2, dataTableStyle);
     int colShift = 2;
     Map<String, Long> workedHoursPerDate = employee.workedHoursPerDate;
@@ -208,7 +242,7 @@ public class Form76XlsxReportBuilder {
         }
       }
 
-      String workedHoursValue = workedHoursAsMillis != null ? getDurationString(workedHoursAsMillis) : "";
+      String workedHoursValue = workedHoursAsMillis != null ? getDurationString(workedHoursAsMillis) : "0h 0m";
       form76Sheet.createCell(row, colShift + d, workedHoursValue, dataTableStyle);
     }
     form76Sheet.createEmptyCells(row, 34, 47, dataTableStyle);
@@ -344,7 +378,7 @@ public class Form76XlsxReportBuilder {
 
     void createEmptyCells(final int row, final int firstCol, final int lastCol, final CellStyle style) {
       IntStream.range(firstCol, lastCol + 1).forEachOrdered(n -> {
-        form76Sheet.createCell(row, n, "", style);
+        form76Sheet.createCell(row, n, "    ", style);
       });
     }
 

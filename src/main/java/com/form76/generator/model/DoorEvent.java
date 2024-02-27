@@ -12,7 +12,7 @@ public class DoorEvent implements Serializable {
   public DoorEvent(Date timestamp, String doorName) {
     this.timestamp = timestamp;
     this.doorName = doorName;
-    this.isInEvent = doorName.startsWith("IN_");
+    this.isInEvent = doorName.endsWith("-IN");
   }
 
   @Override

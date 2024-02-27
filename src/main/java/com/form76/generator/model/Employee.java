@@ -21,4 +21,20 @@ public class Employee {
         ", workedHoursPerDate=" + workedHoursPerDate +
         '}';
   }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getNames() {
+    return names;
+  }
+
+  public List<DoorEvent> getDoorEvents() {
+    return doorEvents;
+  }
+
+  public Map<String, Long> getWorkedHoursPerDate() {
+    return workedHoursPerDate;
+  }
 }

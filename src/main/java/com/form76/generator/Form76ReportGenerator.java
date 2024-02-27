@@ -54,22 +54,28 @@ public class Form76ReportGenerator {
           //header row
           continue;
         }
-        Cell timestampCell = row.getCell(0); // Assuming timestamp is in the first column
-        Cell idCell = row.getCell(1); // Assuming ID is in the second column
-        Cell nameCell = row.getCell(2); // Assuming ID is in the second column
-        Cell doorCell = row.getCell(7); // Assuming action is in the fourth column
+        Cell timestampCell = row.getCell(0);
+        Cell idCell = row.getCell(1);
+        Cell nameCell = row.getCell(2);
+        Cell doorCell = row.getCell(7);
+        Cell eventPointCell = row.getCell(9);
 
         String timestamp = timestampCell != null ? timestampCell.getStringCellValue() : null; // Modify based on your timestamp format
         String id = idCell != null ? idCell.getStringCellValue() : null;
         String names = nameCell != null ? nameCell.getStringCellValue() : null;
         String doorName = doorCell != null ? doorCell.getStringCellValue() : null;
+        String eventPointName = eventPointCell != null ? eventPointCell.getStringCellValue() : null;
 
         if (timestamp == null && id == null && doorName == null) {
           break;
         }
 
-        if (!(doorName != null && (doorName.startsWith("IN_") || doorName.startsWith("OUT_")))) {
-          System.out.printf("Unknown door type [%s]. Cannot process event.", doorName);
+//        if (!(doorName != null && (doorName.startsWith("IN_") || doorName.startsWith("OUT_")))) {
+//          System.out.printf("Unknown door type [%s]. Cannot process event.", doorName);
+//          continue;
+//        }
+        if (!(eventPointName != null && (eventPointName.endsWith("-IN") || doorName.endsWith("-OUT")))) {
+          System.out.printf("Unknown eventPointName type [%s]. Expecting eventPointName to end on '-IN' or '-OUT'. Cannot process event.", doorName);
           continue;
         }
 
@@ -82,7 +88,7 @@ public class Form76ReportGenerator {
           e.printStackTrace();
         }
 
-        DoorEvent doorEvent = new DoorEvent(date, doorName);
+        DoorEvent doorEvent = new DoorEvent(date, eventPointName);
 
         Employee employee  = null;
         if(employeeMap.containsKey(id)){
