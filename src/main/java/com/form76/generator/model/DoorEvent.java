@@ -7,12 +7,14 @@ import java.util.Date;
 public class DoorEvent implements Serializable {
   public Date timestamp;
   public String doorName;
+  public String entryPointName;
   public boolean isInEvent;
 
-  public DoorEvent(Date timestamp, String doorName) {
+  public DoorEvent(Date timestamp, String doorName, String entryPointName) {
     this.timestamp = timestamp;
     this.doorName = doorName;
-    this.isInEvent = doorName.endsWith("-IN");
+    this.entryPointName = entryPointName;
+    this.isInEvent = entryPointName.endsWith("-IN");
   }
 
   @Override

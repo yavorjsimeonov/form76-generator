@@ -20,12 +20,14 @@ dependencies {
     api 'org.slf4j:slf4j-api'
 
     implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.4'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.4'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.13.0'
     implementation group: 'org.slf4j', name: 'slf4j-reload4j', version: '2.0.9'
+    testImplementation 'junit:junit:4.13.1'
 
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -48,3 +50,16 @@ jar {
         )
     }
 }
+
+//war {
+//
+//    manifest {
+//        attributes(
+//                'Main-Class': 'com.form76.generator.Form76GeneratorApplication',
+//                "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+//        )
+//    }
+//}
+
+
+

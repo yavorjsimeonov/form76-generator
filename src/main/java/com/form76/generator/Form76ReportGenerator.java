@@ -4,6 +4,7 @@ import com.form76.generator.model.DoorEvent;
 import com.form76.generator.model.Employee;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class Form76ReportGenerator {
     System.out.println("Start generating Form 76 report for source file: " + fileName);
 
     Map<String, Employee> employeeMap = readData(fileName);
-    System.out.println("Received data for " + employeeMap.size() + " employees");
+    System.out.println("Parsed data for " + employeeMap.size() + " employees");
 
     calculateWorkedHours(employeeMap, firstLast);
 
@@ -46,7 +47,8 @@ public class Form76ReportGenerator {
     FileInputStream file = null;
     try {
       file = new FileInputStream(filePath);
-      workbook = new XSSFWorkbook(file);
+      workbook = filePath.endsWith(".xlsx") ? new XSSFWorkbook(file) : new HSSFWorkbook(file);
+
       Sheet sheet = workbook.getSheetAt(0); // Assuming data is on the first sheet
 
       for (Row row : sheet) {
@@ -74,7 +76,7 @@ public class Form76ReportGenerator {
 //          System.out.printf("Unknown door type [%s]. Cannot process event.", doorName);
 //          continue;
 //        }
-        if (!(eventPointName != null && (eventPointName.endsWith("-IN") || doorName.endsWith("-OUT")))) {
+        if (!(eventPointName != null && (eventPointName.endsWith("-IN") || eventPointName.endsWith("-OUT")))) {
           System.out.printf("Unknown eventPointName type [%s]. Expecting eventPointName to end on '-IN' or '-OUT'. Cannot process event.", doorName);
           continue;
         }
@@ -83,12 +85,11 @@ public class Form76ReportGenerator {
 
         try {
           date = REPORT_TIMESTAMPS_FORMAT.parse(timestamp);
-          System.out.println(date);
         } catch (ParseException e) {
           e.printStackTrace();
         }
 
-        DoorEvent doorEvent = new DoorEvent(date, eventPointName);
+        DoorEvent doorEvent = new DoorEvent(date, doorName, eventPointName);
 
         Employee employee  = null;
         if(employeeMap.containsKey(id)){
@@ -116,20 +117,20 @@ public class Form76ReportGenerator {
   }
 
   public void calculateWorkedHours(Map<String, Employee> employeeMap, Boolean firstLast) throws ParseException {
-    List<Employee> employeeList = employeeMap.values().stream().toList();
+    System.out.println("Start processing worked hours... ");
 
+    List<Employee> employeeList = employeeMap.values().stream().toList();
     for (Employee employee :employeeList) {
       calculateWorkedHoursForEmployee(employee, firstLast);
     }
 
-    System.out.println("Calculated worked hours... ");
-
+    System.out.println("End processing worked hours... ");
   }
 
   private void calculateWorkedHoursForEmployee(Employee employee, Boolean firstLast) throws ParseException {
     List<DoorEvent> doorEvents = employee.doorEvents;
     doorEvents.sort(Comparator.comparing(de -> de.timestamp));
-    System.out.println("Calculating worked hours (firstLast[" + firstLast + "]) for employee: " + employee);
+//    System.out.println("Calculating worked hours (firstLast[" + firstLast + "]) for employee: " + employee.id);
 
     TreeMap<String, List<DoorEvent>> doorEventsPerDate = new TreeMap<>();
     doorEvents.forEach(doorEvent -> {
@@ -143,15 +144,16 @@ public class Form76ReportGenerator {
 //        .sorted(Comparator.comparing(  de -> toDateString(de.timestamp)))
 //        .collect(Collectors.groupingBy(  de -> toDateString(de.timestamp)));
 
-    System.out.println("DoorEvents per date: " + doorEventsPerDate);
+    //System.out.println("DoorEvents per date: " + doorEventsPerDate);
 
     for (Map.Entry<String, List<DoorEvent>> dateDoorEvents : doorEventsPerDate.entrySet()) {
       String dateStr = dateDoorEvents.getKey();
       calculateWorkedHoursForEmployAndDate(employee, dateStr, dateDoorEvents.getValue(), firstLast);
 
+      /*
       Duration duration = Duration.ofSeconds(employee.workedHoursPerDate.get(dateStr));
       System.out.println(String.format("Employee %s -> date %s -> Time spent on work: %dh %dm %ds\n-------------------\n",
-          employee.id, dateStr, duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));
+          employee.id, dateStr, duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));*/
     }
   }
 
@@ -255,7 +257,7 @@ public class Form76ReportGenerator {
     Workbook wb = createReportWorkbook();
 
     int extDotIndex = srcFile.lastIndexOf(".");
-    String reportFileNameSuffix = "_Report_Forma76_" + (firstLast ? "firstLast_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date());
+    String reportFileNameSuffix = "_Forma76_" + (firstLast ? "FL" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date());
 
     String outputFileName = extDotIndex != -1 ?
         srcFile.substring(0, extDotIndex) +  reportFileNameSuffix + srcFile.substring(extDotIndex) :

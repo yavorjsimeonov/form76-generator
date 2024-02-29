@@ -92,7 +92,9 @@ public class TestDataGenerator {
 
       DoorEvent doorEvent = new DoorEvent(
           Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()),
-          i % 2 == 0 ? "IN_door" : "OUT_door"); // random.nextBoolean() ? "IN_door" : "OUT_door";
+          i % 2 == 0 ? "IN_door" : "OUT_door",
+          i % 2 == 0 ? "eventPoint DOOR-IN" : "eventPoint DOOR-OUT"
+      ); // random.nextBoolean() ? "IN_door" : "OUT_door";
 
       doorEvents.add(doorEvent);
     }

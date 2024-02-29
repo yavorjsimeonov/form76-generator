@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Форма 76 - Генериране на справка</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+        });
+
+    </script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background: #dfe7dd;
+        }
+
+        .navbar {
+            height: 30px;
+            background: #198754;
+        }
+
+        .content {
+            width: 900px;
+            margin: 100px auto;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<div class="navbar"></div>
+<div class="container">
+    <form action="" method="POST" id="uploadFileForm" enctype="multipart/form-data">
+        <h2>Грешка при генериране на справка "Форма 76"</h2>
+        <hr/>
+        <div class="alert alert-danger d-none" th:if="${error}" >
+            <div><span th:text="${error}"></span></div>
+            <div><span th:text="${exception}"></span></div>
+            <div><span th:text="${trace}"></span></div>
+        </div>
+        <hr/>
+        <a href="/generate">Обратно към началната страница</a>
+    </form>
+
+</div>
+
+</body>
+</html>
