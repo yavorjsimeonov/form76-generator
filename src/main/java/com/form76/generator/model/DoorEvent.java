@@ -14,7 +14,7 @@ public class DoorEvent implements Serializable {
     this.timestamp = timestamp;
     this.doorName = doorName;
     this.entryPointName = entryPointName;
-    this.isInEvent = entryPointName.endsWith("-IN");
+    this.isInEvent = entryPointName.endsWith("-IN") || entryPointName.endsWith("-in");
   }
 
   @Override

@@ -27,12 +27,12 @@ public class Form76ReportGenerator {
   private static final SimpleDateFormat REPORT_TIMESTAMPS_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private static final SimpleDateFormat REPORT_FILE_NAME_TIMESTAMPS_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private static final List<String> ACCEPTED_OPEN_DOOR_TYPES = Arrays.asList("Mobile phone bluetooth door", "Face open door", "Open door card", "Open the door remotely");
 
   public String generateReportFromSource(String fileName, Boolean firstLast) throws Exception {
     System.out.println("Start generating Form 76 report for source file: " + fileName);
 
     Map<String, Employee> employeeMap = readData(fileName);
-    System.out.println("Parsed data for " + employeeMap.size() + " employees");
 
     calculateWorkedHours(employeeMap, firstLast);
 
@@ -51,6 +51,11 @@ public class Form76ReportGenerator {
 
       Sheet sheet = workbook.getSheetAt(0); // Assuming data is on the first sheet
 
+      List<Integer> rowsWrongPerson = new ArrayList<>();
+      List<Integer> rowsWrongEventPoints = new ArrayList<>();
+      List<Integer> rowsIgnoredDoorOpenTypes = new ArrayList<>();
+      Set<String> ignoredDoorOpenTypes = new HashSet<>();
+
       for (Row row : sheet) {
         if (row.getRowNum() == 0) {
           //header row
@@ -61,23 +66,32 @@ public class Form76ReportGenerator {
         Cell nameCell = row.getCell(2);
         Cell doorCell = row.getCell(7);
         Cell eventPointCell = row.getCell(9);
+        Cell openDoorTypeCell = row.getCell(10);
 
         String timestamp = timestampCell != null ? timestampCell.getStringCellValue() : null; // Modify based on your timestamp format
         String id = idCell != null ? idCell.getStringCellValue() : null;
         String names = nameCell != null ? nameCell.getStringCellValue() : null;
         String doorName = doorCell != null ? doorCell.getStringCellValue() : null;
         String eventPointName = eventPointCell != null ? eventPointCell.getStringCellValue() : null;
+        String openDoorType = openDoorTypeCell != null ? openDoorTypeCell.getStringCellValue() : null;
 
         if (timestamp == null && id == null && doorName == null) {
           break;
         }
 
-//        if (!(doorName != null && (doorName.startsWith("IN_") || doorName.startsWith("OUT_")))) {
-//          System.out.printf("Unknown door type [%s]. Cannot process event.", doorName);
-//          continue;
-//        }
-        if (!(eventPointName != null && (eventPointName.endsWith("-IN") || eventPointName.endsWith("-OUT")))) {
-          System.out.printf("Unknown eventPointName type [%s]. Expecting eventPointName to end on '-IN' or '-OUT'. Cannot process event.", doorName);
+        if (id == null || names == null) {
+          rowsWrongPerson.add(row.getRowNum());
+          continue;
+        }
+
+        if (!(eventPointName != null && (eventPointName.endsWith("-IN") || eventPointName.endsWith("-in") || eventPointName.endsWith("-OUT") || eventPointName.endsWith("-out")))) {
+          rowsWrongEventPoints.add(row.getRowNum());
+          continue;
+        }
+
+        if (openDoorType == null || !ACCEPTED_OPEN_DOOR_TYPES.contains(openDoorType)) {
+          rowsIgnoredDoorOpenTypes.add(row.getRowNum());
+          ignoredDoorOpenTypes.add(openDoorType);
           continue;
         }
 
@@ -104,6 +118,16 @@ public class Form76ReportGenerator {
         employee.doorEvents.add(doorEvent);
 
       }
+
+      System.out.printf("Parsed data for %d  employees\n", employeeMap.size());
+      System.out.println("Summary of the excluded rows:");
+
+      System.out.printf("--- rows with unknown person (empty id or name): %s\n", rowsWrongPerson.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")));
+      System.out.printf("--- rows with unknown eventPointName type (not ending on '-IN' or '-OUT'): : %s\n", rowsWrongEventPoints.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")));
+      System.out.printf("--- rows with ignored openDoorTypes [%s]: %s\n",
+          ignoredDoorOpenTypes.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")),
+          rowsIgnoredDoorOpenTypes.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", "))
+      );
 
 
     } catch (IOException e) {
@@ -184,7 +208,7 @@ public class Form76ReportGenerator {
         }
 
         DoorEvent outEvent = null;
-        while (outEvent == null) {
+        while (outEvent == null && i <  doorEvents.size() - 1) {
           DoorEvent nextEvent = doorEvents.get(++i);
           if (!nextEvent.isInEvent) {
             outEvent = nextEvent;
@@ -193,7 +217,7 @@ public class Form76ReportGenerator {
           }
         }
 
-        timeToAdd = calculateWorkDuration(inEvent.timestamp, outEvent.timestamp);
+        timeToAdd = calculateWorkDuration(inEvent.timestamp, outEvent != null ? outEvent.timestamp : null);
         inEvent = null;
       } else { //!currentDoorEvent.isInEvent
         DoorEvent outEvent = currentDoorEvent;
