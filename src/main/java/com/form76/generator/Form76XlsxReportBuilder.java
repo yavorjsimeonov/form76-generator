@@ -42,9 +42,9 @@ public class Form76XlsxReportBuilder {
 
   private ExcelSheet form76Sheet;
 
-  private Map<String, Employee> employeesData = null;
+  private Map<String, Map<String, Employee>> employeesData = null;
 
-  public void setEmployeesData(Map<String, Employee> employeesData) {
+  public void setEmployeesData(Map<String, Map<String, Employee>> employeesData) {
     this.employeesData = employeesData;
   }
 
@@ -76,12 +76,45 @@ public class Form76XlsxReportBuilder {
   }
 
   protected void populateWorkbook() {
-    form76Sheet = createSheet(SHEET_NAME);
-    populateForma76Sheet();
-    form76Sheet.autoSizeColumns();
+    List<Map<String, Employee>> list = employeesData.values().stream().toList();
+
+    for(Map<String, Employee> map : list){
+      List<Employee> empList = map.values().stream().toList();
+      Date date = empList.get(0).doorEvents.get(0).timestamp;
+
+      String monthYearStr = getMonthAndYerStrFromDate(date);
+
+//      Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+//      calendar.setTime(date);
+//      int monthNumber = calendar.get(Calendar.MONTH);
+//
+//      String monthName = switch (monthNumber) {
+//        case 0 -> "Януари";
+//        case 1 -> "Февруари";
+//        case 2 -> "Март";
+//        case 3 -> "Април";
+//        case 4 -> "Май";
+//        case 5 -> "Юни";
+//        case 6 -> "Юли";
+//        case 7 -> "Август";
+//        case 8 -> "Септември";
+//        case 9 -> "Октомври";
+//        case 10 -> "Ноември";
+//        case 11 -> "Декември";
+//        default -> "Invalid month number";
+//      };
+
+      String sheetName = SHEET_NAME + " - " + monthYearStr;
+      form76Sheet = createSheet(sheetName);
+      populateForma76Sheet(map);
+      form76Sheet.autoSizeColumns();
+
+    }
+
+
   }
 
-  private void populateForma76Sheet() {
+  private void populateForma76Sheet(Map<String, Employee> map) {
     int row = 0;
     int column = 0;
 
@@ -105,35 +138,14 @@ public class Form76XlsxReportBuilder {
 
     String monthYearStr = "................. г.";
 
-    Iterator<Employee> employeeIterator = employeesData.values().iterator();
+    Iterator<Employee> employeeIterator = map.values().iterator();
     if (employeeIterator.hasNext()) {
       Employee firstEmployee = employeeIterator.next();
 
       DoorEvent firstDoorEvent = firstEmployee.getDoorEvents().get(0);
       Date timestamp = firstDoorEvent.timestamp;
 
-      Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-      calendar.setTime(timestamp);
-
-      int yearNumber = calendar.get(Calendar.YEAR);
-      int monthNumber = calendar.get(Calendar.MONTH);
-
-      String monthName = switch (monthNumber) {
-        case 0 -> "Януари";
-        case 1 -> "Февруари";
-        case 2 -> "Март";
-        case 3 -> "Април";
-        case 4 -> "Май";
-        case 5 -> "Юни";
-        case 6 -> "Юли";
-        case 7 -> "Август";
-        case 8 -> "Септември";
-        case 9 -> "Октомври";
-        case 10 -> "Ноември";
-        case 11 -> "Декември";
-        default -> "Invalid month number";
-      };
-      monthYearStr = monthName + " " + yearNumber;
+      monthYearStr = getMonthAndYerStrFromDate(timestamp);
     }
 
     form76Sheet.createCell(2, 5, "за отчитане явяването/неявяването на работа през месец " + monthYearStr, sheetHeaderCenterStyle);
@@ -214,7 +226,7 @@ public class Form76XlsxReportBuilder {
       form76Sheet.mergeCells(new CellRangeAddress(7, 8, n, n));
     });
 
-    List<Employee> orderedEmployees = new ArrayList<>(employeesData.values());
+    List<Employee> orderedEmployees = new ArrayList<>(map.values());
     orderedEmployees.sort(Comparator.comparing(empl -> empl.id));
 
     row = 9;
@@ -396,5 +408,30 @@ public class Form76XlsxReportBuilder {
       sheet.addMergedRegion(region);
     }
 
+  }
+
+  private String getMonthAndYerStrFromDate(Date timestamp) {
+    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+    calendar.setTime(timestamp);
+
+    int yearNumber = calendar.get(Calendar.YEAR);
+    int monthNumber = calendar.get(Calendar.MONTH);
+
+    String monthName = switch (monthNumber) {
+      case 0 -> "Януари";
+      case 1 -> "Февруари";
+      case 2 -> "Март";
+      case 3 -> "Април";
+      case 4 -> "Май";
+      case 5 -> "Юни";
+      case 6 -> "Юли";
+      case 7 -> "Август";
+      case 8 -> "Септември";
+      case 9 -> "Октомври";
+      case 10 -> "Ноември";
+      case 11 -> "Декември";
+      default -> "Invalid month number";
+    };
+    return monthName + " " + yearNumber;
   }
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class Form76ReportGeneratorTest {
 
   @Test
   public void testCalculateWorkedHours() throws IOException, ParseException {
-    Map<String, Employee> employees = TestDataGenerator.generateEmployees(10, 7);
+    Map<String, Map<String, Employee>> employees = TestDataGenerator.generateEmployees(Arrays.asList(7, 8), 3);
     System.out.println(employees);
 
     String fileName = String.format("/users/maya/Downloads/Report-forma76-%s.xlsx", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
@@ -30,7 +31,7 @@ public class Form76ReportGeneratorTest {
     String srcFileName = String.format("/users/maya/Downloads/1708687718209_733556.xls", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
     //TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
 
-    srcFileName = "/users/maya/Downloads/1708687718209_733556.xls";
+    srcFileName = "/users/maya/Downloads/1709287584082_753799-1.xlsx";
     Form76ReportGenerator form76ReportGenerator = new Form76ReportGenerator();
     form76ReportGenerator.generateReportFromSource(srcFileName, false);
   }

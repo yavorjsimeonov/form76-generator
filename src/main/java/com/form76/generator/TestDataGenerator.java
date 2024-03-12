@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TestDataGenerator {
 
@@ -33,21 +34,28 @@ public class TestDataGenerator {
 
 
   // ------------- Private -----------
-  public static Map<String, Employee> generateEmployees(int month, int numberOfEmployees) throws ParseException {
+  public static Map<String, Map<String, Employee>> generateEmployees(List<Integer> months, int numberOfEmployees) throws ParseException {
     random = new Random(System.currentTimeMillis());
+    Map<String, Map<String, Employee>> monthEmployee = new HashMap<String, Map<String, Employee>>();
 
-    Map<String, Employee> employees = new HashMap<String, Employee>();
+    for (Integer month : months) {
+      Map<String, Employee> employees = new HashMap<String, Employee>();
 
-    for (int i = 0; i < numberOfEmployees; i++) {
-      Employee employee = generateEmployee(month);
+      for (int i = 0; i < numberOfEmployees; i++) {
+        Employee employee = generateEmployee(month);
 
-      employees.put(employee.id, employee);
+        employees.put(employee.id, employee);
+      }
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(Calendar.MONTH, month - 1);
+      monthEmployee.put(new SimpleDateFormat(Form76ReportGenerator.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
     }
 
     Form76ReportGenerator generator = new Form76ReportGenerator();
-    generator.calculateWorkedHours(employees, false);
+    generator.calculateWorkedHours(monthEmployee, false);
 
-    return employees;
+    return monthEmployee;
   }
 
   public static Employee generateEmployee(int month) {
@@ -103,13 +111,14 @@ public class TestDataGenerator {
   }
 
 
-  public static void createDoorEventsSourceFile(int month, int numberOfEmployees, String srcFileName) throws ParseException, IOException {
-    System.out.printf("Generating test file %s for month[%d] and empls[%d]\n", srcFileName, month, numberOfEmployees);
+  public static void createDoorEventsSourceFile(String months, int numberOfEmployees, String srcFileName) throws ParseException, IOException {
+    System.out.printf("Generating test file %s for month[%s] and empls[%d]\n", srcFileName, months, numberOfEmployees);
     final List<String> tableHeaders = Arrays.asList(
         "Open door time", "Person ID", "Name", "Person No", "Cert No", "Dept Name", "bodyTemperature", "Device Name", "Event Code", "Event Points", "Open Door Type", "Captur"
     );
 
-    Map<String, Employee> employees = generateEmployees(month, numberOfEmployees);
+    List<Integer> monthsNumbers = Arrays.stream(months.split(",")).map(String::trim).map(Integer::valueOf).toList();
+    Map<String, Map<String, Employee>> employees = generateEmployees(monthsNumbers, numberOfEmployees);
 
     XSSFWorkbook workbook = new XSSFWorkbook(XSSFWorkbookType.XLSX);
     Font defaultFont = workbook.createFont();
@@ -126,7 +135,7 @@ public class TestDataGenerator {
     }
 
     Map<DoorEvent, Employee> allEventsMap = new HashMap<>();
-    for (Employee employee : employees.values().stream().toList()) {
+    for (Employee employee : employees.values().stream().map(Map::values).flatMap(Collection::stream).toList()) {
       for (DoorEvent doorEvent : employee.doorEvents) {
         allEventsMap.put(doorEvent, employee);
       }
@@ -159,13 +168,13 @@ public class TestDataGenerator {
     for (int i = 0; i < 12; i++) {
       sheet.autoSizeColumn(i);
     }
-    System.out.printf("Ready to save test file %s for month[%d] and empls[%d]\n", srcFileName, month, numberOfEmployees);
+    System.out.printf("Ready to save test file %s for months[%s] and empls[%d]\n", srcFileName, months, numberOfEmployees);
 
     OutputStream reportFileOutputStream = new FileOutputStream(srcFileName);
     workbook.write(reportFileOutputStream);
     reportFileOutputStream.flush();
     reportFileOutputStream.close();
-    System.out.printf("Generated successfully test file %s for month[%d] and empls[%d]\n", srcFileName, month, numberOfEmployees);
+    System.out.printf("Generated successfully test file %s for months[%s] and empls[%d]\n", srcFileName, months, numberOfEmployees);
 
   }
 }

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
@@ -14,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,25 +23,30 @@ public class Form76ReportGenerator {
 
   static Logger logger = Logger.getLogger(Form76GeneratorApplication.class.getName());
 
+  public static final String YEAR_MONTH_DATE_FORMAT = "yyyy-MM";
+
   private static boolean calculateOnlyFirstInAndLastOut = false;
   private static final SimpleDateFormat REPORT_TIMESTAMPS_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private static final SimpleDateFormat REPORT_FILE_NAME_TIMESTAMPS_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
   private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
   private static final List<String> ACCEPTED_OPEN_DOOR_TYPES = Arrays.asList("Mobile phone bluetooth door", "Face open door", "Open door card", "Open the door remotely");
 
+  @Value("${form76-generator.output.file.name.format}")
+  private String outputFileNameFormat;
+
   public String generateReportFromSource(String fileName, Boolean firstLast) throws Exception {
     System.out.println("Start generating Form 76 report for source file: " + fileName);
 
-    Map<String, Employee> employeeMap = readData(fileName);
+    Map<String, Map<String, Employee>> monthEmployeeMap = readData(fileName);
 
-    calculateWorkedHours(employeeMap, firstLast);
+    calculateWorkedHours(monthEmployeeMap, firstLast);
 
-    return generateReportFile(fileName, employeeMap, firstLast);
+    return generateReportFile(fileName, monthEmployeeMap, firstLast);
 
   }
 
-  public Map<String, Employee> readData(String filePath) throws Exception {
-    Map<String, Employee> employeeMap = new HashMap<>();
+  public Map<String, Map<String, Employee>> readData(String filePath) throws Exception {
+    Map<String, Map<String, Employee>> monthEmployeeMap = new HashMap<>();
 
     Workbook workbook = null;
     FileInputStream file = null;
@@ -103,26 +108,36 @@ public class Form76ReportGenerator {
           e.printStackTrace();
         }
 
+        SimpleDateFormat monthExtractionFormat = new SimpleDateFormat(YEAR_MONTH_DATE_FORMAT);
+
+        String monthKey = monthExtractionFormat.format(date);
+        Map<String, Employee> employeeMap = monthEmployeeMap.computeIfAbsent(monthKey, k -> new HashMap<>());
+        Employee employee = employeeMap.computeIfAbsent(id, k -> new Employee());
+        employee.id = id;
+        employee.names = names;
+
+
         DoorEvent doorEvent = new DoorEvent(date, doorName, eventPointName);
 
-        Employee employee  = null;
-        if(employeeMap.containsKey(id)){
-          employee = employeeMap.get(id);
-        } else {
-          employee = new Employee();
-          employee.id = id;
-          employee.names = names;
-          employeeMap.put(employee.id, employee);
-        }
+//        Employee employee  = null;
+//        if(monthEmployeeMap.containsKey(id)){
+//          employee = monthEmployeeMap.get(id);
+//        } else {
+//          employee = new Employee();
+//          employee.id = id;
+//          employee.names = names;
+//          monthEmployeeMap.put(employee.id, employee);
+//        }
 
         employee.doorEvents.add(doorEvent);
 
       }
 
-      System.out.printf("Parsed data for %d  employees\n", employeeMap.size());
+      System.out.printf("Parsed data for %s months\n", String.join(",", monthEmployeeMap.keySet()));
+      System.out.printf("Parsed data for %d  employees\n", monthEmployeeMap.values().stream().mapToInt(it -> it.keySet().size()).sum());
       System.out.println("Summary of the excluded rows:");
 
-      System.out.printf("--- rows with unknown person (empty id or name): %s\n", rowsWrongPerson.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")));
+      System.out.printf("--- rows with unknown person (empty id or name): %s\n", rowsWrongPerson.stream().map(Object::toString).collect(Collectors.joining(", ")));
       System.out.printf("--- rows with unknown eventPointName type (not ending on '-IN' or '-OUT'): : %s\n", rowsWrongEventPoints.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")));
       System.out.printf("--- rows with ignored openDoorTypes [%s]: %s\n",
           ignoredDoorOpenTypes.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")),
@@ -137,15 +152,18 @@ public class Form76ReportGenerator {
       file.close();
     }
 
-    return employeeMap;
+    return monthEmployeeMap;
   }
 
-  public void calculateWorkedHours(Map<String, Employee> employeeMap, Boolean firstLast) throws ParseException {
+  public void calculateWorkedHours(Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
     System.out.println("Start processing worked hours... ");
 
-    List<Employee> employeeList = employeeMap.values().stream().toList();
-    for (Employee employee :employeeList) {
-      calculateWorkedHoursForEmployee(employee, firstLast);
+    List<Map<String, Employee>> employeeMapList = monthEmployeeMap.values().stream().toList();
+    for (Map<String, Employee> map : employeeMapList) {
+      List<Employee> employeeList = map.values().stream().toList();
+      for (Employee employee : employeeList) {
+        calculateWorkedHoursForEmployee(employee, firstLast);
+      }
     }
 
     System.out.println("End processing worked hours... ");
@@ -276,20 +294,13 @@ public class Form76ReportGenerator {
 
     return 0L;
   }
-  private String generateReportFile(String srcFile, Map<String, Employee> employeeMap, Boolean firstLast) throws IOException {
+  private String generateReportFile(String srcFile, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws IOException {
 
-    Workbook wb = createReportWorkbook();
-
-    int extDotIndex = srcFile.lastIndexOf(".");
-    String reportFileNameSuffix = "_Forma76_" + (firstLast ? "FL" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date());
-
-    String outputFileName = extDotIndex != -1 ?
-        srcFile.substring(0, extDotIndex) +  reportFileNameSuffix + srcFile.substring(extDotIndex) :
-        srcFile + reportFileNameSuffix;
+    String outputFileName =getOutputFileName(srcFile, firstLast);
     System.out.println("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
-    form76XlsxReportBuilder.setEmployeesData(employeeMap);
+    form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
     FileOutputStream generatedReportFile = form76XlsxReportBuilder.build().asFileOutputStream(outputFileName);
     generatedReportFile.flush();
     generatedReportFile.close();
@@ -299,10 +310,18 @@ public class Form76ReportGenerator {
     return outputFileName;
   }
 
-  private Workbook createReportWorkbook() {
-    Workbook wb = new XSSFWorkbook();
+  private String getOutputFileName(String srcFile, Boolean firstLast) {
+    String outputFileName = null;
 
-    return wb;
+    int extDotIndex = srcFile.lastIndexOf(".");
+
+    String srcFileNameNoExt = extDotIndex != -1 ? srcFile.substring(0, extDotIndex) : srcFile;
+
+    if (outputFileNameFormat != null) {
+      outputFileName = new SimpleDateFormat(outputFileNameFormat.replace("srcFileName_", srcFileNameNoExt + "_").replace("FL_", (firstLast ? "FL_" : ""))).format(new Date());
+    } else {
+      outputFileName = "Report_Forma76_" + (firstLast ? "FL_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date());
+    }
+    return outputFileName;
   }
-
 }

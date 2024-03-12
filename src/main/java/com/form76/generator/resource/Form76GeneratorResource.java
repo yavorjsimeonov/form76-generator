@@ -21,6 +21,7 @@ import java.util.Date;
 import static com.form76.generator.TestDataGenerator.SIMPLE_DATE_FORMAT_FOR_FILE_NAME;
 
 @Controller
+@RequestMapping("/form76")
 public class Form76GeneratorResource {
 
   private static String TMP_DIR = System.getProperty("java.io.tmpdir");
@@ -40,17 +41,25 @@ public class Form76GeneratorResource {
     return "generator";
   }
 
+  /**
+   *
+   * @param months commaseparated list of month numbers, e.g. 1, 2, 3 for Jan, Feb, Mar
+   * @param employeesCount how many employees
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
   @GetMapping(path = "/generate/test", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-  public ResponseEntity<Resource> generateTestSrcFile(@PathParam(value = "month") int month, @PathParam(value = "employeesCount") int employeesCount) throws IOException, ParseException {
+  public ResponseEntity<Resource> generateTestSrcFile(@PathParam(value = "months") String months, @PathParam(value = "employeesCount") int employeesCount) throws IOException, ParseException {
 
     String error = "";
     try {
-      System.out.println(String.format("Going to generate test file for month[%d] and employeesCount[%d]", month, employeesCount));
+      System.out.println(String.format("Going to generate test file for months[%s] and employeesCount[%d]", months, employeesCount));
 
 
       TMP_DIR = TMP_DIR.endsWith(FILE_SEPARATOR) ? TMP_DIR : TMP_DIR + FILE_SEPARATOR;
       String srcFileName = String.format(TMP_DIR + "test-door-events-%s.xlsx", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
-      TestDataGenerator.createDoorEventsSourceFile(month, employeesCount, srcFileName);
+      TestDataGenerator.createDoorEventsSourceFile(months, employeesCount, srcFileName);
 
       Resource resource = new FileSystemResource(srcFileName);
 
