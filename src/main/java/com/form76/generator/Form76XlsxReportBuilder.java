@@ -3,6 +3,7 @@ package com.form76.generator;
 import com.form76.generator.model.DoorEvent;
 import com.form76.generator.model.Employee;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -21,6 +22,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.IntStream;
+
+import static com.form76.generator.Form76ReportGenerator.xlsxFile;
 
 public class Form76XlsxReportBuilder {
   private final static Logger logger = LoggerFactory.getLogger(Form76XlsxReportBuilder.class.getName());
@@ -71,7 +74,12 @@ public class Form76XlsxReportBuilder {
   }
 
   protected void createWorkbook() {
-    workbook = new XSSFWorkbook(XSSFWorkbookType.XLSX);
+    if(xlsxFile){
+      workbook = new XSSFWorkbook(XSSFWorkbookType.XLSX);
+    } else {
+      workbook = new HSSFWorkbook();
+    }
+
     createStyles();
   }
 

@@ -23,6 +23,8 @@ public class Form76ReportGenerator {
 
   static Logger logger = Logger.getLogger(Form76GeneratorApplication.class.getName());
 
+  static boolean xlsxFile = true;
+
   public static final String YEAR_MONTH_DATE_FORMAT = "yyyy-MM";
 
   private static boolean calculateOnlyFirstInAndLastOut = false;
@@ -52,7 +54,14 @@ public class Form76ReportGenerator {
     FileInputStream file = null;
     try {
       file = new FileInputStream(filePath);
-      workbook = filePath.endsWith(".xlsx") ? new XSSFWorkbook(file) : new HSSFWorkbook(file);
+      // workbook = filePath.endsWith(".xlsx") ? new XSSFWorkbook(file) : new HSSFWorkbook(file);
+
+      if(filePath.endsWith(".xlsx")){
+        workbook = new XSSFWorkbook(file);
+      } else {
+        workbook = new HSSFWorkbook(file);
+        xlsxFile = false;
+      }
 
       Sheet sheet = workbook.getSheetAt(0); // Assuming data is on the first sheet
 
@@ -296,7 +305,7 @@ public class Form76ReportGenerator {
   }
   private String generateReportFile(String srcFile, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws IOException {
 
-    String outputFileName =getOutputFileName(srcFile, firstLast);
+    String outputFileName = getOutputFileName(srcFile, firstLast);
     System.out.println("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
