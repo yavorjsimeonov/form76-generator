@@ -1,4 +1,4 @@
-package com.form76.generator.model;
+package com.form76.generator.service.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

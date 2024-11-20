@@ -1,7 +1,7 @@
-package com.form76.generator;
+package com.form76.generator.service;
 
-import com.form76.generator.model.DoorEvent;
-import com.form76.generator.model.Employee;
+import com.form76.generator.service.model.DoorEvent;
+import com.form76.generator.service.model.Employee;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -23,7 +22,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static com.form76.generator.Form76ReportGenerator.xlsxFile;
+import static com.form76.generator.service.Form76ReportService.xlsxFile;
 
 public class Form76XlsxReportBuilder {
   private final static Logger logger = LoggerFactory.getLogger(Form76XlsxReportBuilder.class.getName());

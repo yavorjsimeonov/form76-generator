@@ -1,7 +1,9 @@
 package com.form76.generator;
 
-import com.form76.generator.model.Employee;
-import org.junit.Ignore;
+import com.form76.generator.service.model.Employee;
+import com.form76.generator.service.Form76ReportService;
+import com.form76.generator.service.Form76XlsxReportBuilder;
+import com.form76.generator.service.TestDataGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
-import static com.form76.generator.TestDataGenerator.SIMPLE_DATE_FORMAT_FOR_FILE_NAME;
+import static com.form76.generator.service.TestDataGenerator.SIMPLE_DATE_FORMAT_FOR_FILE_NAME;
 
 public class Form76ReportGeneratorTest {
 
@@ -32,7 +34,7 @@ public class Form76ReportGeneratorTest {
     //TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
 
     srcFileName = "/users/maya/Downloads/1709287584082_753799-1.xlsx";
-    Form76ReportGenerator form76ReportGenerator = new Form76ReportGenerator();
-    form76ReportGenerator.generateReportFromSource(srcFileName, false);
+    Form76ReportService form76ReportService = new Form76ReportService();
+    form76ReportService.generateReportFromSource(srcFileName, false);
   }
 }

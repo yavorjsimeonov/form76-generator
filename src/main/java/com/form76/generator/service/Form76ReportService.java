@@ -1,7 +1,8 @@
-package com.form76.generator;
+package com.form76.generator.service;
 
-import com.form76.generator.model.DoorEvent;
-import com.form76.generator.model.Employee;
+import com.form76.generator.Form76GeneratorApplication;
+import com.form76.generator.service.model.DoorEvent;
+import com.form76.generator.service.model.Employee;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -19,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class Form76ReportGenerator {
+public class Form76ReportService {
 
   static Logger logger = Logger.getLogger(Form76GeneratorApplication.class.getName());
 

@@ -1,7 +1,7 @@
 package com.form76.generator.resource;
 
-import com.form76.generator.Form76ReportGenerator;
-import com.form76.generator.TestDataGenerator;
+import com.form76.generator.service.Form76ReportService;
+import com.form76.generator.service.TestDataGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -17,7 +17,7 @@ import java.nio.file.FileSystems;
 import java.text.ParseException;
 import java.util.Date;
 
-import static com.form76.generator.TestDataGenerator.SIMPLE_DATE_FORMAT_FOR_FILE_NAME;
+import static com.form76.generator.service.TestDataGenerator.SIMPLE_DATE_FORMAT_FOR_FILE_NAME;
 
 @Controller
 @RequestMapping("/form76")
@@ -27,7 +27,7 @@ public class Form76GeneratorResource {
   private static String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
 
   @Autowired
-  Form76ReportGenerator form76ReportGenerator;
+  Form76ReportService form76ReportService;
 
   @GetMapping("/ping")
   @ResponseBody
@@ -90,7 +90,7 @@ public class Form76GeneratorResource {
       file.transferTo(new File(receivedFile));
 
 
-      String generatedFileName = form76ReportGenerator.generateReportFromSource(receivedFile, firstLast != null ? firstLast : false);
+      String generatedFileName = form76ReportService.generateReportFromSource(receivedFile, firstLast != null ? firstLast : false);
       String attachmentFileName = generatedFileName.lastIndexOf(FILE_SEPARATOR) == -1 && generatedFileName.lastIndexOf(FILE_SEPARATOR) < generatedFileName.length() -1 ?
           generatedFileName :
           generatedFileName.substring(generatedFileName.lastIndexOf(FILE_SEPARATOR) + 1);

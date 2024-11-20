@@ -1,7 +1,7 @@
-package com.form76.generator;
+package com.form76.generator.service;
 
-import com.form76.generator.model.DoorEvent;
-import com.form76.generator.model.Employee;
+import com.form76.generator.service.model.DoorEvent;
+import com.form76.generator.service.model.Employee;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TestDataGenerator {
 
@@ -49,7 +48,7 @@ public class TestDataGenerator {
 
       Calendar calendar = Calendar.getInstance();
       calendar.set(Calendar.MONTH, month - 1);
-      monthEmployee.put(new SimpleDateFormat(Form76ReportGenerator.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
+      monthEmployee.put(new SimpleDateFormat(Form76ReportService.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
     }
 
 //    Form76ReportGenerator generator = new Form76ReportGenerator();
