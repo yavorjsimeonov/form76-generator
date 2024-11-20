@@ -2,7 +2,6 @@ package com.form76.generator.resource;
 
 import com.form76.generator.Form76ReportGenerator;
 import com.form76.generator.TestDataGenerator;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -50,7 +49,7 @@ public class Form76GeneratorResource {
    * @throws ParseException
    */
   @GetMapping(path = "/generate/test", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-  public ResponseEntity<Resource> generateTestSrcFile(@PathParam(value = "months") String months, @PathParam(value = "employeesCount") int employeesCount) throws IOException, ParseException {
+  public ResponseEntity<Resource> generateTestSrcFile(@RequestParam(value = "months") String months, @RequestParam(value = "employeesCount") int employeesCount) throws IOException, ParseException {
 
     String error = "";
     try {

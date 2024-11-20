@@ -52,8 +52,8 @@ public class TestDataGenerator {
       monthEmployee.put(new SimpleDateFormat(Form76ReportGenerator.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
     }
 
-    Form76ReportGenerator generator = new Form76ReportGenerator();
-    generator.calculateWorkedHours(monthEmployee, false);
+//    Form76ReportGenerator generator = new Form76ReportGenerator();
+//    generator.calculateWorkedHours(monthEmployee, false);
 
     return monthEmployee;
   }
