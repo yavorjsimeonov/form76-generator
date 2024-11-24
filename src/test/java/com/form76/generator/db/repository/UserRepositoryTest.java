@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+
 @SpringBootTest
 public class UserRepositoryTest {
 
@@ -18,7 +19,13 @@ public class UserRepositoryTest {
     user.setPassword("test");
     user.setEmail("mishom@mail.com");
 
-    userRepository.save(user);
+    User savedUser = userRepository.save(user);
+
+    User foundUser = userRepository.findById(savedUser.getId()).orElse(null);
+
+    assert foundUser != null;
+    assert foundUser.getName().equals("misho");
+    assert foundUser.getEmail().equals("mishom@mail.com");
 
 
   }
