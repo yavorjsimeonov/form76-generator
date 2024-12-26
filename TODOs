@@ -1,12 +1,15 @@
 * Authentication:
-    ** Basic -> Done (very basic: no password encryption, no spring security)
+    ** Basic -> DONE (very basic: no password encryption, no spring security)
+    ** Password Encryption
+    ** Spring Security
     ** KeyCloack
+    ** Session timout (frontend: https://idletimer.dev/)
 * User roles
 * Forgotten Password functionality
 * Pages:
-    ** Register (No free registrations, just
-    ** Login -> Done
-    ** Home -> Done
+    ** Register (No free registrations, just Create User by admins)
+    ** Login -> DONE
+    ** Home -> DONE
     ** Administrations
         *** Create/Edit Administration
         *** View Administration
@@ -21,4 +24,7 @@
 
 * Internationalisation
 * liquibase migrations
-* logging (Slf4j)
+* logging (Slf4j/Log4j2) -> DONE
+* Check and fix WARN[0000] /Users/maya/IdeaProjects/form76-generator/docker-compose.yaml: `version` is obsolete
+
+

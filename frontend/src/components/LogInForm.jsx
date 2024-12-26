@@ -11,25 +11,12 @@ import { form76GeneratorApi } from '../api/Form76GeneratorApi.js';
 import { useAuth } from './AuthContext.jsx';
 import { logError }  from './ErrorHanlder.jsx';
 
-function loginUser(credentials) {
-    // return fetch('http://localhost:8080/login', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(credentials)
-    // }).then(data => data.json())
-
-
-}
-
-
 
 function LogInForm() {
     const Auth = useAuth();
     const navigate = useNavigate();
 
-    //const isLoggedIn = Auth.userIsAuthenticated();
+    const isLoggedIn = Auth.userIsAuthenticated();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -44,14 +31,6 @@ function LogInForm() {
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
     };
-
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     console.log('Submitting', { username, password });
-    //     loginUser(
-    //         { "username": username, "password": password }
-    //     )
-    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -79,7 +58,7 @@ function LogInForm() {
         }
     }
 
-    return (
+    return isLoggedIn ? navigate("/home") : (
         <form onSubmit={handleSubmit} className="login-form">
             <Container fluid="md">
                 <Row className="justify-content-md-center">

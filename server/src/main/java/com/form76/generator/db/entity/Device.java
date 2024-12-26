@@ -16,6 +16,9 @@ public class Device {
   @GeneratedValue(generator = "idGenerator")
   public String id;
 
+  @Column(name = "external_id", nullable = false)
+  public String externalId;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false)
   public DeviceType type;

@@ -20,7 +20,7 @@ public class Administration {
   @Column(name = "name", nullable = false)
   public String name;
 
-  @Column(name = "password", nullable = false)
+  @Column(name = "active", nullable = false)
   public boolean active;
 
   @OneToMany(mappedBy = "administration", fetch = FetchType.EAGER)

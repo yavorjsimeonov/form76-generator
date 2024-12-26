@@ -75,7 +75,7 @@ public class SecurityConfig {
 //  @Bean
 //  @Order(1)
 //  public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-//    System.out.println("~~~~~~~~ Received request in apiFilterChain");
+//    logger.info("~~~~~~~~ Received request in apiFilterChain");
 //
 //    String[] allowedPaths = { "/api/login", "/api/logout" };
 //
@@ -90,7 +90,7 @@ public class SecurityConfig {
 //  }
 //  @Bean
 //  public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-//    System.out.println("~~~~~~~~ Received request in defaultSecurityFilterChain");
+//    logger.info("~~~~~~~~ Received request in defaultSecurityFilterChain");
 //
 //    String[] allowedPaths = { "/auth/authenticate", "/auth/logout", "/auth/register" };
 //    http

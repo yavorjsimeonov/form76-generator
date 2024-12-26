@@ -10,8 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"com.form76.generator", "com.form76.generator.rest"})
 public class Form76GeneratorApplication {
 
-  private final static Logger logger = LoggerFactory.getLogger(Form76GeneratorApplication.class.getName());
-
   public static void main(String[] args) {
     SpringApplication.run(Form76GeneratorApplication.class, args);
   }

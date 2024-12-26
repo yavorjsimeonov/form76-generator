@@ -2,6 +2,8 @@ package com.form76.generator.service;
 
 import com.form76.generator.service.model.Employee;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -13,10 +15,12 @@ import static com.form76.generator.service.TestDataGenerator.SIMPLE_DATE_FORMAT_
 
 public class Form76ReportGeneratorTest {
 
+  Logger logger = LoggerFactory.getLogger(Form76ReportGeneratorTest.class);
+
   @Test
   public void testCalculateWorkedHours() throws IOException, ParseException {
     Map<String, Map<String, Employee>> employees = TestDataGenerator.generateEmployees(Arrays.asList(7, 8), 3);
-    System.out.println(employees);
+    logger.info("Employees: " + employees);
 
     String fileName = String.format("/users/maya/Downloads/Report-forma76-%s.xlsx", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();

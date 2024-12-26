@@ -2,6 +2,8 @@ package com.form76.generator.rest;
 
 import com.form76.generator.service.Form76ReportService;
 import com.form76.generator.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,8 @@ import java.nio.file.FileSystems;
 @RequestMapping("/api")
 public class Form76GeneratorResource {
 
+  Logger logger = LoggerFactory.getLogger(Form76GeneratorResource.class);
+
   @Autowired
   Form76ReportService form76ReportService;
 
@@ -32,7 +36,7 @@ public class Form76GeneratorResource {
 //
 //  @PostMapping(path = "/login")
 //  public UserInfo login(@RequestBody UserCredentials credentials) throws LoginException {
-//    System.out.println("Received request for login");
+//    logger.info("Received request for login");
 //    return userService.loginUser(credentials.username, credentials.password);
 //  }
 

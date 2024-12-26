@@ -18,20 +18,21 @@ public class Location {
   @Column(name = "name", nullable = false)
   public String name;
 
-  @Column(name = "active", nullable = false)
-  public boolean active;
-
   @ManyToOne
   @JoinColumn(name="administration_id", nullable=false)
   public Administration administration;
 
-//  //TODO: add representative columns
+  @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
+  public Set<Device> devices;
+
+  //  //TODO: add representative columns
 //  @Column(name = "representative_name", nullable = false)
 //  public String representativeName;
 //
 //  @Column(name = "representative_email", nullable = false)
 //  public String representativeEmail;
 
-  @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
-  public Set<Device> devices;
+  @Column(name = "active", nullable = false)
+  public boolean active;
+
 }

@@ -9,8 +9,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -25,7 +23,6 @@ import java.util.stream.IntStream;
 import static com.form76.generator.service.Form76ReportService.xlsxFile;
 
 public class Form76XlsxReportBuilder {
-  private final static Logger logger = LoggerFactory.getLogger(Form76XlsxReportBuilder.class.getName());
 
   public static final String FONT_NAME = "Arial";
   public static final String DATE_FORMAT = "dd-MM-yyyy";

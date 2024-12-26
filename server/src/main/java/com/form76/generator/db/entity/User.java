@@ -30,13 +30,14 @@ public class User {
   @Column(name = "password", nullable = false)
   public String password;
 
-  @Column(name = "active", nullable = false)
-  public boolean active;
-
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false)
   public Role role;
 
   @OneToOne
   public Administration administration;
+
+  @Column(name = "active", nullable = false)
+  public boolean active;
+
 }

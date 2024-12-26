@@ -1,13 +1,14 @@
 package com.form76.generator.service;
 
-import com.form76.generator.Form76GeneratorApplication;
+import com.form76.generator.rest.Form76GeneratorResource;
 import com.form76.generator.service.model.DoorEvent;
 import com.form76.generator.service.model.Employee;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class Form76ReportService {
 
-  static Logger logger = Logger.getLogger(Form76GeneratorApplication.class.getName());
+  Logger logger = LoggerFactory.getLogger(Form76ReportService.class);
 
   static boolean xlsxFile = true;
 
@@ -38,7 +39,7 @@ public class Form76ReportService {
   private String outputFileNameFormat;
 
   public String generateReportFromSource(String fileName, Boolean firstLast) throws Exception {
-    System.out.println("Start generating Form 76 report for source file: " + fileName);
+    logger.info("Start generating Form 76 report for source file: " + fileName);
 
     Map<String, Map<String, Employee>> monthEmployeeMap = readData(fileName);
 
@@ -143,16 +144,16 @@ public class Form76ReportService {
 
       }
 
-      System.out.printf("Parsed data for %s months\n", String.join(",", monthEmployeeMap.keySet()));
-      System.out.printf("Parsed data for %d  employees\n", monthEmployeeMap.values().stream().mapToInt(it -> it.keySet().size()).sum());
-      System.out.println("Summary of the excluded rows:");
+      logger.info(String.format("Parsed data for %s months\n", String.join(",", monthEmployeeMap.keySet())));
+      logger.info(String.format("Parsed data for %d  employees\n", monthEmployeeMap.values().stream().mapToInt(it -> it.keySet().size()).sum()));
+      logger.info("Summary of the excluded rows:");
 
-      System.out.printf("--- rows with unknown person (empty id or name): %s\n", rowsWrongPerson.stream().map(Object::toString).collect(Collectors.joining(", ")));
-      System.out.printf("--- rows with unknown eventPointName type (not ending on '-IN' or '-OUT'): : %s\n", rowsWrongEventPoints.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")));
-      System.out.printf("--- rows with ignored openDoorTypes [%s]: %s\n",
+      logger.info(String.format("--- rows with unknown person (empty id or name): %s\n", rowsWrongPerson.stream().map(Object::toString).collect(Collectors.joining(", "))));
+      logger.info(String.format("--- rows with unknown eventPointName type (not ending on '-IN' or '-OUT'): : %s\n", rowsWrongEventPoints.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", "))));
+      logger.info(String.format("--- rows with ignored openDoorTypes [%s]: %s\n",
           ignoredDoorOpenTypes.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", ")),
           rowsIgnoredDoorOpenTypes.stream().map(it ->{ return it.toString();}).collect(Collectors.joining(", "))
-      );
+      ));
 
 
     } catch (IOException e) {
@@ -166,7 +167,7 @@ public class Form76ReportService {
   }
 
   public void calculateWorkedHours(Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
-    System.out.println("Start processing worked hours... ");
+    logger.info("Start processing worked hours... ");
 
     List<Map<String, Employee>> employeeMapList = monthEmployeeMap.values().stream().toList();
     for (Map<String, Employee> map : employeeMapList) {
@@ -176,13 +177,13 @@ public class Form76ReportService {
       }
     }
 
-    System.out.println("End processing worked hours... ");
+    logger.info("End processing worked hours... ");
   }
 
   private void calculateWorkedHoursForEmployee(Employee employee, Boolean firstLast) throws ParseException {
     List<DoorEvent> doorEvents = employee.doorEvents;
     doorEvents.sort(Comparator.comparing(de -> de.timestamp));
-//    System.out.println("Calculating worked hours (firstLast[" + firstLast + "]) for employee: " + employee.id);
+//    logger.info("Calculating worked hours (firstLast[" + firstLast + "]) for employee: " + employee.id);
 
     TreeMap<String, List<DoorEvent>> doorEventsPerDate = new TreeMap<>();
     doorEvents.forEach(doorEvent -> {
@@ -196,7 +197,7 @@ public class Form76ReportService {
 //        .sorted(Comparator.comparing(  de -> toDateString(de.timestamp)))
 //        .collect(Collectors.groupingBy(  de -> toDateString(de.timestamp)));
 
-    //System.out.println("DoorEvents per date: " + doorEventsPerDate);
+    //logger.info("DoorEvents per date: " + doorEventsPerDate);
 
     for (Map.Entry<String, List<DoorEvent>> dateDoorEvents : doorEventsPerDate.entrySet()) {
       String dateStr = dateDoorEvents.getKey();
@@ -204,7 +205,7 @@ public class Form76ReportService {
 
       /*
       Duration duration = Duration.ofSeconds(employee.workedHoursPerDate.get(dateStr));
-      System.out.println(String.format("Employee %s -> date %s -> Time spent on work: %dh %dm %ds\n-------------------\n",
+      logger.info(String.format("Employee %s -> date %s -> Time spent on work: %dh %dm %ds\n-------------------\n",
           employee.id, dateStr, duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart()));*/
     }
   }
@@ -241,7 +242,7 @@ public class Form76ReportService {
           if (!nextEvent.isInEvent) {
             outEvent = nextEvent;
           } else {
-            System.out.println("Unexpected inEvent[" + nextEvent + "] after another inEvent[" + inEvent + "]");
+            logger.info("Unexpected inEvent[" + nextEvent + "] after another inEvent[" + inEvent + "]");
           }
         }
 
@@ -280,7 +281,7 @@ public class Form76ReportService {
       long hoursWorked = calculateWorkDuration(firstInEvent.timestamp, lastOutEvent.timestamp);
       employee.workedHoursPerDate.put(date, hoursWorked);
     } else {
-      System.out.println("Incomplete door events. Cannot calculate worked hours.");
+      logger.info("Incomplete door events. Cannot calculate worked hours.");
       employee.workedHoursPerDate.put(date, 0L);
     }
   }
@@ -291,14 +292,14 @@ public class Form76ReportService {
 
   private long calculateWorkDuration(Date inEvent, Date outEvent) {
     if (inEvent == null || outEvent == null) {
-      System.out.println("Failed to calculate duration for the source in[" + inEvent + "] and out[" + outEvent + "] events");
+      logger.info("Failed to calculate duration for the source in[" + inEvent + "] and out[" + outEvent + "] events");
       return 0L;
     }
 
     try {
       return (outEvent.getTime() - inEvent.getTime());
     } catch (Exception e) {
-      System.out.println("Failed to calculate duration for the source in[" + inEvent + "] and out[" + outEvent + "] events: ");
+      logger.info("Failed to calculate duration for the source in[" + inEvent + "] and out[" + outEvent + "] events: ");
       e.printStackTrace();
     }
 
@@ -307,7 +308,7 @@ public class Form76ReportService {
   private String generateReportFile(String srcFile, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws IOException {
 
     String outputFileName = getOutputFileName(srcFile, firstLast);
-    System.out.println("Start exporting data in xls file: " + outputFileName);
+    logger.info("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
@@ -315,7 +316,7 @@ public class Form76ReportService {
     generatedReportFile.flush();
     generatedReportFile.close();
 
-    System.out.println("Report exported successfully.");
+    logger.info("Report exported successfully.");
 
     return outputFileName;
   }
