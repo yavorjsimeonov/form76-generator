@@ -1,0 +1,31 @@
+.header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 0;
+    padding: 15px 0;
+    text-align: center;
+    background-color: #2e5a88;
+    color: white;
+}
+
+.header div.row {
+    margin: 0;
+}
+
+.header a {
+    color: #3BBBDB;
+}
+
+.header div.logo {
+    font-family: "American Typewriter";
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.header div.userinfo {
+    padding-top: 25px;
+}
+
+

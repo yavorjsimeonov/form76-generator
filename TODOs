@@ -1,0 +1,24 @@
+* Authentication:
+    ** Basic -> Done (very basic: no password encryption, no spring security)
+    ** KeyCloack
+* User roles
+* Forgotten Password functionality
+* Pages:
+    ** Register (No free registrations, just
+    ** Login -> Done
+    ** Home -> Done
+    ** Administrations
+        *** Create/Edit Administration
+        *** View Administration
+           **** List locations
+           **** Create/Edit location
+           **** View Location
+                ***** List devices
+                ***** Create/View/Edit device
+* Scheduled jobs
+* Connection to the mock/actual mylink server
+
+
+* Internationalisation
+* liquibase migrations
+* logging (Slf4j)
