@@ -9,6 +9,7 @@ import HomePage from "./pages/Home"
 import AdministrationsPage from "./pages/admin/Administrations";
 import ReportsPage from "./pages/admin/Reports";
 import UsersPage from "./pages/user/Users";
+import AdministrationPage from "./pages/admin/Administration";
 
 function App() {
 
@@ -18,23 +19,26 @@ function App() {
                 <Router>
                     <div className="App">
                         <Routes>
-                            <Route exact path='/' element={<LoginPage/>}/>
-                            <Route exact path='login' element={<LoginPage/>}/>
-                            <Route exact path='home' element={<PrivateRoute><HomePage/></PrivateRoute>}/>
+                            <Route exact path='/' element={<LoginPage />} />
+                            <Route exact path='login' element={<LoginPage />} />
+                            <Route exact path='home' element={<PrivateRoute><HomePage /></PrivateRoute>} />
                             <Route exact path='administrations'
-                                   element={<PrivateRoute><AdministrationsPage/></PrivateRoute>}>
+                                   element={<PrivateRoute><AdministrationsPage /></PrivateRoute>}>
                                 <Route exact path='locations' element={<PrivateRoute><h1>Locations</h1></PrivateRoute>}>
                                     <Route exact path='devices'
-                                           element={<PrivateRoute><h1>Devices</h1></PrivateRoute>}/>
+                                           element={<PrivateRoute><h1>Devices</h1></PrivateRoute>} />
                                 </Route>
                             </Route>
-                            <Route exact path='reports' element={<PrivateRoute><ReportsPage/></PrivateRoute>}/>
-                            <Route exact path='users' element={<PrivateRoute><UsersPage/></PrivateRoute>}/>
-                            <Route path='*' element={<Navigate to="/login"/>}/>
+                            <Route exact path='administrations/:id'
+                                   element={<PrivateRoute><AdministrationPage /></PrivateRoute>} />
+                            <Route exact path='reports' element={<PrivateRoute><ReportsPage /></PrivateRoute>} />
+                            <Route exact path='users' element={<PrivateRoute><UsersPage /></PrivateRoute>} />
+                            <Route path='*' element={<Navigate to="/login" />} />
                         </Routes>
                     </div>
                 </Router>
             </AuthProvider>
+
 
         </>
     );
