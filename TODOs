@@ -6,25 +6,29 @@
     ** Session timout (frontend: https://idletimer.dev/)
 * User roles
 * Forgotten Password functionality
-* Pages:
+* UI Pages:
     ** Register (No free registrations, just Create User by admins)
     ** Login -> DONE
     ** Home -> DONE
     ** Administrations
-        *** Create/Edit Administration
-        *** View Administration
+        *** Create/Edit Administration -> DONE (No Add/Remove Location)
+        *** View Administration -> DONE (No list locations)
            **** List locations
            **** Create/Edit location
            **** View Location
                 ***** List devices
                 ***** Create/View/Edit device
-* Scheduled jobs
-* Connection to the mock/actual mylink server
-
+                ***** Generate report
+    ** Reports - List
+* Scheduled jobs -> DONE (Spring Scheduler)
+* Quartz Jobs
+* Async report generation per location (kafka)
+* Connection to the mock/actual mylink server -> DONE
+* Send Email
 
 * Internationalisation
 * liquibase migrations
 * logging (Slf4j/Log4j2) -> DONE
 * Check and fix WARN[0000] /Users/maya/IdeaProjects/form76-generator/docker-compose.yaml: `version` is obsolete
-
+* Check and fix MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
 

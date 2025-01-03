@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -47,7 +48,7 @@ public class Form76XlsxReportBuilder {
     this.employeesData = employeesData;
   }
 
-  public Form76XlsxReportBuilder build() {
+  public Form76XlsxReportBuilder build() throws ParseException {
     createWorkbook();
     populateWorkbook();
     return this;
@@ -79,12 +80,12 @@ public class Form76XlsxReportBuilder {
     createStyles();
   }
 
-  protected void populateWorkbook() {
+  protected void populateWorkbook() throws ParseException {
     List<Map<String, Employee>> list = employeesData.values().stream().toList();
 
     for(Map<String, Employee> map : list){
       List<Employee> empList = map.values().stream().toList();
-      Date date = empList.get(0).doorEvents.get(0).timestamp;
+      Date date = DateHelper.parseReportDate(empList.get(0).doorEvents.get(0).eventTime);
 
       String monthYearStr = getMonthAndYerStrFromDate(date);
 
@@ -118,7 +119,7 @@ public class Form76XlsxReportBuilder {
 
   }
 
-  private void populateForma76Sheet(Map<String, Employee> map) {
+  private void populateForma76Sheet(Map<String, Employee> map) throws ParseException {
     int row = 0;
     int column = 0;
 
@@ -146,8 +147,8 @@ public class Form76XlsxReportBuilder {
     if (employeeIterator.hasNext()) {
       Employee firstEmployee = employeeIterator.next();
 
-      DoorEvent firstDoorEvent = firstEmployee.getDoorEvents().get(0);
-      Date timestamp = firstDoorEvent.timestamp;
+      DoorEvent firstDoorEvent = firstEmployee.doorEvents.get(0);
+      Date timestamp = DateHelper.parseReportDate(firstDoorEvent.eventTime);
 
       monthYearStr = getMonthAndYerStrFromDate(timestamp);
     }

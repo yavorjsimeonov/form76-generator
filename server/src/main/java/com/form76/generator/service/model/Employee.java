@@ -1,40 +1,25 @@
 package com.form76.generator.service.model;
 
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ToString
 public class Employee {
-  public String id;
+  public Integer id;
+  public String uuid;
   public String names;
   public List<DoorEvent> doorEvents = new ArrayList<>();
   public Map<String, Long> workedHoursPerDate = new HashMap<>();
 
-
-  @Override
-  public String toString() {
-    return "Employee{" +
-        "id='" + id + '\'' +
-        ", names='" + names + '\'' +
-        ", doorEvents=" + doorEvents +
-        ", workedHoursPerDate=" + workedHoursPerDate +
-        '}';
+  public Employee() {
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public String getNames() {
-    return names;
-  }
-
-  public List<DoorEvent> getDoorEvents() {
-    return doorEvents;
-  }
-
-  public Map<String, Long> getWorkedHoursPerDate() {
-    return workedHoursPerDate;
+  public Employee(Integer id, String names) {
+    this.id = id;
+    this.names = names;
   }
 }
