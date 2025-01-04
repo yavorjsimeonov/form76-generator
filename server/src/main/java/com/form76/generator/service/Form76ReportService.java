@@ -2,10 +2,7 @@ package com.form76.generator.service;
 
 import com.form76.generator.db.entity.Location;
 import com.form76.generator.db.entity.ReportAlgorithm;
-import com.form76.generator.service.model.DoorEvent;
-import com.form76.generator.service.model.DoorOpeningLogRequest;
-import com.form76.generator.service.model.DoorOpeningLogResponse;
-import com.form76.generator.service.model.Employee;
+import com.form76.generator.service.model.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -15,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -45,6 +43,9 @@ public class Form76ReportService {
 
   @Autowired
   MylinkApiService mylinkApiService;
+
+  @Autowired
+  EmailService emailService;
 
 
   /**
@@ -82,6 +83,17 @@ public class Form76ReportService {
 
         logger.info("generatedFilePath: " + generatedFilePath);
         //TODO: send to location.representative_email
+
+        String msg = "hdasjdbha";
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.recipient = "yavorjsimeonov@gmail.com";
+        emailRequest.msgBody = generatedFilePath;
+        emailRequest.subject = "test";
+        emailRequest.attachment = null;
+
+
+        emailService.sendSimpleMail(emailRequest);
+
       }
     } catch (Exception e) {
       logger.error("Failed to generate reports:", e);

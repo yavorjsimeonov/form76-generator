@@ -24,7 +24,8 @@
 * Quartz Jobs
 * Async report generation per location (kafka)
 * Connection to the mock/actual mylink server -> DONE
-* Send Email
+* Send Email -> Done
+* Use html mail template
 
 * Internationalisation
 * liquibase migrations
