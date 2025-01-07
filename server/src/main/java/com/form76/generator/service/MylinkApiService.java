@@ -59,8 +59,8 @@ public class MylinkApiService {
                 .queryParam("pageSize", "{size}")
                 .build(
         myLinkApiToken,
-                    doorOpeningLogRequest.extCommunityId,
-                    doorOpeningLogRequest.extCommunityUuid,
+                    doorOpeningLogRequest.location.extCommunityId,
+                    doorOpeningLogRequest.location.extCommunityUuId,
                     fromDate,
                     toDate,
                     "1",

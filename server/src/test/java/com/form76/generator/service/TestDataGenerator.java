@@ -43,12 +43,12 @@ public class TestDataGenerator {
       for (int i = 0; i < numberOfEmployees; i++) {
         Employee employee = generateEmployee(month);
 
-        employees.put(employee.id, employee);
+        employees.put(employee.uuid, employee);
       }
 
       Calendar calendar = Calendar.getInstance();
       calendar.set(Calendar.MONTH, month - 1);
-      monthEmployee.put(new SimpleDateFormat(Form76ReportService.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
+      monthEmployee.put(new SimpleDateFormat(DateHelper.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
     }
 
 //    Form76ReportGenerator generator = new Form76ReportGenerator();
@@ -59,13 +59,15 @@ public class TestDataGenerator {
 
   public static Employee generateEmployee(int month) {
 
-    int employeeId = random.nextInt(10000000, 40000000);
+    int employeeId = random.nextInt(1000000, 9999999);
+    long employeeUuid = random.nextLong(1000000000000L, 9999999999999L);
     boolean man = random.nextBoolean();
     int indxName = random.nextInt(1, 7);
     int indxFamilyName = random.nextInt(1, 7);
 
     Employee employee = new Employee();
-    employee.id = Integer.toString(employeeId);
+    employee.id = employeeId;
+    employee.uuid = Long.toString(employeeUuid);
     employee.names = man ? menNames.get(indxName) + " " + menFamilies.get(indxFamilyName) :
         womenNames.get(indxName) + " " + womenFamilies.get(indxFamilyName);
 
@@ -98,7 +100,7 @@ public class TestDataGenerator {
       localDateTime = localDateTime.withMinute(random.nextInt(0, 59));
 
       DoorEvent doorEvent = new DoorEvent(
-          Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()),
+          DateHelper.formatReportDate(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())),
           i % 2 == 0 ? "IN_door" : "OUT_door",
           i % 2 == 0 ? "eventPoint DOOR-IN" : "eventPoint DOOR-OUT"
       ); // random.nextBoolean() ? "IN_door" : "OUT_door";
@@ -140,7 +142,13 @@ public class TestDataGenerator {
       }
     }
     List<DoorEvent> allEvents = new ArrayList<>(allEventsMap.keySet().stream().toList());
-    allEvents.sort(Comparator.comparing(de -> de.timestamp));
+    allEvents.sort(Comparator.comparing(de -> {
+      try {
+        return DateHelper.parseReportDate(de.eventTime);
+      } catch (ParseException e) {
+        throw new RuntimeException(e);
+      }
+    }));
 
     for (DoorEvent doorEvent : allEvents) {
       row = sheet.createRow(rowNum++);
@@ -150,7 +158,7 @@ public class TestDataGenerator {
 
       Employee employee = allEventsMap.get(doorEvent);
 
-      String timeStamp = SIMPLE_DATE_FORMAT_FOR_DATA.format(doorEvent.timestamp);
+      String timeStamp = doorEvent.eventTime;
       row.createCell(0).setCellValue(timeStamp);
       row.createCell(1).setCellValue(employee.id);
       row.createCell(2).setCellValue(employee.names);
@@ -159,7 +167,7 @@ public class TestDataGenerator {
       }
       row.createCell(7).setCellValue(doorEvent.doorName);
       row.createCell(8).setCellValue("2011141576");
-      row.createCell(9).setCellValue("my link samokov 11A/BUILDING1/building 1 DOOR1" + (doorEvent.isInEvent ? "-IN" : "-OUT"));
+      row.createCell(9).setCellValue("my link samokov 11A/BUILDING1/building 1 DOOR1" + (doorEvent.isInEvent() ? "-IN" : "-OUT"));
       row.createCell(10).setCellValue("Open door card");
       row.createCell(11).setCellValue("");
     }

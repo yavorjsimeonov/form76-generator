@@ -1,5 +1,6 @@
 package com.form76.generator.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.form76.generator.db.IdGenerator;
 import jakarta.persistence.*;
 import lombok.ToString;
@@ -26,6 +27,7 @@ public class Location {
   @Column(name = "name", nullable = false)
   public String name;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name="administration_id", nullable=false)
   public Administration administration;

@@ -1,6 +1,7 @@
 package com.form76.generator.db.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.form76.generator.db.IdGenerator;
 import jakarta.persistence.*;
 import lombok.ToString;
@@ -31,6 +32,7 @@ public class Device {
   @Column(name = "active", nullable = false)
   public boolean active;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name="location_id", nullable=false)
   public Location location;

@@ -22,7 +22,7 @@
     ** Reports - List
 * Scheduled jobs -> DONE (Spring Scheduler)
 * Quartz Jobs
-* Async report generation per location (kafka)
+* Async report generation per location (kafka) -> Done
 * Connection to the mock/actual mylink server -> DONE
 * Send Email -> Done
 * Use html mail template

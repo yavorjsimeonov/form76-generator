@@ -17,4 +17,8 @@ public class LocationService {
     return locationRepository.findAllActiveLocationsInActiveAdministrations();
   }
 
+  public Location getLocationById(String id){
+    return locationRepository.getReferenceById(id);
+  }
+
 }

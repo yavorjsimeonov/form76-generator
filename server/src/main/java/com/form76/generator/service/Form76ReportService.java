@@ -2,26 +2,21 @@ package com.form76.generator.service;
 
 import com.form76.generator.db.entity.Location;
 import com.form76.generator.db.entity.ReportAlgorithm;
+import com.form76.generator.kafka.ReportGenerationRequestEventProducer;
 import com.form76.generator.service.model.*;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class Form76ReportService {
@@ -47,6 +42,8 @@ public class Form76ReportService {
   @Autowired
   EmailService emailService;
 
+  @Autowired
+  ReportGenerationRequestEventProducer reportGenerationRequestEventProducer;
 
   /**
    *   OK load active locations with active administrations (call method in LocationService)
@@ -66,37 +63,43 @@ public class Form76ReportService {
       for (Location location : locations) {
         // Generate DoorOpeningLogRequest for each location
         DoorOpeningLogRequest request = new DoorOpeningLogRequest(
-            location.extCommunityId,
-            location.extCommunityUuId,
+            location,
             LocalDateTime.now().minusMonths(1),
             LocalDateTime.now()
         );
-        logger.info("Processing location: " + location.name + " (ID: " + location.id + ")"); //TODO: add period to log
 
-        DoorOpeningLogResponse response = mylinkApiService.loadDoorOpeningLog(request);
-        logger.info("Response: " + response);
-        Map<String, Map<String, Employee>> monthEmployeeMap = readDataFromResponse(response);
-        boolean firstLast = location.reportAlgorithm == ReportAlgorithm.FIRST_IN_LAST_OUT;
-        calculateWorkedHours(monthEmployeeMap, firstLast);
-
-        String generatedFilePath = generateReportFile(location, monthEmployeeMap, firstLast);
-
-        logger.info("generatedFilePath: " + generatedFilePath);
-        //TODO: send to location.representative_email
-
-        String msg = "hdasjdbha";
-        EmailRequest emailRequest = new EmailRequest();
-        emailRequest.recipient = "yavorjsimeonov@gmail.com";
-        emailRequest.msgBody = generatedFilePath;
-        emailRequest.subject = "test";
-        emailRequest.attachment = null;
-
-
-        emailService.sendSimpleMail(emailRequest);
+        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.location.extCommunityUuId, request);
 
       }
     } catch (Exception e) {
       logger.error("Failed to generate reports:", e);
+    }
+  }
+
+  public void generateReportForLocation(DoorOpeningLogRequest request) throws ParseException {
+    try {
+      logger.info("Processing location: " + request.location);
+      DoorOpeningLogResponse response = mylinkApiService.loadDoorOpeningLog(request);
+      //logger.info("Response: " + response);
+
+
+      Map<String, Map<String, Employee>> monthEmployeeMap = readDataFromResponse(response);
+      boolean firstLast = request.location.reportAlgorithm == ReportAlgorithm.FIRST_IN_LAST_OUT;
+      calculateWorkedHours(request.location, monthEmployeeMap, firstLast);
+
+      String generatedFilePath = generateReportFile(request.location, monthEmployeeMap, firstLast);
+
+      logger.info("generatedFilePath: " + generatedFilePath);
+
+      EmailRequest emailRequest = new EmailRequest();
+      emailRequest.recipient = "yavorjsimeonov@gmail.com";
+      emailRequest.msgBody = generatedFilePath;
+      emailRequest.subject = "test";
+      emailRequest.attachment = null;
+
+      emailService.sendSimpleMail(emailRequest);
+    } catch (Exception e) {
+      logger.error("Error generating report for location: " + request.location.name, e);
     }
   }
 
@@ -136,11 +139,12 @@ public class Form76ReportService {
     return monthEmployeeMap;
   }
 
-  public void calculateWorkedHours(Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
-    logger.info("Start processing worked hours... ");
+  public void calculateWorkedHours(Location location, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
+    String locationInfo = location.name + " (uuid: " + location.extCommunityUuId + ")";
+    logger.info("Start processing worked hours for employees for location: " + locationInfo);
 
     List<Map<String, Employee>> employeeMapList = monthEmployeeMap.values().stream().toList();
-    logger.info("employeeMapList: " + employeeMapList);
+    //logger.info("employeeMapList: " + employeeMapList);
 
     for (Map<String, Employee> map : employeeMapList) {
       List<Employee> employeeList = map.values().stream().toList();
@@ -149,7 +153,7 @@ public class Form76ReportService {
       }
     }
 
-    logger.info("End processing worked hours... ");
+    logger.info("End processing worked hours for employees for location: " + locationInfo);
   }
 
   private void calculateWorkedHoursForEmployee(Employee employee, Boolean firstLast) throws ParseException {

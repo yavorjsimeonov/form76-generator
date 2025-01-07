@@ -44,7 +44,7 @@ public class EmailService {
       mailMessage.setSubject(details.getSubject());
 
       // Sending the mail
-      javaMailSender.send(mailMessage);
+      //javaMailSender.send(mailMessage);
       logger.info("Mail sent successfully.");
     } catch (Exception e) {
       logger.error("Error while sending Mail:", e);

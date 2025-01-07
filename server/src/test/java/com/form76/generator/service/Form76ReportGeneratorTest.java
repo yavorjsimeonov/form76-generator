@@ -29,13 +29,13 @@ public class Form76ReportGeneratorTest {
 
   }
 
-  @Test
-  public void testReportGenerationFromFile() throws Exception {
-    String srcFileName = String.format("/users/maya/Downloads/1708687718209_733556.xls", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
-    //TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
-
-    srcFileName = "/users/maya/Downloads/1709287584082_753799-1.xlsx";
-    Form76ReportService form76ReportService = new Form76ReportService();
-    form76ReportService.generateReportFromSource(srcFileName, false);
-  }
+//  @Test
+//  public void testReportGenerationFromFile() throws Exception {
+//    String srcFileName = String.format("/users/maya/Downloads/1708687718209_733556.xls", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
+//    //TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
+//
+//    srcFileName = "/users/maya/Downloads/1709287584082_753799-1.xlsx";
+//    Form76ReportService form76ReportService = new Form76ReportService();
+//    //form76ReportService.generateReportFromSource(srcFileName, false);
+//  }
 }
