@@ -8,10 +8,7 @@ import AdministrationFormModal from "../../components/AdministrationForm";
 import LocationList from "../../components/LocationList";
 
 function AdministrationPage() {
-    console.log('~~~~~~1');
-
     const { id } = useParams();
-    console.log('~~~~~~id: ' + id);
 
     const navigate = useNavigate();
     const [administration, setAdministration] = useState(null);
@@ -21,9 +18,8 @@ function AdministrationPage() {
 
     useEffect(() => {
         const fetchAdministration = async () => {
-            console.log('~~~~~~id: ' + id);
             try {
-                const response = await fetch(`http://localhost:8080/administrations/${id}`);
+                const response = await fetch(`http://localhost:8080/api/administrations/${id}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -41,7 +37,7 @@ function AdministrationPage() {
 
     const handleEdit = async (updatedAdmin) => {
         try {
-            const response = await fetch(`http://localhost:8080/administrations/${id}`, {
+            const response = await fetch(`http://localhost:8080/api/administrations/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

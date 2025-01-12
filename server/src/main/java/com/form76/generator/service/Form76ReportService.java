@@ -63,12 +63,15 @@ public class Form76ReportService {
       for (Location location : locations) {
         // Generate DoorOpeningLogRequest for each location
         DoorOpeningLogRequest request = new DoorOpeningLogRequest(
-            location,
+            location.name,
+            location.extCommunityId,
+            location.extCommunityUuid,
+            location.reportAlgorithm,
             LocalDateTime.now().minusMonths(1),
             LocalDateTime.now()
         );
 
-        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.location.extCommunityUuid, request);
+        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.locationExtCommunityUuid, request);
 
       }
     } catch (Exception e) {
@@ -78,16 +81,16 @@ public class Form76ReportService {
 
   public void generateReportForLocation(DoorOpeningLogRequest request) throws ParseException {
     try {
-      logger.info("Processing location: " + request.location);
+      logger.info("Processing location: " + request.locationName + " (" + request.locationExtCommunityUuid + ")");
       DoorOpeningLogResponse response = mylinkApiService.loadDoorOpeningLog(request);
       //logger.info("Response: " + response);
 
 
       Map<String, Map<String, Employee>> monthEmployeeMap = readDataFromResponse(response);
-      boolean firstLast = request.location.reportAlgorithm == ReportAlgorithm.FIRST_IN_LAST_OUT;
-      calculateWorkedHours(request.location, monthEmployeeMap, firstLast);
+      boolean firstLast = request.reportAlgorithm == ReportAlgorithm.FIRST_IN_LAST_OUT;
+      calculateWorkedHours(request.locationName, request.locationExtCommunityUuid, monthEmployeeMap, firstLast);
 
-      String generatedFilePath = generateReportFile(request.location, monthEmployeeMap, firstLast);
+      String generatedFilePath = generateReportFile(request.locationExtCommunityUuid, monthEmployeeMap, firstLast);
 
       logger.info("generatedFilePath: " + generatedFilePath);
 
@@ -99,7 +102,7 @@ public class Form76ReportService {
 
       emailService.sendMailWithAttachment(emailRequest);
     } catch (Exception e) {
-      logger.error("Error generating report for location: " + request.location.name, e);
+      logger.error("Error generating report for location: " + request.locationName, e);
     }
   }
 
@@ -139,8 +142,8 @@ public class Form76ReportService {
     return monthEmployeeMap;
   }
 
-  public void calculateWorkedHours(Location location, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
-    String locationInfo = location.name + " (uuid: " + location.extCommunityUuid + ")";
+  public void calculateWorkedHours(String locationName, String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
+    String locationInfo = locationName + " (uuid: " + locationExtCommunityUuid + ")";
     logger.info("Start processing worked hours for employees for location: " + locationInfo);
 
     List<Map<String, Employee>> employeeMapList = monthEmployeeMap.values().stream().toList();
@@ -270,9 +273,9 @@ public class Form76ReportService {
 
     return 0L;
   }
-  private String generateReportFile(Location location, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws IOException, ParseException {
+  private String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws IOException, ParseException {
 
-    String outputFileName = getOutputFileName(location, firstLast);
+    String outputFileName = getOutputFileName(locationExtCommunityUuid, firstLast);
     logger.info("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
@@ -286,7 +289,7 @@ public class Form76ReportService {
     return outputFileName;
   }
 
-  private String getOutputFileName(Location location, Boolean firstLast) {
-    return "Report_Forma76_" + location.extCommunityId + "_" + (firstLast ? "FL_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date()) + ".xlsx";
+  private String getOutputFileName(String locationExtCommunityUuid, Boolean firstLast) {
+    return "Report_Forma76_" + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date()) + ".xlsx";
   }
 }

@@ -15,7 +15,7 @@ function AdministrationsPage() {
     useEffect(() => {
         const fetchAdministrations = async () => {
             try {
-                const response = await fetch("http://localhost:8080/administrations");
+                const response = await fetch("http://localhost:8080/api/administrations");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -33,7 +33,7 @@ function AdministrationsPage() {
 
     const handleCreate = async (newAdmin) => {
         try {
-            const response = await fetch("http://localhost:8080/administrations", {
+            const response = await fetch("http://localhost:8080/api/administrations", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

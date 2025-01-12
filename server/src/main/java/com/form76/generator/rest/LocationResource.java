@@ -28,12 +28,6 @@ public class LocationResource {
   @Autowired
   Form76ReportService form76ReportService;
 
-  @GetMapping("/administrations/{id}/locations")
-  public ResponseEntity<List<Location>> getLocationsByAdministrationId(@PathVariable String id) {
-    List<Location> locations = locationService.getLocationByAdministrationId(id);
-    return ResponseEntity.ok(locations);
-  }
-
   @GetMapping("/locations/{id}")
   public ResponseEntity<Location> getLocationsById(@PathVariable String id) {
     Location location = locationService.getLocationById(id);
@@ -49,15 +43,17 @@ public class LocationResource {
 
   @PostMapping("/locations/{id}/generate")
   public ResponseEntity<String> generateReportForLocation(@PathVariable("id") String locationId, @RequestBody ReportRequest reportRequest) throws ParseException {
-//    LocalDateTime startDateTime = reportRequest.getStartDateTime();
-//    LocalDateTime endDateTime = reportRequest.getEndDateTime();
+    logger.info("Received manual report generation request for location [" + locationId + "]: " + reportRequest);
 
-    LocalDateTime startDateTime = LocalDateTime.now().minusMonths(1);
-    LocalDateTime endDateTime = LocalDateTime.now();
+    LocalDateTime startDateTime = reportRequest.getStartDateTime();
+    LocalDateTime endDateTime = reportRequest.getEndDateTime();
 
     Location location = locationService.getLocationById(locationId);
+    logger.info("Loaded location [" + locationId + "]: " + location);
 
-    DoorOpeningLogRequest doorOpeningLogRequest = new DoorOpeningLogRequest(location, startDateTime, endDateTime);
+    DoorOpeningLogRequest doorOpeningLogRequest = new DoorOpeningLogRequest(
+        location.name, location.extCommunityId, location.extCommunityUuid, location.reportAlgorithm,
+        startDateTime, endDateTime);
 
     form76ReportService.generateReportForLocation(doorOpeningLogRequest);
 

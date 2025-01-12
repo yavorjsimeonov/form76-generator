@@ -21,7 +21,7 @@ public class LocationService {
   }
 
   public Location getLocationById(String id){
-    return locationRepository.getReferenceById(id);
+    return locationRepository.findById(id).orElse(null);
   }
 
   public List<Location> getLocationByAdministrationId(String id) {

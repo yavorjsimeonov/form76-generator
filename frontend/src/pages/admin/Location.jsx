@@ -3,6 +3,9 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import LocationFormModal from "../../components/LocationForm";
 import GenerateReportModal from "../../components/GenerateReportForm";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import Menu from "../../components/Menu";
 
 function LocationDetailsPage() {
     const { id } = useParams();
@@ -77,7 +80,8 @@ function LocationDetailsPage() {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                return response.json();
+                console.log("Success:" + response);
+                setShowToast(true);
             })
             .then((data) => {
                 console.log("Report Generation triggered successfully:", data);
@@ -101,96 +105,101 @@ function LocationDetailsPage() {
     }
 
     return (
-        <Container>
-            <Row>
-                <Col>
-                    <h2>Location Details</h2>
-                    <Table striped bordered hover>
-                        <tbody>
-                        <tr>
-                            <td>ID</td>
-                            <td>{location.id}</td>
-                        </tr>
-                        <tr>
-                            <td>Name</td>
-                            <td>{location.name}</td>
-                        </tr>
-                        <tr>
-                            <td>Status</td>
-                            <td>{location.active ? "Active" : "Inactive"}</td>
-                        </tr>
-                        <tr>
-                            <td>Community ID</td>
-                            <td>{location.extCommunityId}</td>
-                        </tr>
-                        <tr>
-                            <td>Community UUID</td>
-                            <td>{location.extCommunityUuid}</td>
-                        </tr>
-                        <tr>
-                            <td>Report Algorithm</td>
-                            <td>{location.reportAlgorithm}</td>
-                        </tr>
-                        <tr>
-                            <td>Representative Name</td>
-                            <td>{location.representativeName}</td>
-                        </tr>
-                        <tr>
-                            <td>Representative Email</td>
-                            <td>{location.representativeEmail}</td>
-                        </tr>
-                        </tbody>
-                    </Table>
-                    <Button
-                        variant="warning"
-                        onClick={() => setShowModal(true)}
-                        style={{ marginRight: "10px" }}
-                    >
-                        Edit
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={() => setShowReportModal(true)}
-                        style={{ marginRight: "10px" }}
-                    >
-                        Generate Report
-                    </Button>
-                    <Button variant="secondary" onClick={() => navigate(-1)}>
-                        Back
-                    </Button>
-                </Col>
-            </Row>
+        <div>
+            <Header />
+            <Menu activeKey="administrations" />
+            <Container>
+                <Row>
+                    <Col>
+                        <h2>Location Details</h2>
+                        <Table striped bordered hover>
+                            <tbody>
+                            <tr>
+                                <td>ID</td>
+                                <td>{location.id}</td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td>{location.name}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>{location.active ? "Active" : "Inactive"}</td>
+                            </tr>
+                            <tr>
+                                <td>Community ID</td>
+                                <td>{location.extCommunityId}</td>
+                            </tr>
+                            <tr>
+                                <td>Community UUID</td>
+                                <td>{location.extCommunityUuid}</td>
+                            </tr>
+                            <tr>
+                                <td>Report Algorithm</td>
+                                <td>{location.reportAlgorithm}</td>
+                            </tr>
+                            <tr>
+                                <td>Representative Name</td>
+                                <td>{location.representativeName}</td>
+                            </tr>
+                            <tr>
+                                <td>Representative Email</td>
+                                <td>{location.representativeEmail}</td>
+                            </tr>
+                            </tbody>
+                        </Table>
+                        <Button
+                            variant="warning"
+                            onClick={() => setShowModal(true)}
+                            style={{ marginRight: "10px" }}
+                        >
+                            Edit
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => setShowReportModal(true)}
+                            style={{ marginRight: "10px" }}
+                        >
+                            Generate Report
+                        </Button>
+                        <Button variant="secondary" onClick={() => navigate(-1)}>
+                            Back
+                        </Button>
+                    </Col>
+                </Row>
 
-            {/* Modal for Editing Location */}
-            <LocationFormModal
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                onSubmit={handleEdit}
-                initialData={location}
-                title="Edit Location"
-            />
+                {/* Modal for Editing Location */}
+                <LocationFormModal
+                    show={showModal}
+                    onHide={() => setShowModal(false)}
+                    onSubmit={handleEdit}
+                    initialData={location}
+                    title="Edit Location"
+                />
 
-            {/* Modal for Generating Report */}
-            <GenerateReportModal
-                show={showReportModal}
-                onHide={() => setShowReportModal(false)}
-                onSubmit={handleGenerateReport}
-            />
-            <div>
-                {showToast && (
-                <div className="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
-                     aria-atomic="true">
-                    <div className="d-flex">
-                        <div className="toast-body">
-                            Report generation triggered successfully. You will receive an email on {location.representativeEmail}
+                {/* Modal for Generating Report */}
+                <GenerateReportModal
+                    show={showReportModal}
+                    onHide={() => setShowReportModal(false)}
+                    onSubmit={handleGenerateReport}
+                />
+                <div>
+                    {showToast && (
+                    <div className="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
+                         aria-atomic="true">
+                        <div className="d-flex">
+                            <div className="toast-body">
+                                Report generation triggered successfully. You will receive an email on {location.representativeEmail}
+                            </div>
+                            <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                    aria-label="Close"></button>
                         </div>
-                        <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                                aria-label="Close"></button>
-                    </div>
-                </div>)}
-            </div>
+                    </div>)}
+                </div>
 
-        </Container>
+            </Container>
+            <Footer />
+        </div>
     );
 }
 
