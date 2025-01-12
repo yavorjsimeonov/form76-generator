@@ -14,8 +14,8 @@ public class DoorOpeningLogRequest {
 
   public LocalDateTime endDateTime;
 
-  public DoorOpeningLogRequest(Location locaction, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-    this.location = locaction;
+  public DoorOpeningLogRequest(Location location, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    this.location = location;
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime;
   }

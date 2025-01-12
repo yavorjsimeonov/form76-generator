@@ -1,4 +1,4 @@
-package com.form76.generator.controller;
+package com.form76.generator.rest;
 
 import com.form76.generator.db.entity.Administration;
 import com.form76.generator.db.repository.AdministrationRepository;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class AdministrationController {
+public class AdministrationResource {
 
   @Autowired
   private AdministrationService administrationService;

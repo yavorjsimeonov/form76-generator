@@ -18,11 +18,11 @@ public class Location {
   @GeneratedValue(generator = "idGenerator")
   public String id;
 
-  @Column(name = "ext_comunity_id", nullable = false)
+  @Column(name = "ext_community_id", nullable = false)
   public Integer extCommunityId;
 
-  @Column(name = "ext_comunity_uuid", nullable = false)
-  public String extCommunityUuId;
+  @Column(name = "ext_community_uuid", nullable = false)
+  public String extCommunityUuid;
 
   @Column(name = "name", nullable = false)
   public String name;

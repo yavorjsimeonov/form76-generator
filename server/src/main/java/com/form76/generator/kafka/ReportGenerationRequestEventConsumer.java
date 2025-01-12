@@ -23,7 +23,7 @@ public class ReportGenerationRequestEventConsumer {
   public void consume(DoorOpeningLogRequest doorOpeningLogRequest) throws Exception {
     logger.info("Received kafka event doorOpeningLogRequest: " + doorOpeningLogRequest);
     form76ReportService.generateReportForLocation(doorOpeningLogRequest);
-    logger.info("Successfully processed doorOpeningLogRequest for location uuid: " + doorOpeningLogRequest.location.extCommunityUuId);
+    logger.info("Successfully processed doorOpeningLogRequest for location uuid: " + doorOpeningLogRequest.location.extCommunityUuid);
   }
 
 

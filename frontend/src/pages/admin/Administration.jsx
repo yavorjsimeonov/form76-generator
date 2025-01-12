@@ -5,9 +5,14 @@ import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
+import LocationList from "../../components/LocationList";
 
 function AdministrationPage() {
-    const { id } = useParams(); // Get the administration ID from the URL
+    console.log('~~~~~~1');
+
+    const { id } = useParams();
+    console.log('~~~~~~id: ' + id);
+
     const navigate = useNavigate();
     const [administration, setAdministration] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -16,6 +21,7 @@ function AdministrationPage() {
 
     useEffect(() => {
         const fetchAdministration = async () => {
+            console.log('~~~~~~id: ' + id);
             try {
                 const response = await fetch(`http://localhost:8080/administrations/${id}`);
                 if (!response.ok) {
@@ -68,22 +74,20 @@ function AdministrationPage() {
                         ) : administration ? (
                             <>
                                 <h2>Administration Details</h2>
-                                <Table striped bordered hover>
-                                    <tbody>
-                                    <tr>
-                                        <td>ID</td>
-                                        <td>{administration.id}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td>{administration.name}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status</td>
-                                        <td>{administration.active ? "Active" : "Inactive"}</td>
-                                    </tr>
-                                    </tbody>
-                                </Table>
+                                <div class="text-start">
+                                    <div>
+                                        <label>ID: </label><span>{administration.id}</span>
+                                    </div>
+                                    <div>
+                                        <label>Name: </label><span>{administration.name}</span>
+                                    </div>
+                                    <div>
+                                        <label>Status: </label><span>{administration.active ? "Active" : "Inactive"}</span>
+                                    </div>
+                                </div>
+
+                                <LocationList locations={administration.locations} />
+
                                 <Button
                                     variant="warning"
                                     onClick={() => setShowModal(true)}
@@ -103,7 +107,6 @@ function AdministrationPage() {
             </Container>
             <Footer />
 
-            {/* Modal for Editing Administration */}
             <AdministrationFormModal
                 show={showModal}
                 onHide={() => setShowModal(false)}

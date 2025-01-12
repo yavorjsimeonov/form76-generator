@@ -1,5 +1,6 @@
 package com.form76.generator.service;
 
+import com.form76.generator.db.entity.Location;
 import com.form76.generator.service.model.DoorOpeningLogRequest;
 import com.form76.generator.service.model.DoorOpeningLogResponse;
 import org.slf4j.Logger;
@@ -44,6 +45,14 @@ public class MylinkApiService {
     String fromDate = DateHelper.formatReportDate(Date.from(doorOpeningLogRequest.startDateTime.toInstant(ZoneOffset.UTC)));
     String toDate = DateHelper.formatReportDate(Date.from(doorOpeningLogRequest.endDateTime.toInstant(ZoneOffset.UTC)));
 
+    Location location = doorOpeningLogRequest.location;
+    logger.info("location: " + location);
+    logger.info("myLinkApiToken: " + myLinkApiToken);
+    logger.info("doorOpeningLogRequest.location.extCommunityId: " + location.extCommunityId);
+    logger.info("doorOpeningLogRequest.location.extCommunityUuid: " + location.extCommunityUuid);
+    logger.info("fromDate: " + fromDate);
+    logger.info("toDate: " + toDate);
+
     return webClientBuilder.baseUrl(myLinkHost)
         .build()
         .get()
@@ -59,8 +68,8 @@ public class MylinkApiService {
                 .queryParam("pageSize", "{size}")
                 .build(
         myLinkApiToken,
-                    doorOpeningLogRequest.location.extCommunityId,
-                    doorOpeningLogRequest.location.extCommunityUuId,
+                    location.extCommunityId,
+                    location.extCommunityUuid,
                     fromDate,
                     toDate,
                     "1",

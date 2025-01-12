@@ -68,7 +68,7 @@ public class Form76ReportService {
             LocalDateTime.now()
         );
 
-        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.location.extCommunityUuId, request);
+        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.location.extCommunityUuid, request);
 
       }
     } catch (Exception e) {
@@ -95,9 +95,9 @@ public class Form76ReportService {
       emailRequest.recipient = "yavorjsimeonov@gmail.com";
       emailRequest.msgBody = generatedFilePath;
       emailRequest.subject = "test";
-      emailRequest.attachment = null;
+      emailRequest.attachment = generatedFilePath;
 
-      emailService.sendSimpleMail(emailRequest);
+      emailService.sendMailWithAttachment(emailRequest);
     } catch (Exception e) {
       logger.error("Error generating report for location: " + request.location.name, e);
     }
@@ -140,7 +140,7 @@ public class Form76ReportService {
   }
 
   public void calculateWorkedHours(Location location, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws ParseException {
-    String locationInfo = location.name + " (uuid: " + location.extCommunityUuId + ")";
+    String locationInfo = location.name + " (uuid: " + location.extCommunityUuid + ")";
     logger.info("Start processing worked hours for employees for location: " + locationInfo);
 
     List<Map<String, Employee>> employeeMapList = monthEmployeeMap.values().stream().toList();
@@ -287,6 +287,6 @@ public class Form76ReportService {
   }
 
   private String getOutputFileName(Location location, Boolean firstLast) {
-    return "Report_Forma76_" + location.extCommunityId + "_" + (firstLast ? "FL_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date());
+    return "Report_Forma76_" + location.extCommunityId + "_" + (firstLast ? "FL_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date()) + ".xlsx";
   }
 }
