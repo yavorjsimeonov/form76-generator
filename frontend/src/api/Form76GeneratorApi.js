@@ -16,7 +16,7 @@ function authenticate(username, password) {
 // -- Axios
 
 const instance = axios.create({
-    baseURL: config.url.API_BASE_URL
+    baseURL: config.BASE_URL
 })
 
 // -- Helper functions

@@ -6,6 +6,7 @@ import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
 import LocationList from "../../components/LocationList";
+import {config} from "../../api/Constants";
 
 function AdministrationPage() {
     const { id } = useParams();
@@ -19,7 +20,7 @@ function AdministrationPage() {
     useEffect(() => {
         const fetchAdministration = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/administrations/${id}`);
+                const response = await fetch(`${config.API_BASE_URL}/administrations/${id}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -37,7 +38,7 @@ function AdministrationPage() {
 
     const handleEdit = async (updatedAdmin) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/administrations/${id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/api/administrations/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

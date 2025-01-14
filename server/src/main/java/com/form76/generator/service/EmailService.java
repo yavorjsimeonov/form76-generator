@@ -80,7 +80,7 @@ public class EmailService {
           file.getFilename(), file);
 
       // Sending the mail
-      javaMailSender.send(mimeMessage);
+      // javaMailSender.send(mimeMessage);
       logger.info("Mail sent successfully.");
     } catch (MessagingException e) {
       logger.error("Error while sending mail:", e);

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
+import { config } from "../../api/Constants"
 import LocationFormModal from "../../components/LocationForm";
 import GenerateReportModal from "../../components/GenerateReportForm";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
+import Toast from "../../components/Toast";
+import ApiCallToast from "../../components/ApiCallToast";
 
 function LocationDetailsPage() {
     const { id } = useParams();
@@ -18,12 +21,14 @@ function LocationDetailsPage() {
     const [showModal, setShowModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastColor, setToastColor] = useState("primary");
 
     useEffect(() => {
         if (!location) {
             const fetchLocation = async () => {
                 try {
-                    const response = await fetch(`http://localhost:8080/locations/${id}`);
+                    const response = await fetch(`${config.API_BASE_URL}/locations/${id}`);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -42,7 +47,7 @@ function LocationDetailsPage() {
 
     const handleEdit = async (updatedLocation) => {
         try {
-            const response = await fetch(`http://localhost:8080/locations/${id}`, {
+            const response = await fetch(`${config.API_BASE_URL}/locations/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -69,7 +74,7 @@ function LocationDetailsPage() {
 
         console.log("Generating Report with Request:", request);
 
-        fetch(`http://localhost:8080/locations/${location.id}/generate`, {
+        fetch(`${config.API_BASE_URL}/locations/${location.id}/generate`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -81,14 +86,21 @@ function LocationDetailsPage() {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 console.log("Success:" + response);
-                setShowToast(true);
+                //setShowToast(true);
+                return response.text();
+
             })
             .then((data) => {
                 console.log("Report Generation triggered successfully:", data);
+                setToastMessage(`Report generation triggered successfully! An email will be send to ${location.representativeEmail}`);
+                setToastColor("success"); // Green toast for success
                 setShowToast(true);
             })
             .catch((error) => {
                 console.error("Error generating report:", error);
+                setToastMessage("Failed to generate report. Please try again.");
+                setToastColor("danger"); // Red toast for error
+                setShowToast(true);
             });
     };
 
@@ -105,101 +117,100 @@ function LocationDetailsPage() {
     }
 
     return (
+
         <div>
-            <Header />
-            <Menu activeKey="administrations" />
-            <Container>
-                <Row>
-                    <Col>
-                        <h2>Location Details</h2>
-                        <Table striped bordered hover>
-                            <tbody>
-                            <tr>
-                                <td>ID</td>
-                                <td>{location.id}</td>
-                            </tr>
-                            <tr>
-                                <td>Name</td>
-                                <td>{location.name}</td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>{location.active ? "Active" : "Inactive"}</td>
-                            </tr>
-                            <tr>
-                                <td>Community ID</td>
-                                <td>{location.extCommunityId}</td>
-                            </tr>
-                            <tr>
-                                <td>Community UUID</td>
-                                <td>{location.extCommunityUuid}</td>
-                            </tr>
-                            <tr>
-                                <td>Report Algorithm</td>
-                                <td>{location.reportAlgorithm}</td>
-                            </tr>
-                            <tr>
-                                <td>Representative Name</td>
-                                <td>{location.representativeName}</td>
-                            </tr>
-                            <tr>
-                                <td>Representative Email</td>
-                                <td>{location.representativeEmail}</td>
-                            </tr>
-                            </tbody>
-                        </Table>
-                        <Button
-                            variant="warning"
-                            onClick={() => setShowModal(true)}
-                            style={{ marginRight: "10px" }}
-                        >
-                            Edit
-                        </Button>
-                        <Button
-                            variant="primary"
-                            onClick={() => setShowReportModal(true)}
-                            style={{ marginRight: "10px" }}
-                        >
-                            Generate Report
-                        </Button>
-                        <Button variant="secondary" onClick={() => navigate(-1)}>
-                            Back
-                        </Button>
-                    </Col>
-                </Row>
+            <div>
+                <Header />
+                <Menu activeKey="administrations" />
+                <Container>
+                    <Row>
+                        <Col>
+                            <h2>Location Details</h2>
+                            <Table striped bordered hover>
+                                <tbody>
+                                <tr>
+                                    <td>ID</td>
+                                    <td>{location.id}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>{location.name}</td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>{location.active ? "Active" : "Inactive"}</td>
+                                </tr>
+                                <tr>
+                                    <td>Community ID</td>
+                                    <td>{location.extCommunityId}</td>
+                                </tr>
+                                <tr>
+                                    <td>Community UUID</td>
+                                    <td>{location.extCommunityUuid}</td>
+                                </tr>
+                                <tr>
+                                    <td>Report Algorithm</td>
+                                    <td>{location.reportAlgorithm}</td>
+                                </tr>
+                                <tr>
+                                    <td>Representative Name</td>
+                                    <td>{location.representativeName}</td>
+                                </tr>
+                                <tr>
+                                    <td>Representative Email</td>
+                                    <td>{location.representativeEmail}</td>
+                                </tr>
+                                </tbody>
+                            </Table>
+                            <Button
+                                variant="warning"
+                                onClick={() => setShowModal(true)}
+                                style={{ marginRight: "10px" }}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => setShowReportModal(true)}
+                                style={{ marginRight: "10px" }}
+                            >
+                                Generate Report
+                            </Button>
+                            <Button variant="secondary" onClick={() => navigate(-1)}>
+                                Back
+                            </Button>
+                        </Col>
+                    </Row>
 
-                {/* Modal for Editing Location */}
-                <LocationFormModal
-                    show={showModal}
-                    onHide={() => setShowModal(false)}
-                    onSubmit={handleEdit}
-                    initialData={location}
-                    title="Edit Location"
-                />
+                    {/* Modal for Editing Location */}
+                    <LocationFormModal
+                        show={showModal}
+                        onHide={() => setShowModal(false)}
+                        onSubmit={handleEdit}
+                        initialData={location}
+                        title="Edit Location"
+                    />
 
-                {/* Modal for Generating Report */}
-                <GenerateReportModal
-                    show={showReportModal}
-                    onHide={() => setShowReportModal(false)}
-                    onSubmit={handleGenerateReport}
-                />
-                <div>
-                    {showToast && (
-                    <div className="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
-                         aria-atomic="true">
-                        <div className="d-flex">
-                            <div className="toast-body">
-                                Report generation triggered successfully. You will receive an email on {location.representativeEmail}
-                            </div>
-                            <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                                    aria-label="Close"></button>
-                        </div>
-                    </div>)}
-                </div>
+                    {/* Modal for Generating Report */}
+                    <GenerateReportModal
+                        show={showReportModal}
+                        onHide={() => setShowReportModal(false)}
+                        onSubmit={handleGenerateReport}
+                    />
 
-            </Container>
-            <Footer />
+                    <Toast
+                        show={showToast}
+                        message={toastMessage}
+                        color={toastColor}
+                        onClose={() => setShowToast(false)}
+                    />
+
+                </Container>
+                <Footer />
+            </div>
+
         </div>
+
     );
 }
 

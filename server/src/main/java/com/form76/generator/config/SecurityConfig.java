@@ -13,6 +13,60 @@ package com.form76.generator.config;
 //@Configuration
 public class SecurityConfig {
 
+//
+//  @Bean
+//  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+////    http
+////        .csrf(csrf -> csrf.disable())
+////        .cors(cors -> cors.disable())
+////        .authorizeHttpRequests(req -> req
+////
+////            .requestMatchers("/api/*").hasRole("ADMIN").anyRequest().authenticated()
+////        ).httpBasic(Customizer.withDefaults());
+////    return http.build();
+////
+////
+////    http
+////        .csrf(csrf -> csrf.disable())
+////        .cors(cors -> cors.disable())
+////        .authorizeHttpRequests(req -> req
+////            .requestMatchers("/").permitAll()
+////            .requestMatchers("/login").permitAll()
+////            .requestMatchers("/auth/*").permitAll()
+////            .requestMatchers("/api/reports/*").hasRole("ADMIN").anyRequest().authenticated()
+////            .requestMatchers("api/*").hasAnyRole("ADMIN","USER").anyRequest().authenticated()
+////        ).httpBasic(Customizer.withDefaults());
+////    return http.build();
+//
+//
+//  }
+//
+//  @Bean
+//  public UserDetailsService userDetailsService() {
+//    UserDetails user = User.builder()
+//        .username("user")
+//        .password(passwordEncoder().encode("user123"))
+//        .roles("USER")
+//        .build();
+//    UserDetails admin = User.builder()
+//        .username("admin")
+//        .password(passwordEncoder().encode("admin123"))
+//        .roles("ADMIN")
+//        .build();
+//    return new InMemoryUserDetailsManager(user,admin);
+//  }
+//
+//  @Bean
+//  public PasswordEncoder passwordEncoder() {
+//    return new BCryptPasswordEncoder();
+//  }
+
+
+
+
+
+
+
 //  @Bean
 //  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //    http.authorizeHttpRequests((authz) -> authz

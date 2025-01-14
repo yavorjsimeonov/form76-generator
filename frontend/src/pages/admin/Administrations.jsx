@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
+import { config } from "../../api/Constants"
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
@@ -15,7 +16,7 @@ function AdministrationsPage() {
     useEffect(() => {
         const fetchAdministrations = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/administrations");
+                const response = await fetch(`${config.API_BASE_URL}/administrations`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -33,7 +34,7 @@ function AdministrationsPage() {
 
     const handleCreate = async (newAdmin) => {
         try {
-            const response = await fetch("http://localhost:8080/api/administrations", {
+            const response = await fetch("${config.API_BASE_URL}/administrations", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

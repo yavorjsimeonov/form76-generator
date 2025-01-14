@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/api/locations")
 public class LocationResource {
 
   Logger logger = LoggerFactory.getLogger(LocationResource.class);
@@ -28,20 +29,20 @@ public class LocationResource {
   @Autowired
   Form76ReportService form76ReportService;
 
-  @GetMapping("/locations/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<Location> getLocationsById(@PathVariable String id) {
     Location location = locationService.getLocationById(id);
     return ResponseEntity.ok(location);
   }
 
-  @PutMapping("/locations/{id}")
+  @PutMapping("/{id}")
   public ResponseEntity<Location> editLocation(@PathVariable("id") String id, @RequestBody Location updatedLocation) {
     Optional<Location> location = locationService.editLocation(id, updatedLocation);
 
     return location.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
-  @PostMapping("/locations/{id}/generate")
+  @PostMapping("/{id}/generate")
   public ResponseEntity<String> generateReportForLocation(@PathVariable("id") String locationId, @RequestBody ReportRequest reportRequest) throws ParseException {
     logger.info("Received manual report generation request for location [" + locationId + "]: " + reportRequest);
 
