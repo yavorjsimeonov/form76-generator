@@ -9,14 +9,19 @@ import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Toast from "../../components/Toast";
 import ApiCallToast from "../../components/ApiCallToast";
+import {useAuth} from "../../components/AuthContext";
+import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
 
 function LocationDetailsPage() {
+    const Auth = useAuth();
+    const user = Auth.getUser();
+
     const { id } = useParams();
     const { state } = useLocation();
     const navigate = useNavigate();
 
-    const [location, setLocation] = useState(state?.location || null);
-    const [loading, setLoading] = useState(!state?.location);
+    const [location, setLocation] = useState(/*state?.location || */null);
+    const [loading, setLoading] = useState(/*!state?.locationId*/true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
@@ -25,15 +30,11 @@ function LocationDetailsPage() {
     const [toastColor, setToastColor] = useState("primary");
 
     useEffect(() => {
-        if (!location) {
+//        if (!location) {
             const fetchLocation = async () => {
                 try {
-                    const response = await fetch(`${config.API_BASE_URL}/locations/${id}`);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    setLocation(data);
+                    const response = await form76GeneratorApi.getLocation(user, id);
+                    setLocation(response.data);
                 } catch (error) {
                     setError(error.message);
                 } finally {
@@ -42,23 +43,26 @@ function LocationDetailsPage() {
             };
 
             fetchLocation();
-        }
-    }, [id, location]);
+ //       }
+    }, [id]);
 
     const handleEdit = async (updatedLocation) => {
         try {
-            const response = await fetch(`${config.API_BASE_URL}/locations/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedLocation),
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const editedLocation = await response.json();
-            setLocation(editedLocation);
+            // const response = await fetch(`${config.API_BASE_URL}/locations/${id}`, {
+            //     method: "PUT",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify(updatedLocation),
+            // });
+            // if (!response.ok) {
+            //     throw new Error(`HTTP error! status: ${response.status}`);
+            // }
+            // const editedLocation = await response.json();
+            // setLocation(editedLocation);
+
+            const response = await form76GeneratorApi.updateLocation(user, id, updatedLocation);
+            setLocation(response.data);
         } catch (error) {
             console.error("Error editing location:", error);
         } finally {
@@ -72,36 +76,50 @@ function LocationDetailsPage() {
             ...reportRequest,
         };
 
-        console.log("Generating Report with Request:", request);
-
-        fetch(`${config.API_BASE_URL}/locations/${location.id}/generate`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(request),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                console.log("Success:" + response);
-                //setShowToast(true);
-                return response.text();
-
-            })
-            .then((data) => {
-                console.log("Report Generation triggered successfully:", data);
+        try {
+            const response = form76GeneratorApi.generateReportForLocation(user, location.id, request);
+            if (response.ok && response.data) {
                 setToastMessage(`Report generation triggered successfully! An email will be send to ${location.representativeEmail}`);
                 setToastColor("success"); // Green toast for success
                 setShowToast(true);
-            })
-            .catch((error) => {
-                console.error("Error generating report:", error);
-                setToastMessage("Failed to generate report. Please try again.");
-                setToastColor("danger"); // Red toast for error
-                setShowToast(true);
-            });
+            }
+        } catch (error) {
+            console.error("Error when triggering report generation:", error);
+            setToastMessage(`Error when triggering report generation for location ${location.name}`);
+            setToastColor("danger");
+            setShowToast(true);
+        }
+
+        // console.log("Generating Report with Request:", request);
+        //
+        // fetch(`${config.API_BASE_URL}/locations/${location.id}/generate`, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(request),
+        // })
+        //     .then((response) => {
+        //         if (!response.ok) {
+        //             throw new Error(`HTTP error! status: ${response.status}`);
+        //         }
+        //         console.log("Success:" + response);
+        //         //setShowToast(true);
+        //         return response.text();
+        //
+        //     })
+        //     .then((data) => {
+        //         console.log("Report Generation triggered successfully:", data);
+        //         setToastMessage(`Report generation triggered successfully! An email will be send to ${location.representativeEmail}`);
+        //         setToastColor("success"); // Green toast for success
+        //         setShowToast(true);
+        //     })
+        //     .catch((error) => {
+        //         console.error("Error generating report:", error);
+        //         setToastMessage("Failed to generate report. Please try again.");
+        //         setToastColor("danger"); // Red toast for error
+        //         setShowToast(true);
+        //     });
     };
 
     if (loading) {

@@ -16,7 +16,6 @@ import java.util.Optional;
 
 @Controller
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-//@CrossOrigin(origins = Application.UI_HOST)
 @RequestMapping("/auth")
 public class AuthenticationResource {
 
@@ -25,24 +24,19 @@ public class AuthenticationResource {
   @Autowired
   UserService userService;
 
-  @GetMapping("/ping")
-  @ResponseBody
-  public String ping() {
-    return "Ping successful...";
-  }
-
-
   @PostMapping("/authenticate")
   public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
     logger.info("Received authenticate request");
 
-    Optional<User> userOptional = userService.loginUser(loginRequest.username, loginRequest.password);
+    Optional<User> userOptional = userService.validateCredentials(loginRequest.username, loginRequest.password);
     if (userOptional.isPresent()) {
       User user = userOptional.get();
-      logger.info("Found user authenticate request");
+      logger.info("Found user for authenticate request");
 
-      return ResponseEntity.ok(new AuthResponse(user.id, user.email, user.role));
+      return ResponseEntity.ok(new AuthResponse(user.id, user.username, user.email, user.role));
     }
+    logger.info("User not authenticated");
+
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 }

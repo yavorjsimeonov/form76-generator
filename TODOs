@@ -1,28 +1,36 @@
+https://docs.google.com/spreadsheets/d/1niCTzWqnoL_scJo9A4Ae8H_IlxHvREZd0sBIsKt0apY/edit?gid=0#gid=0
+
 * Authentication:
     ** Basic -> DONE (very basic: no password encryption, no spring security)
-    ** Password Encryption
-    ** Spring Security
-    ** KeyCloack
+    ** Password Encryption -> DONE
+    ** Spring Security -> DONE
+    ** KeyCloack (Optional)
     ** Session timout (frontend: https://idletimer.dev/)
 * User roles
 * Forgotten Password functionality
 * UI Pages:
-    ** Register (No free registrations, just Create User by admins)
     ** Login -> DONE
     ** Home -> DONE
     ** Administrations
         *** Create/Edit Administration -> DONE (No Add/Remove Location)
         *** View Administration -> DONE (No list locations)
-           **** List locations
+           **** List locations -> DONE
            **** Create/Edit location
-           **** View Location
-                ***** List devices
-                ***** Create/View/Edit device
-                ***** Generate report
+           **** View Location -> DONE
+                ***** List devices ????
+                ***** Create/View/Edit device ????
+                ***** Generate report -> DONE
     ** Reports - List
+    ** Users
+        *** List Users
+        *** Create/Edit User
+        *** View User
+        *** Change Password
+* Toasts for all responses from the backend
+* UI layout and look&feel fixes
 * Scheduled jobs -> DONE (Spring Scheduler)
 * Quartz Jobs
-* Async report generation per location (kafka) -> Done
+* Async report generation per location (kafka) -> DONE
 * Connection to the mock/actual mylink server -> DONE
 * Send Email -> Done
 * Use html mail template

@@ -6,8 +6,12 @@ import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
+import {useAuth} from "../../components/AuthContext";
+import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
 
 function AdministrationsPage() {
+    const Auth = useAuth();
+    const user = Auth.getUser();
     const [administrations, setAdministrations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,12 +20,8 @@ function AdministrationsPage() {
     useEffect(() => {
         const fetchAdministrations = async () => {
             try {
-                const response = await fetch(`${config.API_BASE_URL}/administrations`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setAdministrations(data);
+                const response = await form76GeneratorApi.getAdministrations(user);
+                setAdministrations(response.data);
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -32,20 +32,10 @@ function AdministrationsPage() {
         fetchAdministrations();
     }, []);
 
-    const handleCreate = async (newAdmin) => {
+    const handleCreate = async (newAdministration) => {
         try {
-            const response = await fetch("${config.API_BASE_URL}/administrations", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newAdmin),
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const createdAdmin = await response.json();
-            setAdministrations([...administrations, createdAdmin]);
+            const response = await form76GeneratorApi.createAdministration(user, newAdministration);
+            setAdministrations([...administrations, response.data]);
         } catch (error) {
             console.error("Error creating administration:", error);
         } finally {

@@ -35,3 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/server/src/test/java/com/form76/generator/MyTests.java

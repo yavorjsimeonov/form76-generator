@@ -30,7 +30,7 @@ public class LocationResource {
   Form76ReportService form76ReportService;
 
   @GetMapping("/{id}")
-  public ResponseEntity<Location> getLocationsById(@PathVariable String id) {
+  public ResponseEntity<Location> getLocationById(@PathVariable String id) {
     Location location = locationService.getLocationById(id);
     return ResponseEntity.ok(location);
   }

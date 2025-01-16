@@ -6,9 +6,13 @@ import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
 import LocationList from "../../components/LocationList";
-import {config} from "../../api/Constants";
+import {useAuth} from "../../components/AuthContext";
+import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
 
 function AdministrationPage() {
+    const Auth = useAuth();
+    const user = Auth.getUser();
+
     const { id } = useParams();
 
     const navigate = useNavigate();
@@ -19,37 +23,23 @@ function AdministrationPage() {
 
     useEffect(() => {
         const fetchAdministration = async () => {
-            try {
-                const response = await fetch(`${config.API_BASE_URL}/administrations/${id}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setAdministration(data);
+             try {
+                 const response = await form76GeneratorApi.getAdministration(user, id);
+                 setAdministration(response.data);
             } catch (error) {
-                setError(error.message);
+                 setError(error.message);
             } finally {
-                setLoading(false);
+                 setLoading(false);
             }
         };
 
         fetchAdministration();
     }, [id]);
 
-    const handleEdit = async (updatedAdmin) => {
+    const handleEdit = async (updatedAdministration) => {
         try {
-            const response = await fetch(`${config.API_BASE_URL}/api/administrations/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedAdmin),
-            });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const editedAdmin = await response.json();
-            setAdministration(editedAdmin);
+            const response = await form76GeneratorApi.updateAdministration(user, id, updatedAdministration);
+            setAdministration(response.data);
         } catch (error) {
             console.error("Error editing administration:", error);
         } finally {
