@@ -4,12 +4,12 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { config } from "../../api/Constants"
 import LocationFormModal from "../../components/LocationForm";
 import GenerateReportModal from "../../components/GenerateReportForm";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import Menu from "../../components/Menu";
-import Toast from "../../components/Toast";
-import ApiCallToast from "../../components/ApiCallToast";
-import {useAuth} from "../../components/AuthContext";
+import Footer from "../../components/common/Footer";
+import Header from "../../components/common/Header";
+import Menu from "../../components/common/Menu";
+import Toast from "../../components/common/Toast";
+import ApiCallToast from "../../components/common/ApiCallToast";
+import {useAuth} from "../../components/common/AuthContext";
 import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
 
 function LocationDetailsPage() {

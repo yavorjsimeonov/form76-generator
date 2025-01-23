@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import Header from "../../components/Header";
-import Menu from "../../components/Menu";
-import Footer from "../../components/Footer";
+import Header from "../../components/common/Header";
+import Menu from "../../components/common/Menu";
+import Footer from "../../components/common/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
 import CreateLocationForm from "../../components/CreateLocationForm";
 import LocationList from "../../components/LocationList";
-import { useAuth } from "../../components/AuthContext";
+import { useAuth } from "../../components/common/AuthContext";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
 function AdministrationPage() {
     const Auth = useAuth();

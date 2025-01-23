@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./common/AuthContext";
 import { form76GeneratorApi } from "../api/Form76GeneratorApi";
 
 function UserForm({

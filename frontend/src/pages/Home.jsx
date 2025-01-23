@@ -4,11 +4,11 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import Header from "../components/Header";
-import Menu from "../components/Menu";
-import Footer from "../components/Footer";
+import Header from "../components/common/Header";
+import Menu from "../components/common/Menu";
+import Footer from "../components/common/Footer";
 
-import { useAuth } from '../components/AuthContext.jsx';
+import { useAuth } from '../components/common/AuthContext.jsx';
 
 function HomePage() {
     const Auth = useAuth();

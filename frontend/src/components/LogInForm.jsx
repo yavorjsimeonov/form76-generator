@@ -6,8 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { form76GeneratorApi } from '../api/Form76GeneratorApi.js';
-import { useAuth } from './AuthContext.jsx';
-import { logError } from './ErrorHanlder.jsx';
+import { useAuth } from './common/AuthContext.jsx';
+import { logError } from './common/ErrorHanlder.jsx';
 
 function LogInForm() {
     const Auth = useAuth();

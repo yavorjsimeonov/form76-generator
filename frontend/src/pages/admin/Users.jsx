@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import Header from "../../components/Header";
-import Menu from "../../components/Menu";
-import Footer from "../../components/Footer";
+import Header from "../../components/common/Header";
+import Menu from "../../components/common/Menu";
+import Footer from "../../components/common/Footer";
 import UserForm from "../../components/UserForm";
-import { useAuth } from "../../components/AuthContext";
+import { useAuth } from "../../components/common/AuthContext";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
 
 function UsersPage() {
