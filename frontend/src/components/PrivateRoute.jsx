@@ -11,8 +11,8 @@ function PrivateRoute({ children, roles }) {
         return <Navigate to="/login" replace />;
     }
 
-    // Handle roles for authorization
-    if (roles && !roles.includes(user.role)) {
+    // Check if the user's role matches the allowed roles
+    if (roles && (!user || !roles.includes(user.role))) {
         return <div>You do not have the required permissions to access this page.</div>;
     }
 

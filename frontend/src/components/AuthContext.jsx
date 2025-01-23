@@ -19,8 +19,8 @@ function AuthProvider({ children }) {
     }
 
     const userLogin = (userData) => {
-        localStorage.setItem('user', JSON.stringify(user))
-        setUser(user)
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData); // Use userData instead of user
     };
 
     const userLogout = () => {
