@@ -1,12 +1,13 @@
 package com.form76.generator.service;
 
+import com.form76.generator.db.entity.Administration;
 import com.form76.generator.db.entity.Location;
+import com.form76.generator.db.repository.AdministrationRepository;
 import com.form76.generator.db.repository.LocationRepository;
-import com.form76.generator.service.model.DoorOpeningLogRequest;
+import com.form76.generator.service.model.LocationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ public class LocationService {
 
   @Autowired
   private LocationRepository locationRepository;
+
+  @Autowired
+  private AdministrationRepository administrationRepository;
 
   public List<Location> getActiveLocationsInActiveAdministrations() {
     return locationRepository.findAllActiveLocationsInActiveAdministrations();
@@ -42,6 +46,23 @@ public class LocationService {
     });
   }
 
+
+  public Location createLocation(LocationRequest locationRequest) {
+    Administration administration = administrationRepository.findById(locationRequest.getAdministrationId())
+        .orElseThrow(() -> new IllegalArgumentException("Administration not found"));
+
+    Location location = new Location();
+    location.name = locationRequest.getName();
+    location.extCommunityId = locationRequest.getExtCommunityId();
+    location.extCommunityUuid = locationRequest.getExtCommunityUuid();
+    location.representativeName = locationRequest.getRepresentativeName();
+    location.representativeEmail = locationRequest.getRepresentativeEmail();
+    location.reportAlgorithm = locationRequest.getReportAlgorithm();
+    location.active = locationRequest.isActive();
+    location.administration = administration;
+
+    return locationRepository.save(location);
+  }
 
 
 }

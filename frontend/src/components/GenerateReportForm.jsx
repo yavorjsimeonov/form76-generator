@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format, startOfDay, endOfDay } from "date-fns";
 
 function GenerateReportModal({ show, onHide, onSubmit }) {
-    const [startDateTime, setStartDateTime] = useState("");
-    const [endDateTime, setEndDateTime] = useState("");
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     const handleGenerateReport = () => {
-        if (!startDateTime || !endDateTime) {
-            alert("Please enter both start and end date-time.");
+        if (!startDate || !endDate) {
+            alert("Please enter both start and end dates.");
             return;
         }
-        onSubmit({ startDateTime, endDateTime });
+
+        // Format the start date to start of the day (00:00) and end date to end of the day (23:59)
+        const formattedStartDate = format(startOfDay(startDate), "yyyy-MM-dd HH:mm:ss");
+        const formattedEndDate = format(endOfDay(endDate), "yyyy-MM-dd HH:mm:ss");
+
+        onSubmit({ startDateTime: formattedStartDate, endDateTime: formattedEndDate });
         onHide();
     };
 
@@ -21,24 +29,22 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3" controlId="formStartDateTime">
-                        <Form.Label>Start Date and Time</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={startDateTime}
-                            onChange={(e) => setStartDateTime(e.target.value)}
-                            placeholder="yyyy-MM-dd HH:mm:ss"
-                            required
+                    <Form.Group className="mb-3" controlId="formStartDate">
+                        <Form.Label>Start Date</Form.Label>
+                        <DatePicker
+                            placeholderText="Select start date"
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="yyyy-MM-dd"
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="formEndDateTime">
-                        <Form.Label>End Date and Time</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={endDateTime}
-                            onChange={(e) => setEndDateTime(e.target.value)}
-                            placeholder="yyyy-MM-dd HH:mm:ss"
-                            required
+                    <Form.Group className="mb-3" controlId="formEndDate">
+                        <Form.Label>End Date</Form.Label>
+                        <DatePicker
+                            placeholderText="Select end date"
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            dateFormat="yyyy-MM-dd"
                         />
                     </Form.Group>
                 </Form>

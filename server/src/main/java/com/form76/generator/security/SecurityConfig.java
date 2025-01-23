@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 public class SecurityConfig {
@@ -26,7 +27,14 @@ public class SecurityConfig {
             .requestMatchers(OPTIONS, "/**").permitAll()
             .requestMatchers("/auth/**").permitAll()
             .requestMatchers("/error", "/csrf").permitAll()
-            .requestMatchers("/api/**").authenticated()
+            //.requestMatchers("/api/**").authenticated()
+            .requestMatchers("/api/administrations").hasAnyAuthority("ADMIN", "USER")
+            .requestMatchers(POST, "/api/administrations").hasAnyAuthority("ADMIN")
+            .requestMatchers("/api/administrations/**").hasAnyAuthority("ADMIN", "USER")
+            .requestMatchers("/api/locations/**").hasAnyAuthority("ADMIN", "USER")
+            .requestMatchers("/api/users").hasAnyAuthority("ADMIN")
+            .requestMatchers("/api/users/**").hasAnyAuthority("ADMIN")
+            .requestMatchers("/api/**").hasAnyAuthority("ADMIN")
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

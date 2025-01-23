@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { config } from "../../api/Constants"
+import { config } from "../../api/Constants";
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
-import {useAuth} from "../../components/AuthContext";
-import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
+import { useAuth } from "../../components/AuthContext";
+import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
 
 function AdministrationsPage() {
     const Auth = useAuth();
@@ -51,13 +51,16 @@ function AdministrationsPage() {
                 <Row className="justify-content-md-center">
                     <Col md={12}>
                         <h2>Administrations List</h2>
-                        <Button
-                            variant="primary"
-                            onClick={() => setShowModal(true)}
-                            style={{ marginBottom: "20px" }}
-                        >
-                            Create Administration
-                        </Button>
+                        {/* Show the button only if the user is an ADMIN */}
+                        {user.role === "ADMIN" && (
+                            <Button
+                                variant="primary"
+                                onClick={() => setShowModal(true)}
+                                style={{ marginBottom: "20px" }}
+                            >
+                                Create Administration
+                            </Button>
+                        )}
                         {loading ? (
                             <p>Loading...</p>
                         ) : error ? (
@@ -92,7 +95,6 @@ function AdministrationsPage() {
                 </Row>
             </Container>
             <Footer />
-
 
             <AdministrationFormModal
                 show={showModal}

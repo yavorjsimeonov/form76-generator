@@ -10,7 +10,9 @@ export const form76GeneratorApi = {
     getLocation,
     createLocation,
     updateLocation,
-    generateReportForLocation
+    generateReportForLocation,
+    getUsers,
+    createUser
 }
 
 function authenticate(username, password) {
@@ -88,6 +90,28 @@ function updateLocation(user, locationId, updatedLocations) {
         }
     })
 }
+
+function getUsers(user) {
+    return instance.get('/api/users', {
+        headers: {
+            "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': "*",
+                'Authorization': basicAuth(user)
+        }
+    })
+}
+
+function createUser(user, newUser) {
+    return instance.post('/api/users', newUser, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        }
+    })
+}
+
+
 
 function generateReportForLocation(user, locationId, reportGenerationRequest) {
     console.log("Generating Report with Request:", reportGenerationRequest);

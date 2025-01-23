@@ -1,35 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Header from "../../components/Header";
 import Menu from "../../components/Menu";
 import Footer from "../../components/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
+import CreateLocationForm from "../../components/CreateLocationForm";
 import LocationList from "../../components/LocationList";
-import {useAuth} from "../../components/AuthContext";
-import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
-
+import { useAuth } from "../../components/AuthContext";
+import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
 function AdministrationPage() {
     const Auth = useAuth();
     const user = Auth.getUser();
 
     const { id } = useParams();
-
     const navigate = useNavigate();
     const [administration, setAdministration] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
+    const [showAdminModal, setShowAdminModal] = useState(false);
+    const [showLocationModal, setShowLocationModal] = useState(false);
 
     useEffect(() => {
         const fetchAdministration = async () => {
-             try {
-                 const response = await form76GeneratorApi.getAdministration(user, id);
-                 setAdministration(response.data);
+            try {
+                const response = await form76GeneratorApi.getAdministration(user, id);
+                setAdministration(response.data);
             } catch (error) {
-                 setError(error.message);
+                setError(error.message);
             } finally {
-                 setLoading(false);
+                setLoading(false);
             }
         };
 
@@ -43,7 +43,24 @@ function AdministrationPage() {
         } catch (error) {
             console.error("Error editing administration:", error);
         } finally {
-            setShowModal(false);
+            setShowAdminModal(false);
+        }
+    };
+
+    const handleCreateLocation = async (newLocation) => {
+        try {
+            const response = await form76GeneratorApi.createLocation(user, {
+                ...newLocation,
+                administrationId: id,
+            });
+            setAdministration((prev) => ({
+                ...prev,
+                locations: [...prev.locations, response.data],
+            }));
+        } catch (error) {
+            console.error("Error creating location:", error);
+        } finally {
+            setShowLocationModal(false);
         }
     };
 
@@ -61,7 +78,7 @@ function AdministrationPage() {
                         ) : administration ? (
                             <>
                                 <h2>Administration Details</h2>
-                                <div class="text-start">
+                                <div className="text-start">
                                     <div>
                                         <label>ID: </label><span>{administration.id}</span>
                                     </div>
@@ -76,8 +93,15 @@ function AdministrationPage() {
                                 <LocationList locations={administration.locations} />
 
                                 <Button
+                                    variant="primary"
+                                    onClick={() => setShowLocationModal(true)}
+                                    style={{ marginRight: "10px"}}
+                                >
+                                    Create Location
+                                </Button>
+                                <Button
                                     variant="warning"
-                                    onClick={() => setShowModal(true)}
+                                    onClick={() => setShowAdminModal(true)}
                                     style={{ marginRight: "10px" }}
                                 >
                                     Edit
@@ -94,12 +118,22 @@ function AdministrationPage() {
             </Container>
             <Footer />
 
+            {/* Modal for Editing Administration */}
             <AdministrationFormModal
-                show={showModal}
-                onHide={() => setShowModal(false)}
+                show={showAdminModal}
+                onHide={() => setShowAdminModal(false)}
                 onSubmit={handleEdit}
                 initialData={administration || { name: "", active: true }}
                 title="Edit Administration"
+            />
+
+            {/* Modal for Creating Location */}
+            <CreateLocationForm
+                show={showLocationModal}
+                onHide={() => setShowLocationModal(false)}
+                onSubmit={handleCreateLocation}
+                initialData={[]}
+                title="Create Location"
             />
         </div>
     );

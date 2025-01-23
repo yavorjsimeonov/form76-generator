@@ -8,7 +8,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import HomePage from "./pages/Home"
 import AdministrationsPage from "./pages/admin/Administrations";
 import ReportsPage from "./pages/admin/Reports";
-import UsersPage from "./pages/user/Users";
+import UsersPage from "./pages/admin/Users";
 import AdministrationPage from "./pages/admin/Administration";
 import LocationDetailsPage from "./pages/admin/Location";
 
@@ -30,7 +30,7 @@ function App() {
                             <Route exact path="administrations/:id" element={<PrivateRoute><AdministrationPage /></PrivateRoute>} />
                             <Route exact path="locations/:id" element={<PrivateRoute><LocationDetailsPage /></PrivateRoute>} />
                             <Route exact path="reports" element={<PrivateRoute><ReportsPage /></PrivateRoute>} />
-                            <Route exact path="users" element={<PrivateRoute><UsersPage /></PrivateRoute>} />
+                            <Route exact path="users" element={<PrivateRoute roles={["ADMIN"]}><UsersPage /></PrivateRoute>} />
 
                             {/* Catch-All Route */}
                             <Route path="*" element={<Navigate to="/login" />} />

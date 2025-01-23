@@ -4,16 +4,17 @@ import com.form76.generator.db.entity.Location;
 import com.form76.generator.service.Form76ReportService;
 import com.form76.generator.service.LocationService;
 import com.form76.generator.service.model.DoorOpeningLogRequest;
+import com.form76.generator.service.model.LocationRequest;
 import com.form76.generator.service.model.ReportRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -61,5 +62,9 @@ public class LocationResource {
     return ResponseEntity.ok("Report generation triggered successfully.");
   }
 
-
+  @PostMapping("")
+  public ResponseEntity<Location> createLocation(@RequestBody LocationRequest locationRequest) {
+    Location location = locationService.createLocation(locationRequest);
+    return ResponseEntity.status(HttpStatus.CREATED).body(location);
+  }
 }
