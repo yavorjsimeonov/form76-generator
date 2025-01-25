@@ -36,14 +36,14 @@ public class MylinkApiService {
   public DoorOpeningLogResponse loadDoorOpeningLog(DoorOpeningLogRequest doorOpeningLogRequest) {
     logger.info("Calling mylink to obtain door opening log for doorOpeningLogRequest: " + doorOpeningLogRequest);
     ResponseEntity<DoorOpeningLogResponse> response = callExternalApi(doorOpeningLogRequest).block();
-    logger.info("Received response from mylink: " + ( response != null && response.getBody() != null  ? response.getBody().msg : null));
+    logger.info("Received response from mylink: " + ( response != null && response.getBody() != null  ? response.getBody().getMsg() : null));
 
     return response != null ? response.getBody() : null;
   }
 
   public Mono<ResponseEntity<DoorOpeningLogResponse>> callExternalApi(DoorOpeningLogRequest doorOpeningLogRequest) {
-    String fromDate = DateHelper.formatReportDate(Date.from(doorOpeningLogRequest.startDateTime.toInstant(ZoneOffset.UTC)));
-    String toDate = DateHelper.formatReportDate(Date.from(doorOpeningLogRequest.endDateTime.toInstant(ZoneOffset.UTC)));
+    String fromDate = DateHelper.formatReportDate(Date.from(doorOpeningLogRequest.getStartDateTime().toInstant(ZoneOffset.UTC)));
+    String toDate = DateHelper.formatReportDate(Date.from(doorOpeningLogRequest.getEndDateTime().toInstant(ZoneOffset.UTC)));
 
     return webClientBuilder.baseUrl(myLinkHost)
         .build()
@@ -60,8 +60,8 @@ public class MylinkApiService {
                 .queryParam("pageSize", "{size}")
                 .build(
         myLinkApiToken,
-                    doorOpeningLogRequest.locationExtCommunityId,
-                    doorOpeningLogRequest.locationExtCommunityUuid,
+                    doorOpeningLogRequest.getLocationExtCommunityId(),
+                    doorOpeningLogRequest.getLocationExtCommunityUuid(),
                     fromDate,
                     toDate,
                     "1",

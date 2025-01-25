@@ -1,5 +1,7 @@
 package com.form76.generator.service.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.ArrayList;
@@ -8,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 @ToString
+@Getter
+@Setter
 public class Employee {
-  public Integer id;
-  public String uuid;
-  public String names;
-  public List<DoorEvent> doorEvents = new ArrayList<>();
-  public Map<String, Long> workedHoursPerDate = new HashMap<>();
+  private Integer id;
+  private String uuid;
+  private String names;
+  private List<DoorEvent> doorEvents = new ArrayList<>();
+  private Map<String, Long> workedHoursPerDate = new HashMap<>();
 
   public Employee() {
   }

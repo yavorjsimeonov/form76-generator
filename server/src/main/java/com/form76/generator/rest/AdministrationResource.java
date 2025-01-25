@@ -21,9 +21,6 @@ public class AdministrationResource {
   @Autowired
   private AdministrationService administrationService;
 
-  @Autowired
-  private AdministrationRepository administrationRepository;
-
   @GetMapping()
   public List<Administration> getAdministrations() {
     return administrationService.listAdministrations();
@@ -31,28 +28,28 @@ public class AdministrationResource {
 
   @PostMapping()
   public Administration createAdministration(@RequestBody Administration administration) {
-    return administrationRepository.save(administration);
+    return administrationService.createAdministration(administration);
   }
 
   @GetMapping("/{id}")
   public Administration getAdministrationById(@PathVariable String id) {
-    return administrationRepository.findById(id)
+    return administrationService.findById(id)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Administration not found"));
   }
 
   @PutMapping("/{id}")
   public Administration editAdministration(@PathVariable String id, @RequestBody Administration updatedAdministration) {
-    Administration admin = administrationRepository.findById(id)
+    Administration admin = administrationService.findById(id)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Administration not found"));
     admin.setName(updatedAdministration.getName());
     admin.setActive(updatedAdministration.isActive());
-    return administrationRepository.save(admin);
+    return administrationService.createAdministration(admin);
   }
 
   @GetMapping("/{id}/locations")
   public ResponseEntity<Set<Location>> getLocationsByAdministrationId(@PathVariable String id) {
     Administration administration = getAdministrationById(id);
-    Set<Location> locations = administration.locations;
+    Set<Location> locations = administration.getLocations();
     return ResponseEntity.ok(locations);
   }
 

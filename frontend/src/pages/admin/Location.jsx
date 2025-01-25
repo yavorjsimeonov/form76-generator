@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import { config } from "../../api/Constants"
-import LocationFormModal from "../../components/LocationForm";
+import LocationForm from "../../components/LocationForm";
 import GenerateReportModal from "../../components/GenerateReportForm";
 import Footer from "../../components/common/Footer";
 import Header from "../../components/common/Header";
@@ -48,19 +48,6 @@ function LocationDetailsPage() {
 
     const handleEdit = async (updatedLocation) => {
         try {
-            // const response = await fetch(`${config.API_BASE_URL}/locations/${id}`, {
-            //     method: "PUT",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify(updatedLocation),
-            // });
-            // if (!response.ok) {
-            //     throw new Error(`HTTP error! status: ${response.status}`);
-            // }
-            // const editedLocation = await response.json();
-            // setLocation(editedLocation);
-
             const response = await form76GeneratorApi.updateLocation(user, id, updatedLocation);
             setLocation(response.data);
         } catch (error) {
@@ -90,36 +77,7 @@ function LocationDetailsPage() {
             setShowToast(true);
         }
 
-        // console.log("Generating Report with Request:", request);
-        //
-        // fetch(`${config.API_BASE_URL}/locations/${location.id}/generate`, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(request),
-        // })
-        //     .then((response) => {
-        //         if (!response.ok) {
-        //             throw new Error(`HTTP error! status: ${response.status}`);
-        //         }
-        //         console.log("Success:" + response);
-        //         //setShowToast(true);
-        //         return response.text();
-        //
-        //     })
-        //     .then((data) => {
-        //         console.log("Report Generation triggered successfully:", data);
-        //         setToastMessage(`Report generation triggered successfully! An email will be send to ${location.representativeEmail}`);
-        //         setToastColor("success"); // Green toast for success
-        //         setShowToast(true);
-        //     })
-        //     .catch((error) => {
-        //         console.error("Error generating report:", error);
-        //         setToastMessage("Failed to generate report. Please try again.");
-        //         setToastColor("danger"); // Red toast for error
-        //         setShowToast(true);
-        //     });
+
     };
 
     if (loading) {
@@ -200,8 +158,7 @@ function LocationDetailsPage() {
                         </Col>
                     </Row>
 
-                    {/* Modal for Editing Location */}
-                    <LocationFormModal
+                    <LocationForm
                         show={showModal}
                         onHide={() => setShowModal(false)}
                         onSubmit={handleEdit}
@@ -209,7 +166,6 @@ function LocationDetailsPage() {
                         title="Edit Location"
                     />
 
-                    {/* Modal for Generating Report */}
                     <GenerateReportModal
                         show={showReportModal}
                         onHide={() => setShowReportModal(false)}

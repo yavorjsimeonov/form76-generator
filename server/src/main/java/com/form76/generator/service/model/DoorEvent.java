@@ -2,6 +2,8 @@ package com.form76.generator.service.model;
 
 import com.form76.generator.service.DateHelper;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -10,22 +12,24 @@ import java.util.Date;
 
 
 @ToString
+@Getter
+@Setter
 public class DoorEvent implements Serializable {
 
-  public String doorName;
-  public String devSn;
-  public String devName;
-  public String empName;
-  public Integer empId;
-  public String empUUID;
-  public Integer eventType;
-  public String eventTypeName;
-  public String captureImage;
-  public Integer faceMatchScore;
-  public Double bodyTemperature;
-  public String eventTime;
-  public String pushRtEventResult;
-  public Integer openStatus;
+  private String doorName;
+  private String devSn;
+  private String devName;
+  private String empName;
+  private Integer empId;
+  private String empUUID;
+  private Integer eventType;
+  private String eventTypeName;
+  private String captureImage;
+  private Integer faceMatchScore;
+  private Double bodyTemperature;
+  private String eventTime;
+  private String pushRtEventResult;
+  private Integer openStatus;
   private boolean isInEvent;
 
 
@@ -56,63 +60,6 @@ public class DoorEvent implements Serializable {
     this.pushRtEventResult = pushRtEventResult;
     this.openStatus = openStatus;
     this.isInEvent = devName.endsWith("-IN") || devName.endsWith("-in");
-  }
-
-
-  public String getDoorName() {
-    return doorName;
-  }
-
-  public String getDevSn() {
-    return devSn;
-  }
-
-  public String getDevName() {
-    return devName;
-  }
-
-  public String getEmpName() {
-    return empName;
-  }
-
-  public Integer getEmpId() {
-    return empId;
-  }
-
-  public String getEmpUUID() {
-    return empUUID;
-  }
-
-  public Integer getEventType() {
-    return eventType;
-  }
-
-  public String getEventTypeName() {
-    return eventTypeName;
-  }
-
-  public String getCaptureImage() {
-    return captureImage;
-  }
-
-  public Integer getFaceMatchScore() {
-    return faceMatchScore;
-  }
-
-  public Double getBodyTemperature() {
-    return bodyTemperature;
-  }
-
-  public String getEventTime() {
-    return eventTime;
-  }
-
-  public String getPushRtEventResult() {
-    return pushRtEventResult;
-  }
-
-  public Integer getOpenStatus() {
-    return openStatus;
   }
 
   public boolean isInEvent() {

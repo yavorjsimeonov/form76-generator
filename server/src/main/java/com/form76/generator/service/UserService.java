@@ -25,7 +25,7 @@ public class UserService {
 
   public Optional<User> getUserByUsername(String username) {
     User user = userRepository.findByUsername(username).orElse(null);
-    if (user == null || !user.active) {
+    if (user == null || !user.isActive()) {
       return Optional.ofNullable(null);
     }
 
@@ -34,7 +34,7 @@ public class UserService {
 
   public Optional<User> validateCredentials(String username, String password) {
     return getUserByUsername(username)
-        .filter(user -> passwordEncoder.matches(password, user.password));
+        .filter(user -> passwordEncoder.matches(password, user.getPassword()));
   }
 
   public List<User> getAllUsers() {
@@ -43,17 +43,17 @@ public class UserService {
 
   public User createUser(UserRequest userRequest) {
     User user = new User();
-    user.firstName = userRequest.getFirstName();
-    user.lastName = userRequest.getLastName();
-    user.email = userRequest.getEmail();
-    user.username = userRequest.getUsername();
-    user.password = passwordEncoder.encode(userRequest.getPassword());
-    user.role = userRequest.getRole();
-    user.active = userRequest.isActive();
+    user.setFirstName(userRequest.getFirstName());
+    user.setLastName(userRequest.getLastName());
+    user.setEmail(userRequest.getEmail());
+    user.setUsername(userRequest.getUsername());
+    user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+    user.setRole(userRequest.getRole());
+    user.setActive(userRequest.isActive());
 
     if (userRequest.getAdministrationId() != null) {
-      user.administration = administrationRepository.findById(userRequest.getAdministrationId())
-          .orElseThrow(() -> new IllegalArgumentException("Administration not found"));
+      user.setAdministration(administrationRepository.findById(userRequest.getAdministrationId())
+          .orElseThrow(() -> new IllegalArgumentException("Administration not found")));
     }
 
     return userRepository.save(user);

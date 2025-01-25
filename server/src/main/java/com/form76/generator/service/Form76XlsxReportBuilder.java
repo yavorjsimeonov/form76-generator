@@ -2,6 +2,7 @@ package com.form76.generator.service;
 
 import com.form76.generator.service.model.DoorEvent;
 import com.form76.generator.service.model.Employee;
+import lombok.Getter;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -23,14 +24,15 @@ import java.util.stream.IntStream;
 
 import static com.form76.generator.service.Form76ReportService.xlsxFile;
 
+@Getter
 public class Form76XlsxReportBuilder {
 
-  public static final String FONT_NAME = "Arial";
-  public static final String DATE_FORMAT = "dd-MM-yyyy";
-  public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-  public static final String WORKED_HOURS_FORMAT = "%dh %dm";
-  public static final short DEFAULT_FONT_HEIGHT = 10;
-  public static final short SMALL_FONT_HEIGHT = 9;
+  private static final String FONT_NAME = "Arial";
+  private static final String DATE_FORMAT = "dd-MM-yyyy";
+  private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+  private static final String WORKED_HOURS_FORMAT = "%dh %dm";
+  private static final short DEFAULT_FONT_HEIGHT = 10;
+  private static final short SMALL_FONT_HEIGHT = 9;
   private static final String SHEET_NAME = "Форма 76";
 
   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -85,30 +87,9 @@ public class Form76XlsxReportBuilder {
 
     for(Map<String, Employee> map : list){
       List<Employee> empList = map.values().stream().toList();
-      Date date = DateHelper.parseReportDate(empList.get(0).doorEvents.get(0).eventTime);
+      Date date = DateHelper.parseReportDate(empList.get(0).getDoorEvents().get(0).getEventTime());
 
       String monthYearStr = getMonthAndYerStrFromDate(date);
-
-//      Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-//      calendar.setTime(date);
-//      int monthNumber = calendar.get(Calendar.MONTH);
-//
-//      String monthName = switch (monthNumber) {
-//        case 0 -> "Януари";
-//        case 1 -> "Февруари";
-//        case 2 -> "Март";
-//        case 3 -> "Април";
-//        case 4 -> "Май";
-//        case 5 -> "Юни";
-//        case 6 -> "Юли";
-//        case 7 -> "Август";
-//        case 8 -> "Септември";
-//        case 9 -> "Октомври";
-//        case 10 -> "Ноември";
-//        case 11 -> "Декември";
-//        default -> "Invalid month number";
-//      };
-
       String sheetName = SHEET_NAME + " - " + monthYearStr;
       form76Sheet = createSheet(sheetName);
       populateForma76Sheet(map);
@@ -147,8 +128,8 @@ public class Form76XlsxReportBuilder {
     if (employeeIterator.hasNext()) {
       Employee firstEmployee = employeeIterator.next();
 
-      DoorEvent firstDoorEvent = firstEmployee.doorEvents.get(0);
-      Date timestamp = DateHelper.parseReportDate(firstDoorEvent.eventTime);
+      DoorEvent firstDoorEvent = firstEmployee.getDoorEvents().get(0);
+      Date timestamp = DateHelper.parseReportDate(firstDoorEvent.getEventTime());
 
       monthYearStr = getMonthAndYerStrFromDate(timestamp);
     }
@@ -232,7 +213,7 @@ public class Form76XlsxReportBuilder {
     });
 
     List<Employee> orderedEmployees = new ArrayList<>(map.values());
-    orderedEmployees.sort(Comparator.comparing(empl -> empl.id));
+    orderedEmployees.sort(Comparator.comparing(empl -> empl.getId()));
 
     row = 9;
     for (int i = 0; i < orderedEmployees.size(); i++) {
@@ -250,10 +231,10 @@ public class Form76XlsxReportBuilder {
 
   private void addEmployeeRow(int row, int indx, Employee employee) {
     form76Sheet.createCell(row, 0, "" + (indx + 1), dataTableHeaderStyle);
-    form76Sheet.createCell(row, 1, /*employee.id + " " +*/ employee.names, dataTableStyle);
+    form76Sheet.createCell(row, 1, /*employee.id + " " +*/ employee.getNames(), dataTableStyle);
     form76Sheet.createEmptyCells(row, 2, 2, dataTableStyle);
     int colShift = 2;
-    Map<String, Long> workedHoursPerDate = employee.workedHoursPerDate;
+    Map<String, Long> workedHoursPerDate = employee.getWorkedHoursPerDate();
     for (int d = 1; d <= 31; d++) {
       Long workedHoursAsMillis = null;
       for (String dateStr : workedHoursPerDate.keySet()) {

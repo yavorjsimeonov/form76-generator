@@ -63,15 +63,15 @@ public class Form76ReportService {
       for (Location location : locations) {
         // Generate DoorOpeningLogRequest for each location
         DoorOpeningLogRequest request = new DoorOpeningLogRequest(
-            location.name,
-            location.extCommunityId,
-            location.extCommunityUuid,
-            location.reportAlgorithm,
+            location.getName(),
+            location.getExtCommunityId(),
+            location.getExtCommunityUuid(),
+            location.getReportAlgorithm(),
             LocalDateTime.now().minusMonths(1),
             LocalDateTime.now()
         );
 
-        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.locationExtCommunityUuid, request);
+        reportGenerationRequestEventProducer.publishReportGenerationRequest(request.getLocationExtCommunityUuid(), request);
 
       }
     } catch (Exception e) {
@@ -81,34 +81,34 @@ public class Form76ReportService {
 
   public void generateReportForLocation(DoorOpeningLogRequest request) throws ParseException {
     try {
-      logger.info("Processing location: " + request.locationName + " (" + request.locationExtCommunityUuid + ")");
+      logger.info("Processing location: " + request.getLocationName() + " (" + request.getLocationExtCommunityUuid() + ")");
       DoorOpeningLogResponse response = mylinkApiService.loadDoorOpeningLog(request);
       //logger.info("Response: " + response);
 
 
       Map<String, Map<String, Employee>> monthEmployeeMap = readDataFromResponse(response);
-      boolean firstLast = request.reportAlgorithm == ReportAlgorithm.FIRST_IN_LAST_OUT;
-      calculateWorkedHours(request.locationName, request.locationExtCommunityUuid, monthEmployeeMap, firstLast);
+      boolean firstLast = request.getReportAlgorithm() == ReportAlgorithm.FIRST_IN_LAST_OUT;
+      calculateWorkedHours(request.getLocationName(), request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
-      String generatedFilePath = generateReportFile(request.locationExtCommunityUuid, monthEmployeeMap, firstLast);
+      String generatedFilePath = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
       logger.info("generatedFilePath: " + generatedFilePath);
 
       EmailRequest emailRequest = new EmailRequest();
-      emailRequest.recipient = "yavorjsimeonov@gmail.com";
-      emailRequest.msgBody = generatedFilePath;
-      emailRequest.subject = "test";
-      emailRequest.attachment = generatedFilePath;
+      emailRequest.setRecipient("yavorjsimeonov@gmail.com");
+      emailRequest.setMsgBody(generatedFilePath);
+      emailRequest.setSubject("test");
+      emailRequest.setAttachment(generatedFilePath);
 
       emailService.sendMailWithAttachment(emailRequest);
     } catch (Exception e) {
-      logger.error("Error generating report for location: " + request.locationName, e);
+      logger.error("Error generating report for location: " + request.getLocationName(), e);
     }
   }
 
   private Map<String, Map<String, Employee>> readDataFromResponse(DoorOpeningLogResponse doorOpeningLogResponse) throws ParseException {
     Map<String, Map<String, Employee>> monthEmployeeMap = new HashMap<>();
-    List<DoorEvent> allEvents = doorOpeningLogResponse.data.list;
+    List<DoorEvent> allEvents = doorOpeningLogResponse.getData().getList();
 
     for (DoorEvent event : allEvents) {
       //Validate event and log errors:
@@ -132,11 +132,11 @@ public class Form76ReportService {
 //        continue;
 //      }
 
-      String yearMonthKey = DateHelper.getYearAndMonthFromDateString(event.eventTime);
+      String yearMonthKey = DateHelper.getYearAndMonthFromDateString(event.getEventTime());
       Map<String, Employee> employeesMap = monthEmployeeMap.computeIfAbsent(yearMonthKey, k -> new HashMap<>());
-      Employee employee = employeesMap.computeIfAbsent(Integer.toString(event.empId), k -> new Employee(event.empId, event.empName));
+      Employee employee = employeesMap.computeIfAbsent(Integer.toString(event.getEmpId()), k -> new Employee(event.getEmpId(), event.getEmpName()));
 
-      employee.doorEvents.add(event);
+      employee.getDoorEvents().add(event);
     }
 
     return monthEmployeeMap;
@@ -160,7 +160,7 @@ public class Form76ReportService {
   }
 
   private void calculateWorkedHoursForEmployee(Employee employee, Boolean firstLast) throws ParseException {
-    List<DoorEvent> doorEvents = employee.doorEvents;
+    List<DoorEvent> doorEvents = employee.getDoorEvents();
     doorEvents.sort(Comparator.comparing(de -> de.getEventDateTime()));
 
     TreeMap<String, List<DoorEvent>> doorEventsPerDate = new TreeMap<>();
@@ -179,7 +179,7 @@ public class Form76ReportService {
   }
 
   private void calculateWorkedHoursForEmployAndDate(Employee employee, String date, List<DoorEvent> doorEvents, Boolean firstLast) throws ParseException {
-    doorEvents.sort(Comparator.comparing(de -> de.eventTime));
+    doorEvents.sort(Comparator.comparing(de -> de.getEventTime()));
 
     if(firstLast) {
       calculateWorkedHoursForFirstInLastOut(employee, date, doorEvents);
@@ -190,13 +190,13 @@ public class Form76ReportService {
   }
 
   private void calculateWorkHoursForEveryInOut(Employee employee, String date, List<DoorEvent> doorEvents) throws ParseException {
-    employee.workedHoursPerDate.put(date, 0L);
+    employee.getWorkedHoursPerDate().put(date, 0L);
 
     int i = 0;
     DoorEvent inEvent = null;
     while (i <  doorEvents.size()) {
       DoorEvent currentDoorEvent = doorEvents.get(i);
-      Date currentEventDate = DateUtils.truncate(REPORT_TIMESTAMPS_FORMAT.parse(currentDoorEvent.eventTime), Calendar.DATE);
+      Date currentEventDate = DateUtils.truncate(REPORT_TIMESTAMPS_FORMAT.parse(currentDoorEvent.getEventTime()), Calendar.DATE);
 
       long timeToAdd = 0L;
       if (currentDoorEvent.isInEvent()) {
@@ -214,20 +214,20 @@ public class Form76ReportService {
           }
         }
 
-        timeToAdd = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(inEvent.eventTime), outEvent != null ? REPORT_TIMESTAMPS_FORMAT.parse(outEvent.eventTime) : null);
+        timeToAdd = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(inEvent.getEventTime()), outEvent != null ? REPORT_TIMESTAMPS_FORMAT.parse(outEvent.getEventTime()) : null);
         inEvent = null;
       } else { //!currentDoorEvent.isInEvent
         DoorEvent outEvent = currentDoorEvent;
         if (inEvent == null) {
-          timeToAdd = calculateWorkDuration(DATE_FORMAT.parse(date), REPORT_TIMESTAMPS_FORMAT.parse(outEvent.eventTime));
+          timeToAdd = calculateWorkDuration(DATE_FORMAT.parse(date), REPORT_TIMESTAMPS_FORMAT.parse(outEvent.getEventTime()));
         } else {
-          timeToAdd = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(inEvent.eventTime), REPORT_TIMESTAMPS_FORMAT.parse(outEvent.eventTime));
+          timeToAdd = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(inEvent.getEventTime()), REPORT_TIMESTAMPS_FORMAT.parse(outEvent.getEventTime()));
           inEvent = null;
         }
       }
 
-      Long workedHoursForDate = employee.workedHoursPerDate.get(date);
-      employee.workedHoursPerDate.put(date, workedHoursForDate + timeToAdd);
+      Long workedHoursForDate = employee.getWorkedHoursPerDate().get(date);
+      employee.getWorkedHoursPerDate().put(date, workedHoursForDate + timeToAdd);
       i++;
     }
   }
@@ -246,11 +246,11 @@ public class Form76ReportService {
     }
 
     if (firstInEvent != null && lastOutEvent != null) {
-      long hoursWorked = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(firstInEvent.eventTime), REPORT_TIMESTAMPS_FORMAT.parse(lastOutEvent.eventTime));
-      employee.workedHoursPerDate.put(date, hoursWorked);
+      long hoursWorked = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(firstInEvent.getEventTime()), REPORT_TIMESTAMPS_FORMAT.parse(lastOutEvent.getEventTime()));
+      employee.getWorkedHoursPerDate().put(date, hoursWorked);
     } else {
       logger.info("Incomplete door events(firstInEvent[" + firstInEvent +"], lastOutEvent=[" + lastOutEvent + "]. Cannot calculate worked hours.");
-      employee.workedHoursPerDate.put(date, 0L);
+      employee.getWorkedHoursPerDate().put(date, 0L);
     }
   }
 

@@ -54,7 +54,7 @@ public class LocationResource {
     logger.info("Loaded location [" + locationId + "]: " + location);
 
     DoorOpeningLogRequest doorOpeningLogRequest = new DoorOpeningLogRequest(
-        location.name, location.extCommunityId, location.extCommunityUuid, location.reportAlgorithm,
+        location.getName(), location.getExtCommunityId(), location.getExtCommunityUuid(), location.getReportAlgorithm(),
         startDateTime, endDateTime);
 
     form76ReportService.generateReportForLocation(doorOpeningLogRequest);

@@ -1,11 +1,13 @@
 package com.form76.generator.service.model;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Setter
+@Getter
 public class ReportRequest {
 
   private String startDateTime;

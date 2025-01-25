@@ -26,17 +26,17 @@ public class ReportRepositoryTest {
   @Test
   public void testAddReport() {
     Report report = new Report();
-    report.fileName = "report.xlsx";
-    report.creationDate = LocalDateTime.now();
-    report.cloudStorageReference = "cloud-reference";
+    report.setFileName("report.xlsx");
+    report.setCreationDate(LocalDateTime.now());
+    report.setCloudStorageReference("cloud-reference");
 
     Report savedReport = reportRepository.save(report);
 
-    Report foundReport = reportRepository.findById(savedReport.id).orElse(null);
+    Report foundReport = reportRepository.findById(savedReport.getId()).orElse(null);
 
-    assert savedReport.id != null;
+    assert savedReport.getId() != null;
     assert foundReport != null;
-    assert foundReport.fileName.equals("report.xlsx");
-    assert foundReport.cloudStorageReference.equals("cloud-reference");
+    assert foundReport.getFileName().equals("report.xlsx");
+    assert foundReport.getCloudStorageReference().equals("cloud-reference");
   }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdministrationService {
@@ -46,10 +47,19 @@ public class AdministrationService {
     }
 
 
-    Administration administration = administrationRepository.findById(user.administration.id).orElse(null);
+    Administration administration = administrationRepository.findById(user.getAdministration().getId()).orElse(null);
     if (administration == null) {
-      throw new RuntimeException("Cannot find administration with id: " + user.administration.id);
+      throw new RuntimeException("Cannot find administration with id: " + user.getAdministration().getId());
     }
     return Collections.singletonList(administration);
+  }
+
+  public Administration createAdministration(Administration administration) {
+    return administrationRepository.save(administration);
+  }
+
+  public Optional<Administration> findById(String id){
+
+    return administrationRepository.findById(id);
   }
 }

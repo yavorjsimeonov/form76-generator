@@ -28,19 +28,19 @@ public class AppUserDetailsService implements UserDetailsService {
     logger.info("Loading user by username:" + username);
     User user = userService.getUserByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
-    List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.role.name()));
+    List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
     return mapUserToCustomUserDetails(user, authorities);
   }
 
   private AppUserDetails mapUserToCustomUserDetails(User user, List<SimpleGrantedAuthority> authorities) {
     AppUserDetails appUserDetails = new AppUserDetails();
-    appUserDetails.setId(user.id);
-    appUserDetails.setUsername(user.username);
-    appUserDetails.setPassword(user.password);
-    appUserDetails.setFirstName(user.firstName);
-    appUserDetails.setLastName(user.lastName);
-    appUserDetails.setEmail(user.email);
-    appUserDetails.setActive(user.active);
+    appUserDetails.setId(user.getId());
+    appUserDetails.setUsername(user.getUsername());
+    appUserDetails.setPassword(user.getPassword());
+    appUserDetails.setFirstName(user.getFirstName());
+    appUserDetails.setLastName(user.getLastName());
+    appUserDetails.setEmail(user.getEmail());
+    appUserDetails.setActive(user.isActive());
     appUserDetails.setAuthorities(authorities);
     return appUserDetails;
   }

@@ -2,6 +2,8 @@ package com.form76.generator.db.entity;
 
 import com.form76.generator.db.IdGenerator;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
@@ -12,51 +14,22 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "administration")
+@Getter
+@Setter
 public class Administration {
 
   @Id
   @GenericGenerator(name = "idGenerator", type = IdGenerator.class)
   @GeneratedValue(generator = "idGenerator")
-  public String id;
+  private String id;
 
   @Column(name = "name", nullable = false)
-  public String name;
+  private String name;
 
   @Column(name = "active", nullable = false)
-  public boolean active;
+  private boolean active;
 
   @OneToMany(mappedBy = "administration", fetch = FetchType.EAGER)
-  public Set<Location> locations;
+  private Set<Location> locations;
 
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
-  public Set<Location> getLocations() {
-    return locations;
-  }
-
-  public void setLocations(Set<Location> locations) {
-    this.locations = locations;
-  }
 }

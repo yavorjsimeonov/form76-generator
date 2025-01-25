@@ -5,7 +5,7 @@ import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Footer from "../../components/common/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
-import CreateLocationForm from "../../components/CreateLocationForm";
+import LocationForm from "../../components/LocationForm";
 import LocationList from "../../components/LocationList";
 import { useAuth } from "../../components/common/AuthContext";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
@@ -128,13 +128,22 @@ function AdministrationPage() {
             />
 
             {/* Modal for Creating Location */}
-            <CreateLocationForm
+            <LocationForm
                 show={showLocationModal}
                 onHide={() => setShowLocationModal(false)}
                 onSubmit={handleCreateLocation}
-                initialData={[]}
+                initialData={{
+                    name: "",
+                    extCommunityId: "",
+                    extCommunityUuid: "",
+                    representativeName: "",
+                    representativeEmail: "",
+                    reportAlgorithm: "EVERY_IN_OUT",
+                    active: true,
+                }}
                 title="Create Location"
             />
+
         </div>
     );
 }

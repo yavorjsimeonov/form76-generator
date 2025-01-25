@@ -28,23 +28,23 @@ public class LocationRepositoryTest {
   @Test
   public void testSaveAndFindLocation() {
     Administration administration = new Administration();
-    administration.name = "Bank";
-    administration.active = true;
+    administration.setName("Bank");
+    administration.setActive(true);
 
     Administration savedAdministration = administrationRepository.save(administration);
 
 
     Location location = new Location();
-    location.name = "Test Location";
-    location.administration = savedAdministration;
+    location.setName("Test Location");
+    location.setAdministration(savedAdministration);
 
     Location savedLocation = locationRepository.save(location);
 
-    Location foundLocation = locationRepository.findById(savedLocation.id).orElse(null);
+    Location foundLocation = locationRepository.findById(savedLocation.getId()).orElse(null);
 
-    assert savedLocation.id != null;
+    assert savedLocation.getId() != null;
     assert foundLocation != null;
-    assert foundLocation.name.equals("Test Location");
+    assert foundLocation.getName().equals("Test Location");
   }
 
 }

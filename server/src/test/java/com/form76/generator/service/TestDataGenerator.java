@@ -21,7 +21,7 @@ import java.util.*;
 public class TestDataGenerator {
 
   public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_FILE_NAME = new SimpleDateFormat("yyyyMMddHHmmss");
-  public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_DATA = new SimpleDateFormat(Form76XlsxReportBuilder.DATE_TIME_FORMAT);
+  public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_DATA = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private final static List<String> menNames = Arrays.asList("Ivan", "Dragan", "Petkan", "Petar", "Pavel", "Anton", "Angelov");
   private final static List<String> menFamilies = Arrays.asList("Ivanov", "Draganov", "Petkanov", "Petrov", "Pavel", "Antonov", "Angelpv");
@@ -43,7 +43,7 @@ public class TestDataGenerator {
       for (int i = 0; i < numberOfEmployees; i++) {
         Employee employee = generateEmployee(month);
 
-        employees.put(employee.uuid, employee);
+        employees.put(employee.getUuid(), employee);
       }
 
       Calendar calendar = Calendar.getInstance();
@@ -66,10 +66,10 @@ public class TestDataGenerator {
     int indxFamilyName = random.nextInt(1, 7);
 
     Employee employee = new Employee();
-    employee.id = employeeId;
-    employee.uuid = Long.toString(employeeUuid);
-    employee.names = man ? menNames.get(indxName) + " " + menFamilies.get(indxFamilyName) :
-        womenNames.get(indxName) + " " + womenFamilies.get(indxFamilyName);
+    employee.setId(employeeId);
+    employee.setUuid(Long.toString(employeeUuid));
+    employee.setNames(man ? menNames.get(indxName) + " " + menFamilies.get(indxFamilyName) :
+        womenNames.get(indxName) + " " + womenFamilies.get(indxFamilyName));
 
     int maxDays = 31;
     if (month == 2) {
@@ -79,7 +79,7 @@ public class TestDataGenerator {
     }
     for (int dayOfMonth = 1; dayOfMonth <= maxDays; dayOfMonth++) {
 
-      employee.doorEvents.addAll(Objects.requireNonNull(generateEventsForDate(month, dayOfMonth)));
+      employee.getDoorEvents().addAll(Objects.requireNonNull(generateEventsForDate(month, dayOfMonth)));
     }
 
     return employee;
@@ -137,14 +137,14 @@ public class TestDataGenerator {
 
     Map<DoorEvent, Employee> allEventsMap = new HashMap<>();
     for (Employee employee : employees.values().stream().map(Map::values).flatMap(Collection::stream).toList()) {
-      for (DoorEvent doorEvent : employee.doorEvents) {
+      for (DoorEvent doorEvent : employee.getDoorEvents()) {
         allEventsMap.put(doorEvent, employee);
       }
     }
     List<DoorEvent> allEvents = new ArrayList<>(allEventsMap.keySet().stream().toList());
     allEvents.sort(Comparator.comparing(de -> {
       try {
-        return DateHelper.parseReportDate(de.eventTime);
+        return DateHelper.parseReportDate(de.getEventTime());
       } catch (ParseException e) {
         throw new RuntimeException(e);
       }
@@ -158,14 +158,14 @@ public class TestDataGenerator {
 
       Employee employee = allEventsMap.get(doorEvent);
 
-      String timeStamp = doorEvent.eventTime;
+      String timeStamp = doorEvent.getEventTime();
       row.createCell(0).setCellValue(timeStamp);
-      row.createCell(1).setCellValue(employee.id);
-      row.createCell(2).setCellValue(employee.names);
+      row.createCell(1).setCellValue(employee.getId());
+      row.createCell(2).setCellValue(employee.getNames());
       for (int i = 3; i <= 6; i++) {
         row.createCell(i).setCellValue("");
       }
-      row.createCell(7).setCellValue(doorEvent.doorName);
+      row.createCell(7).setCellValue(doorEvent.getDoorName());
       row.createCell(8).setCellValue("2011141576");
       row.createCell(9).setCellValue("my link samokov 11A/BUILDING1/building 1 DOOR1" + (doorEvent.isInEvent() ? "-IN" : "-OUT"));
       row.createCell(10).setCellValue("Open door card");

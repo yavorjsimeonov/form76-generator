@@ -1,8 +1,13 @@
 package com.form76.generator.rest.model;
 
-public class UserInfo {
-  public String firstName;
-  public String lastName;
+import lombok.Getter;
+import lombok.Setter;
 
-  public String email;
+@Setter
+@Getter
+public class UserInfo {
+  private String firstName;
+  private String lastName;
+
+  private String email;
 }

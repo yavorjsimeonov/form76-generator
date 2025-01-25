@@ -1,17 +1,17 @@
 package com.form76.generator.service.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class EmailRequest {
-  public String recipient;
-  public String msgBody;
-  public String subject;
-  public String attachment;
+  private String recipient;
+  private String msgBody;
+  private String subject;
+  private String attachment;
 
 }

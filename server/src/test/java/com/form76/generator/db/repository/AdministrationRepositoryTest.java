@@ -39,16 +39,16 @@ public class AdministrationRepositoryTest {
   public void testSaveAndFindAdministration() {
 
     Administration administration = new Administration();
-    administration.name = "Bank";
-    administration.active = true;
+    administration.setName("Bank");
+    administration.setActive(true);
 
     Administration savedAdministration = administrationRepository.save(administration);
 
-    Administration foundAdministration = administrationRepository.findById(savedAdministration.id).orElse(null);
+    Administration foundAdministration = administrationRepository.findById(savedAdministration.getId()).orElse(null);
 
-    assert savedAdministration.id != null;
+    assert savedAdministration.getId() != null;
     assert foundAdministration != null;
-    assert foundAdministration.name.equals("Bank");
-    assert foundAdministration.active;
+    assert foundAdministration.getName().equals("Bank");
+    assert foundAdministration.isActive();
   }
 }

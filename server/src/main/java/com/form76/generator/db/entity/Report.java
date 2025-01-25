@@ -2,28 +2,32 @@ package com.form76.generator.db.entity;
 
 import com.form76.generator.db.IdGenerator;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "report")
+@Getter
+@Setter
 public class Report {
 
   @Id
   @GenericGenerator(name = "idGenerator", type = IdGenerator.class)
   @GeneratedValue(generator = "idGenerator")
-  public String id;
+  private String id;
 
   @Column(name = "file_name", nullable = false)
-  public String fileName;
+  private String fileName;
 
   @Column(name = "creation_date", nullable = false)
-  public LocalDateTime creationDate;
+  private LocalDateTime creationDate;
 
   @Column(name = "cloud_storage_reference", nullable = false)
-  public String cloudStorageReference;
+  private String cloudStorageReference;
 
   @OneToOne
-  Location location;
+  private Location location;
 }

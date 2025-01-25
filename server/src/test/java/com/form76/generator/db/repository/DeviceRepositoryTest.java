@@ -29,21 +29,21 @@ public class DeviceRepositoryTest {
   @Test
   public void testSaveAndFindDevice() {
     Location location = new Location();
-    location.name = "Test Location";
+    location.setName("Test Location");
     location = locationRepository.save(location);
 
     Device device = new Device();
-    device.type = DeviceType.IN;
-    device.name = "Test Device";
-    device.location = location;
+    device.setType(DeviceType.IN);
+    device.setName("Test Device");
+    device.setLocation(location);
 
     Device savedDevice = deviceRepository.save(device);
 
-    Device foundDevice = deviceRepository.findById(savedDevice.id).orElse(null);
+    Device foundDevice = deviceRepository.findById(savedDevice.getId()).orElse(null);
 
-    assert savedDevice.id != null;
+    assert savedDevice.getId() != null;
     assert foundDevice != null;
-    assert foundDevice.name.equals("Test Device");
-    assert foundDevice.type.equals(DeviceType.IN);
+    assert foundDevice.getName().equals("Test Device");
+    assert foundDevice.getType().equals(DeviceType.IN);
   }
 }

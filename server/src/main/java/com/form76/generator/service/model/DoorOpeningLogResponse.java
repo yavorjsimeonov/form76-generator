@@ -1,14 +1,18 @@
 package com.form76.generator.service.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @ToString
+@Getter
+@Setter
 public class DoorOpeningLogResponse {
-  public Integer code;
-  public String msg;
-  public String time;
+  private Integer code;
+  private String msg;
+  private String time;
 
-  public DoorOpeningLog data;
+  private DoorOpeningLog data;
 
   public DoorOpeningLogResponse(Integer code, String msg, String time, DoorOpeningLog data) {
     this.code = code;

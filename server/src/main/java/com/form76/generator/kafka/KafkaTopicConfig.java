@@ -19,17 +19,4 @@ public class KafkaTopicConfig {
   @Value(value = "${spring.kafka.producer.bootstrap-servers}")
   private String bootstrapAddress;
 
-//
-//  @Bean
-//  public NewTopic doorOpeningLogRequestsTopic() {
-//    return new NewTopic(REPORT_GENERATION_REQUEST_TOPIC, 1, (short) 1);
-//  }
-//
-//  @Bean
-//  public NewTopic doorOpeningLogResponsesTopic() {
-//    return new NewTopic("door-opening-log-responses", 1, (short) 1);
-//  }
-//
-
-
 }

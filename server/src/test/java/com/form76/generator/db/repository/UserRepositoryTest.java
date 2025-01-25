@@ -24,20 +24,20 @@ public class UserRepositoryTest {
   @Test
   public void testAddUser() {
     User user = new User();
-    user.firstName = "Misho";
-    user.lastName = "Mishov";
-    user.password = "test";
-    user.email = "mishom@mail.com";
-    user.active = true;
+    user.setFirstName("Misho");
+    user.setLastName("Mishov");
+    user.setPassword("test");
+    user.setEmail("mishom@mail.com");
+    user.setActive(true);
 
     User savedUser = userRepository.save(user);
 
-    User foundUser = userRepository.findById(savedUser.id).orElse(null);
+    User foundUser = userRepository.findById(savedUser.getId()).orElse(null);
 
     assert foundUser != null;
-    assert foundUser.firstName.equals("Misho");
-    assert foundUser.lastName.equals("Mishov");
-    assert foundUser.email.equals("mishom@mail.com");
+    assert foundUser.getFirstName().equals("Misho");
+    assert foundUser.getLastName().equals("Mishov");
+    assert foundUser.getEmail().equals("mishom@mail.com");
 
 
   }

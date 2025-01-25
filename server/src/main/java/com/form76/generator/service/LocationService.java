@@ -34,13 +34,13 @@ public class LocationService {
 
   public Optional<Location> editLocation(String id, Location updatedLocation) {
     return locationRepository.findById(id).map(existingLocation -> {
-      existingLocation.name = updatedLocation.name;
-      existingLocation.active = updatedLocation.active;
-      existingLocation.extCommunityId = updatedLocation.extCommunityId;
-      existingLocation.extCommunityUuid = updatedLocation.extCommunityUuid;
-      existingLocation.reportAlgorithm = updatedLocation.reportAlgorithm;
-      existingLocation.representativeName = updatedLocation.representativeName;
-      existingLocation.representativeEmail = updatedLocation.representativeEmail;
+      existingLocation.setName(updatedLocation.getName());
+      existingLocation.setActive(updatedLocation.isActive());
+      existingLocation.setExtCommunityId(updatedLocation.getExtCommunityId());
+      existingLocation.setExtCommunityUuid(updatedLocation.getExtCommunityUuid());
+      existingLocation.setReportAlgorithm(updatedLocation.getReportAlgorithm());
+      existingLocation.setRepresentativeName(updatedLocation.getRepresentativeName());
+      existingLocation.setRepresentativeEmail(updatedLocation.getRepresentativeEmail());
 
       return locationRepository.save(existingLocation);
     });
@@ -52,14 +52,14 @@ public class LocationService {
         .orElseThrow(() -> new IllegalArgumentException("Administration not found"));
 
     Location location = new Location();
-    location.name = locationRequest.getName();
-    location.extCommunityId = locationRequest.getExtCommunityId();
-    location.extCommunityUuid = locationRequest.getExtCommunityUuid();
-    location.representativeName = locationRequest.getRepresentativeName();
-    location.representativeEmail = locationRequest.getRepresentativeEmail();
-    location.reportAlgorithm = locationRequest.getReportAlgorithm();
-    location.active = locationRequest.isActive();
-    location.administration = administration;
+    location.setName(locationRequest.getName());
+    location.setExtCommunityId(locationRequest.getExtCommunityId());
+    location.setExtCommunityUuid(locationRequest.getExtCommunityUuid());
+    location.setRepresentativeName(locationRequest.getRepresentativeName());
+    location.setRepresentativeEmail(locationRequest.getRepresentativeEmail());
+    location.setReportAlgorithm(locationRequest.getReportAlgorithm());
+    location.setActive(locationRequest.isActive());
+    location.setAdministration(administration);
 
     return locationRepository.save(location);
   }

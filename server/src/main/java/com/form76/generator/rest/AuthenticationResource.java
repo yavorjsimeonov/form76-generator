@@ -28,12 +28,12 @@ public class AuthenticationResource {
   public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
     logger.info("Received authenticate request");
 
-    Optional<User> userOptional = userService.validateCredentials(loginRequest.username, loginRequest.password);
+    Optional<User> userOptional = userService.validateCredentials(loginRequest.getUsername(), loginRequest.getPassword());
     if (userOptional.isPresent()) {
       User user = userOptional.get();
       logger.info("Found user for authenticate request");
 
-      return ResponseEntity.ok(new AuthResponse(user.id, user.username, user.email, user.role));
+      return ResponseEntity.ok(new AuthResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
     }
     logger.info("User not authenticated");
 

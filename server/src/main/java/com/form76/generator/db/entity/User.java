@@ -2,42 +2,46 @@ package com.form76.generator.db.entity;
 
 
 import com.form76.generator.db.IdGenerator;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
+@Getter
+@Setter
 public class User {
 
   @Id
   @GenericGenerator(name = "idGenerator", type = IdGenerator.class)
   @GeneratedValue(generator = "idGenerator")
-  public String id;
+  private String id;
 
   @Column(name = "first_name", nullable = false)
-  public String firstName;
+  private String firstName;
 
   @Column(name = "last_name", nullable = false)
-  public String lastName;
+  private String lastName;
 
   @Column(name = "email", nullable = false, unique = true)
-  public String email;
+  private String email;
 
   @Column(name = "username", nullable = false)
-  public String username;
+  private String username;
 
   @Column(name = "password", nullable = false)
-  public String password;
+  private String password;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false)
-  public Role role;
+  private Role role;
 
   @OneToOne
-  public Administration administration;
+  private Administration administration;
 
   @Column(name = "active", nullable = false)
-  public boolean active;
+  private boolean active;
 
 }
