@@ -69,7 +69,6 @@ function AdministrationsPage() {
                             <Table striped bordered hover>
                                 <thead>
                                 <tr>
-                                    <th>#</th>
                                     <th>Name</th>
                                     <th>Status</th>
                                 </tr>
@@ -77,7 +76,6 @@ function AdministrationsPage() {
                                 <tbody>
                                 {administrations.map((administration) => (
                                     <tr key={administration.id}>
-                                        <td>{administration.id}</td>
                                         <td>
                                             <Link to={`/administrations/${administration.id}`}>
                                                 {administration.name}

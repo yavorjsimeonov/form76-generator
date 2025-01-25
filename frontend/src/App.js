@@ -11,6 +11,8 @@ import ReportsPage from "./pages/admin/Reports";
 import UsersPage from "./pages/admin/Users";
 import AdministrationPage from "./pages/admin/Administration";
 import LocationDetailsPage from "./pages/admin/Location";
+import UserDetailsPage from "./pages/admin/UserPage";
+
 
 function App() {
     return (
@@ -65,6 +67,14 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
+                        <Route exact path="users/:id"
+                            element={
+                                <PrivateRoute roles={["ADMIN"]}>
+                                    <UserDetailsPage />
+                                </PrivateRoute>
+                            }
+                        />
+
 
                         <Route path="*" element={<Navigate to="/login" />} />
                     </Routes>

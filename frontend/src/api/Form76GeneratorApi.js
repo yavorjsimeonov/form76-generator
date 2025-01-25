@@ -12,7 +12,9 @@ export const form76GeneratorApi = {
     updateLocation,
     generateReportForLocation,
     getUsers,
-    createUser
+    createUser,
+    getUserDetails,
+    updateUser
 }
 
 function authenticate(username, password) {
@@ -109,6 +111,25 @@ function createUser(user, newUser) {
             'Authorization': basicAuth(user)
         }
     })
+}
+
+function getUserDetails(user, userId) {
+    return instance.get(`/api/users/${userId}`, {
+        headers: {
+            'Access-Control-Allow-Origin': "*",
+            "Authorization": basicAuth(user),
+        },
+    });
+}
+
+function updateUser(user, userId, updatedUser) {
+    return instance.put(`/api/users/${userId}`, updatedUser, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            "Authorization": basicAuth(user),
+        },
+    });
 }
 
 

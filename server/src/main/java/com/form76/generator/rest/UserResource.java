@@ -1,12 +1,12 @@
 package com.form76.generator.rest;
 
-import com.form76.generator.db.entity.User;
+import com.form76.generator.rest.model.UserData;
 import com.form76.generator.service.UserService;
-import com.form76.generator.service.model.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,19 +19,25 @@ public class UserResource {
   UserService userService;
 
   @GetMapping
-  public ResponseEntity<List<User>> getAllUsers() {
-    List<User> users = userService.getAllUsers();
+  public ResponseEntity<List<UserData>> getAllUsers() {
+    List<UserData> users = userService.getAllUsers();
     return ResponseEntity.ok(users);
   }
 
   @PostMapping
-  public ResponseEntity<User> createUser(@RequestBody UserRequest userRequest) {
+  public ResponseEntity<UserData> createUser(@RequestBody UserData userData) {
     try {
-      User createdUser = userService.createUser(userRequest);
+      UserData createdUser = userService.createUser(userData);
       return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     } catch (IllegalArgumentException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
+  }
+
+  @GetMapping("/{id}")
+  public UserData getUserById(@PathVariable String id) {
+    return userService.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
   }
 
 }

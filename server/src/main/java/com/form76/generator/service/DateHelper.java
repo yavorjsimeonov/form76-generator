@@ -11,7 +11,14 @@ public class DateHelper {
   public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_REPORT_DATA_DATE_TIME = new SimpleDateFormat(REPORT_DATA_DATE_TIME_FORMAT);
 
   public static final SimpleDateFormat SIMPLE_DATE_FORMAT_FOR_YEAR_MONTH_EXTRACT = new SimpleDateFormat(YEAR_MONTH_DATE_FORMAT);
-
+//
+//  public static SimpleDateFormat getSimpleDateFormatForReportDataDateTime() {
+//    return new SimpleDateFormat(REPORT_DATA_DATE_TIME_FORMAT);
+//  }
+//
+//  public static SimpleDateFormat getSimpleDateFormatForReportDataDateTime() {
+//    return new SimpleDateFormat(REPORT_DATA_DATE_TIME_FORMAT);
+//  }
 
   public static Date parseReportDate(String dateStr) throws ParseException {
     return SIMPLE_DATE_FORMAT_FOR_REPORT_DATA_DATE_TIME.parse(dateStr);

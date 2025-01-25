@@ -1,6 +1,7 @@
 package com.form76.generator.security;
 
 import com.form76.generator.db.entity.User;
+import com.form76.generator.rest.model.UserData;
 import com.form76.generator.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,13 +27,13 @@ public class AppUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) {
     logger.info("Loading user by username:" + username);
-    User user = userService.getUserByUsername(username)
+    UserData user = userService.getUserByUsername(username)
         .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
     List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
-    return mapUserToCustomUserDetails(user, authorities);
+    return mapUserToAppUserDetails(user, authorities);
   }
 
-  private AppUserDetails mapUserToCustomUserDetails(User user, List<SimpleGrantedAuthority> authorities) {
+  private AppUserDetails mapUserToAppUserDetails(UserData user, List<SimpleGrantedAuthority> authorities) {
     AppUserDetails appUserDetails = new AppUserDetails();
     appUserDetails.setId(user.getId());
     appUserDetails.setUsername(user.getUsername());

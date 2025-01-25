@@ -12,7 +12,6 @@ function LocationList({ locations }) {
                 <Table striped bordered hover>
                     <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Status</th>
                         <th>Community ID</th>
@@ -25,7 +24,6 @@ function LocationList({ locations }) {
                     <tbody>
                     {locations.map((location) => (
                         <tr key={location.id}>
-                            <td>{location.id || "N/A"}</td>
                             <td>
                                 <Button
                                     variant="link"

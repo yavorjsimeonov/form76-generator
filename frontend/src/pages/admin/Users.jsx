@@ -6,6 +6,7 @@ import Footer from "../../components/common/Footer";
 import UserForm from "../../components/UserForm";
 import { useAuth } from "../../components/common/AuthContext";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
+import { Link } from "react-router-dom";
 
 function UsersPage() {
     const Auth = useAuth();
@@ -14,12 +15,12 @@ function UsersPage() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showUserModal, setShowUserModal] = useState(false); // Modal visibility state
+    const [showUserModal, setShowUserModal] = useState(false);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await form76GeneratorApi.getUsers(user); // Fetch all users
+                const response = await form76GeneratorApi.getUsers(user);
                 setUsers(response.data);
             } catch (error) {
                 setError(error.message);
@@ -33,8 +34,8 @@ function UsersPage() {
 
     const handleCreateUser = async (newUser) => {
         try {
-            const response = await form76GeneratorApi.createUser(user, newUser); // Create a new user
-            setUsers([...users, response.data]); // Add the new user to the list
+            const response = await form76GeneratorApi.createUser(user, newUser);
+            setUsers([...users, response.data]);
         } catch (error) {
             console.error("Error creating user:", error);
         } finally {
@@ -52,7 +53,7 @@ function UsersPage() {
                         <h2>User Management</h2>
                         <Button
                             variant="primary"
-                            onClick={() => setShowUserModal(true)} // Open Create User Modal
+                            onClick={() => setShowUserModal(true)}
                             style={{ marginBottom: "20px" }}
                         >
                             Add User
@@ -65,11 +66,10 @@ function UsersPage() {
                             <Table striped bordered hover>
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Username</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Email</th>
-                                    <th>Username</th>
                                     <th>Role</th>
                                     <th>Status</th>
                                 </tr>
@@ -77,11 +77,14 @@ function UsersPage() {
                                 <tbody>
                                 {users.map((user) => (
                                     <tr key={user.id}>
-                                        <td>{user.id}</td>
+                                        <td>
+                                            <Link to={`/users/${user.id}`}>
+                                                {user.username}
+                                            </Link>
+                                        </td>
                                         <td>{user.firstName}</td>
                                         <td>{user.lastName}</td>
                                         <td>{user.email}</td>
-                                        <td>{user.username}</td>
                                         <td>{user.role}</td>
                                         <td>{user.active ? "Active" : "Inactive"}</td>
                                     </tr>

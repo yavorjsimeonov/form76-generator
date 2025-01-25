@@ -1,6 +1,7 @@
 package com.form76.generator.service;
 
 import com.form76.generator.db.entity.Location;
+import com.form76.generator.rest.model.LocationData;
 import com.form76.generator.db.entity.ReportAlgorithm;
 import com.form76.generator.kafka.ReportGenerationRequestEventProducer;
 import com.form76.generator.service.model.*;
@@ -56,17 +57,17 @@ public class Form76ReportService {
   public void triggerReportsGeneration() {
 
     try {
-      List<Location> locations = locationService.getActiveLocationsInActiveAdministrations();
+      List<LocationData> locations = locationService.getActiveLocationsInActiveAdministrations();
 
       logger.info("Found active locations: " + locations);
 
-      for (Location location : locations) {
+      for (LocationData locationData : locations) {
         // Generate DoorOpeningLogRequest for each location
         DoorOpeningLogRequest request = new DoorOpeningLogRequest(
-            location.getName(),
-            location.getExtCommunityId(),
-            location.getExtCommunityUuid(),
-            location.getReportAlgorithm(),
+            locationData.getName(),
+            locationData.getExtCommunityId(),
+            locationData.getExtCommunityUuid(),
+            locationData.getReportAlgorithm(),
             LocalDateTime.now().minusMonths(1),
             LocalDateTime.now()
         );

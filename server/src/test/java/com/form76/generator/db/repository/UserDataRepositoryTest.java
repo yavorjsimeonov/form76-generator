@@ -16,7 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class UserRepositoryTest {
+public class UserDataRepositoryTest {
 
   @Autowired
   private UserRepository userRepository;
