@@ -50,7 +50,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     {/* Second Row: Community ID and Community UUID */}
                     <Row>
                         <Col>
-                            <Form.Group controlId="formExtCommunityId" className="mt-3">
+                            <Form.Group controlId="formExtCommunityId" className="">
                                 <Form.Label>Community ID</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -62,7 +62,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formExtCommunityUuid" className="mt-3">
+                            <Form.Group controlId="formExtCommunityUuid" className="">
                                 <Form.Label>Community UUID</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -78,7 +78,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     {/* Third Row: Representative Name and Email */}
                     <Row>
                         <Col>
-                            <Form.Group controlId="formRepresentativeName" className="mt-3">
+                            <Form.Group controlId="formRepresentativeName" className="">
                                 <Form.Label>Representative Name</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -90,7 +90,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formRepresentativeEmail" className="mt-3">
+                            <Form.Group controlId="formRepresentativeEmail" className="">
                                 <Form.Label>Representative Email</Form.Label>
                                 <Form.Control
                                     type="email"
@@ -106,7 +106,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     {/* Fourth Row: Report Algorithm and Active Status */}
                     <Row>
                         <Col>
-                            <Form.Group controlId="formReportAlgorithm" className="mt-3">
+                            <Form.Group controlId="formReportAlgorithm" className="">
                                 <Form.Label>Report Algorithm</Form.Label>
                                 <Form.Select
                                     name="reportAlgorithm"
@@ -122,7 +122,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formActive" className="mt-3">
+                            <Form.Group controlId="formActive" className="">
                                 <Form.Label>Status</Form.Label>
                                 <Form.Check
                                     type="checkbox"

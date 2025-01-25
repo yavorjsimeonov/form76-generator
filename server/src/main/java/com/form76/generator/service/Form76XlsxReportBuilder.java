@@ -35,8 +35,6 @@ public class Form76XlsxReportBuilder {
   private static final short SMALL_FONT_HEIGHT = 9;
   private static final String SHEET_NAME = "Форма 76";
 
-  private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
   private CellStyle defaultStyle, boldStyle, alignRightStyle, dateStyle, dateTimeStyle,
       sheetHeaderCenterStyle, sheetHeaderStyle, dataTableStyle, dataTableHeaderStyle, dataTableHeaderRotatedStyle;
 

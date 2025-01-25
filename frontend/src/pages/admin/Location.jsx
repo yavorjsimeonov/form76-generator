@@ -57,15 +57,17 @@ function LocationDetailsPage() {
         }
     };
 
-    const handleGenerateReport = (reportRequest) => {
+    const handleGenerateReport = async (reportRequest) => {
         const request = {
             locationId: location.id,
             ...reportRequest,
         };
 
         try {
-            const response = form76GeneratorApi.generateReportForLocation(user, location.id, request);
-            if (response.ok && response.data) {
+            const response = await form76GeneratorApi.generateReportForLocation(user, location.id, request);
+            console.log("Generate report response:", response);
+
+            if (response.status === 200 && response.data) {
                 setToastMessage(`Report generation triggered successfully! An email will be send to ${location.representativeEmail}`);
                 setToastColor("success"); // Green toast for success
                 setShowToast(true);

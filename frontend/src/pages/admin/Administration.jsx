@@ -5,10 +5,10 @@ import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Footer from "../../components/common/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
-import LocationForm from "../../components/LocationForm";
 import LocationList from "../../components/LocationList";
 import { useAuth } from "../../components/common/AuthContext";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
+
 function AdministrationPage() {
     const Auth = useAuth();
     const user = Auth.getUser();
@@ -18,8 +18,7 @@ function AdministrationPage() {
     const [administration, setAdministration] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showAdminModal, setShowAdminModal] = useState(false);
-    const [showLocationModal, setShowLocationModal] = useState(false);
+    const [showAdministrationModal, setShowAdministrationModal] = useState(false);
 
     useEffect(() => {
         const fetchAdministration = async () => {
@@ -43,24 +42,7 @@ function AdministrationPage() {
         } catch (error) {
             console.error("Error editing administration:", error);
         } finally {
-            setShowAdminModal(false);
-        }
-    };
-
-    const handleCreateLocation = async (newLocation) => {
-        try {
-            const response = await form76GeneratorApi.createLocation(user, {
-                ...newLocation,
-                administrationId: id,
-            });
-            setAdministration((prev) => ({
-                ...prev,
-                locations: [...prev.locations, response.data],
-            }));
-        } catch (error) {
-            console.error("Error creating location:", error);
-        } finally {
-            setShowLocationModal(false);
+            setShowAdministrationModal(false);
         }
     };
 
@@ -90,18 +72,9 @@ function AdministrationPage() {
                                     </div>
                                 </div>
 
-                                <LocationList locations={administration.locations} />
-
-                                <Button
-                                    variant="primary"
-                                    onClick={() => setShowLocationModal(true)}
-                                    style={{ marginRight: "10px"}}
-                                >
-                                    Create Location
-                                </Button>
                                 <Button
                                     variant="warning"
-                                    onClick={() => setShowAdminModal(true)}
+                                    onClick={() => setShowAdministrationModal(true)}
                                     style={{ marginRight: "10px" }}
                                 >
                                     Edit
@@ -109,6 +82,18 @@ function AdministrationPage() {
                                 <Button variant="secondary" onClick={() => navigate(-1)}>
                                     Back
                                 </Button>
+
+                                {/* Locations List */}
+                                <LocationList
+                                    locations={administration.locations}
+                                    administrationId={id} // Pass the administration ID
+                                    onLocationCreated={(newLocation) =>
+                                        setAdministration((prev) => ({
+                                            ...prev,
+                                            locations: [...prev.locations, newLocation],
+                                        }))
+                                    }
+                                />
                             </>
                         ) : (
                             <p>Administration not found.</p>
@@ -120,30 +105,12 @@ function AdministrationPage() {
 
             {/* Modal for Editing Administration */}
             <AdministrationFormModal
-                show={showAdminModal}
-                onHide={() => setShowAdminModal(false)}
+                show={showAdministrationModal}
+                onHide={() => setShowAdministrationModal(false)}
                 onSubmit={handleEdit}
                 initialData={administration || { name: "", active: true }}
                 title="Edit Administration"
             />
-
-            {/* Modal for Creating Location */}
-            <LocationForm
-                show={showLocationModal}
-                onHide={() => setShowLocationModal(false)}
-                onSubmit={handleCreateLocation}
-                initialData={{
-                    name: "",
-                    extCommunityId: "",
-                    extCommunityUuid: "",
-                    representativeName: "",
-                    representativeEmail: "",
-                    reportAlgorithm: "EVERY_IN_OUT",
-                    active: true,
-                }}
-                title="Create Location"
-            />
-
         </div>
     );
 }

@@ -26,9 +26,6 @@ public class Form76ReportService {
 
   static boolean xlsxFile = true;
 
-  private static final SimpleDateFormat REPORT_TIMESTAMPS_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-  private static final SimpleDateFormat REPORT_FILE_NAME_TIMESTAMPS_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
-  private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
   private static final List<String> ACCEPTED_OPEN_DOOR_TYPES = Arrays.asList("Mobile phone bluetooth door", "Face open door", "Open door card", "Open the door remotely");
 
   @Value("${form76-generator.output.file.name.format}")
@@ -166,7 +163,7 @@ public class Form76ReportService {
 
     TreeMap<String, List<DoorEvent>> doorEventsPerDate = new TreeMap<>();
     doorEvents.forEach(doorEvent -> {
-      String date = toDateString(doorEvent.getEventDateTime());
+      String date = DateHelper.toDateString(doorEvent.getEventDateTime());
       if (!doorEventsPerDate.containsKey(date)) {
         doorEventsPerDate.put(date, new ArrayList<>());
       }
@@ -197,7 +194,7 @@ public class Form76ReportService {
     DoorEvent inEvent = null;
     while (i <  doorEvents.size()) {
       DoorEvent currentDoorEvent = doorEvents.get(i);
-      Date currentEventDate = DateUtils.truncate(REPORT_TIMESTAMPS_FORMAT.parse(currentDoorEvent.getEventTime()), Calendar.DATE);
+      Date currentEventDate = DateUtils.truncate(DateHelper.parseReportDate(currentDoorEvent.getEventTime()), Calendar.DATE);
 
       long timeToAdd = 0L;
       if (currentDoorEvent.isInEvent()) {
@@ -215,14 +212,14 @@ public class Form76ReportService {
           }
         }
 
-        timeToAdd = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(inEvent.getEventTime()), outEvent != null ? REPORT_TIMESTAMPS_FORMAT.parse(outEvent.getEventTime()) : null);
+        timeToAdd = calculateWorkDuration(DateHelper.parseReportDate(inEvent.getEventTime()), outEvent != null ? DateHelper.parseReportDate(outEvent.getEventTime()) : null);
         inEvent = null;
       } else { //!currentDoorEvent.isInEvent
         DoorEvent outEvent = currentDoorEvent;
         if (inEvent == null) {
-          timeToAdd = calculateWorkDuration(DATE_FORMAT.parse(date), REPORT_TIMESTAMPS_FORMAT.parse(outEvent.getEventTime()));
+          timeToAdd = calculateWorkDuration(DateHelper.parseDate(date), DateHelper.parseReportDate(outEvent.getEventTime()));
         } else {
-          timeToAdd = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(inEvent.getEventTime()), REPORT_TIMESTAMPS_FORMAT.parse(outEvent.getEventTime()));
+          timeToAdd = calculateWorkDuration(DateHelper.parseReportDate(inEvent.getEventTime()), DateHelper.parseReportDate(outEvent.getEventTime()));
           inEvent = null;
         }
       }
@@ -247,16 +244,12 @@ public class Form76ReportService {
     }
 
     if (firstInEvent != null && lastOutEvent != null) {
-      long hoursWorked = calculateWorkDuration(REPORT_TIMESTAMPS_FORMAT.parse(firstInEvent.getEventTime()), REPORT_TIMESTAMPS_FORMAT.parse(lastOutEvent.getEventTime()));
+      long hoursWorked = calculateWorkDuration(DateHelper.parseReportDate(firstInEvent.getEventTime()), DateHelper.parseReportDate(lastOutEvent.getEventTime()));
       employee.getWorkedHoursPerDate().put(date, hoursWorked);
     } else {
       logger.info("Incomplete door events(firstInEvent[" + firstInEvent +"], lastOutEvent=[" + lastOutEvent + "]. Cannot calculate worked hours.");
       employee.getWorkedHoursPerDate().put(date, 0L);
     }
-  }
-
-  private String toDateString(Date timestamp) {
-    return DATE_FORMAT.format(DateUtils.truncate(timestamp, Calendar.DATE));
   }
 
   private long calculateWorkDuration(Date inEvent, Date outEvent) {
@@ -291,6 +284,6 @@ public class Form76ReportService {
   }
 
   private String getOutputFileName(String locationExtCommunityUuid, Boolean firstLast) {
-    return "Report_Forma76_" + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + REPORT_FILE_NAME_TIMESTAMPS_FORMAT.format(new Date()) + ".xlsx";
+    return "Report_Forma76_" + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + DateHelper.getTimeStampForReportFile(new Date()) + ".xlsx";
   }
 }

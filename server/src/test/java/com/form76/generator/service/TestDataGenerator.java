@@ -48,7 +48,7 @@ public class TestDataGenerator {
 
       Calendar calendar = Calendar.getInstance();
       calendar.set(Calendar.MONTH, month - 1);
-      monthEmployee.put(new SimpleDateFormat(DateHelper.YEAR_MONTH_DATE_FORMAT).format(calendar.getTime()), employees);
+      monthEmployee.put(new SimpleDateFormat(DateHelper.YEAR_MONTH_FORMAT).format(calendar.getTime()), employees);
     }
 
 //    Form76ReportGenerator generator = new Form76ReportGenerator();
