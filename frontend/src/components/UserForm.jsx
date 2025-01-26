@@ -95,6 +95,7 @@ function UserForm({
                                     onChange={(e) =>
                                         setFormData({ ...formData, email: e.target.value })
                                     }
+                                    required
                                 />
                             </Form.Group>
                         </Col>
@@ -108,6 +109,7 @@ function UserForm({
                                     onChange={(e) =>
                                         setFormData({ ...formData, username: e.target.value })
                                     }
+                                    required
                                 />
                             </Form.Group>
                         </Col>
@@ -123,6 +125,7 @@ function UserForm({
                                     onChange={(e) =>
                                         setFormData({ ...formData, password: e.target.value })
                                     }
+                                    required
                                 />
                             </Form.Group>
                         </Col>
@@ -136,6 +139,7 @@ function UserForm({
                                     onChange={(e) =>
                                         setFormData({ ...formData, confirmPassword: e.target.value })
                                     }
+                                    required
                                 />
                             </Form.Group>
                         </Col>

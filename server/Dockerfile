@@ -5,6 +5,7 @@ ENV LANG en_GB.UTF-8
 RUN apk add --update ttf-dejavu && rm -rf /var/cache/apk/*
 
 ADD ./src/main/resources/application.properties /app/application.properties
+ADD ./src/main/resources/nimble-theme-448917-u5-c5df7d240535.json /app/nimble-theme-448917-u5-c5df7d240535.json
 ADD ./src/main/resources/log4j2.xml /logs/log4j2.xml
 #ADD ./build/libs/form76-generator-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/form76.war
 

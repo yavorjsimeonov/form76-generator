@@ -43,6 +43,9 @@ public class Form76ReportService {
   @Autowired
   ReportGenerationRequestEventProducer reportGenerationRequestEventProducer;
 
+  @Autowired
+  UploadReportService uploadReportService;
+
   /**
    *   OK load active locations with active administrations (call method in LocationService)
    *   for every location:
@@ -88,15 +91,17 @@ public class Form76ReportService {
       boolean firstLast = request.getReportAlgorithm() == ReportAlgorithm.FIRST_IN_LAST_OUT;
       calculateWorkedHours(request.getLocationName(), request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
-      String generatedFilePath = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
+      String generatedFileName = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
-      logger.info("generatedFilePath: " + generatedFilePath);
+      logger.info("generatedFileName: " + generatedFileName);
 
       EmailRequest emailRequest = new EmailRequest();
       emailRequest.setRecipient("yavorjsimeonov@gmail.com");
-      emailRequest.setMsgBody(generatedFilePath);
+      emailRequest.setMsgBody(generatedFileName);
       emailRequest.setSubject("test");
-      emailRequest.setAttachment(generatedFilePath);
+      emailRequest.setAttachment(generatedFileName);
+
+      uploadReportService.uploadFile(generatedFileName);
 
       emailService.sendMailWithAttachment(emailRequest);
     } catch (Exception e) {
@@ -274,7 +279,7 @@ public class Form76ReportService {
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
-    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build().asFileOutputStream(outputFileName);
+    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build().asFileOutputStream("/tmp/" + outputFileName);
     generatedReportFile.flush();
     generatedReportFile.close();
 
