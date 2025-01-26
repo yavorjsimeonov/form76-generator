@@ -25,8 +25,14 @@ public class Report {
   @Column(name = "creation_date", nullable = false)
   private LocalDateTime creationDate;
 
-  @Column(name = "cloud_storage_reference", nullable = false)
+  @Column(name = "cloud_storage_reference")
   private String cloudStorageReference;
+
+  @Column(name = "report_period_start_date_time", nullable = false)
+  private LocalDateTime reportPeriodStartDateTime;
+
+  @Column(name = "report_period_end_date_time", nullable = false)
+  private LocalDateTime reportPeriodEndDateTime;
 
   @OneToOne
   private Location location;

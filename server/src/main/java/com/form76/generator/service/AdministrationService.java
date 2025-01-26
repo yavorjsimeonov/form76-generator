@@ -112,6 +112,7 @@ public class AdministrationService {
     location.setRepresentativeEmail(locationData.getRepresentativeEmail());
     location.setReportAlgorithm(locationData.getReportAlgorithm());
     location.setActive(locationData.isActive());
+    location.setSendEmail(locationData.isSendEmail());
 
     if (locationData.getAdministrationId() != null) {
       Administration administration = administrationRepository.findById(locationData.getAdministrationId()).orElseThrow(() -> new IllegalArgumentException("Administration not found for id: " + locationData.getAdministrationId()));;
@@ -130,6 +131,7 @@ public class AdministrationService {
         location.getRepresentativeEmail(),
         location.getReportAlgorithm(),
         location.isActive(),
+        location.isSendEmail(),
         null,
         /*location.getAdministration() != null
             ? convertToAdministrationData(location.getAdministration())

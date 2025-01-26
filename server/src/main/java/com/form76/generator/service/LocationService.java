@@ -44,6 +44,7 @@ public class LocationService {
     return locationRepository.findById(id).map(existingLocation -> {
       existingLocation.setName(updatedLocationData.getName());
       existingLocation.setActive(updatedLocationData.isActive());
+      existingLocation.setSendEmail(updatedLocationData.isSendEmail());
       existingLocation.setExtCommunityId(updatedLocationData.getExtCommunityId());
       existingLocation.setExtCommunityUuid(updatedLocationData.getExtCommunityUuid());
       existingLocation.setReportAlgorithm(updatedLocationData.getReportAlgorithm());
@@ -70,6 +71,7 @@ public class LocationService {
     location.setRepresentativeEmail(locationData.getRepresentativeEmail());
     location.setReportAlgorithm(locationData.getReportAlgorithm());
     location.setActive(locationData.isActive());
+    location.setSendEmail(locationData.isSendEmail());
 
     if (locationData.getAdministrationId() != null) {
       Administration administration = administrationRepository.findById(locationData.getAdministrationId())
@@ -90,6 +92,7 @@ public class LocationService {
         location.getRepresentativeEmail(),
         location.getReportAlgorithm(),
         location.isActive(),
+        location.isSendEmail(),
         location.getAdministration() != null ? location.getAdministration().getId() : null,
         null // Handle device conversion if necessary
     );

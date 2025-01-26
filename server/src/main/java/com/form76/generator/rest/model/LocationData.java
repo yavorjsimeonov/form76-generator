@@ -31,6 +31,8 @@ public class LocationData {
 
   private boolean active;
 
+  private boolean sendEmail;
+
   private String administrationId;
 
   private Set<Device> devices;

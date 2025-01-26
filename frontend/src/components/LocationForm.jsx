@@ -122,7 +122,17 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formActive" className="">
+                            <Form.Group controlId="formActive" className="" styleClass="float:left">
+                                <Form.Label>Send Email</Form.Label>
+                                <Form.Check
+                                    type="checkbox"
+                                    name="active"
+                                    label="Active"
+                                    checked={formData.active || false}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formActive" className="" styleClass="float:left">
                                 <Form.Label>Status</Form.Label>
                                 <Form.Check
                                     type="checkbox"

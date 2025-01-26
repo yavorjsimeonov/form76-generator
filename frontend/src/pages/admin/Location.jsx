@@ -8,9 +8,9 @@ import Footer from "../../components/common/Footer";
 import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Toast from "../../components/common/Toast";
-import ApiCallToast from "../../components/common/ApiCallToast";
 import {useAuth} from "../../components/common/AuthContext";
 import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
+import ReportList from "../../components/ReportList";
 
 function LocationDetailsPage() {
     const Auth = useAuth();
@@ -157,6 +157,8 @@ function LocationDetailsPage() {
                             <Button variant="secondary" onClick={() => navigate(-1)}>
                                 Back
                             </Button>
+
+                            <ReportList locationId={location.id} />
                         </Col>
                     </Row>
 

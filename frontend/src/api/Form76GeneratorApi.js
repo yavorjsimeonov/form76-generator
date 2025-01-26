@@ -14,7 +14,9 @@ export const form76GeneratorApi = {
     getUsers,
     createUser,
     getUserDetails,
-    updateUser
+    updateUser,
+    getReportsForLocation,
+    downloadReport
 }
 
 function authenticate(username, password) {
@@ -144,6 +146,24 @@ function generateReportForLocation(user, locationId, reportGenerationRequest) {
             'Authorization': basicAuth(user)
         }
     })
+}
+
+function getReportsForLocation(user, locationId) {
+    return instance.get(`/api/locations/${locationId}/reports`, {
+        headers: {
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        }});
+}
+
+function downloadReport(user, reportId) {
+    return instance.post(`/api/reports/${reportId}/download`, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        }
+    });
 }
 
 // -- Axios
