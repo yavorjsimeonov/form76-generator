@@ -74,7 +74,8 @@ public class Form76ReportService {
             locationData.getExtCommunityUuid(),
             locationData.getReportAlgorithm(),
             LocalDateTime.now().minusMonths(1),
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            locationData.isSendEmail()
         );
 
         reportGenerationRequestEventProducer.publishReportGenerationRequest(request.getLocationExtCommunityUuid(), request);
@@ -115,7 +116,10 @@ public class Form76ReportService {
           request.getStartDateTime(), request.getEndDateTime(),
           request.getLocationId(), request.getLocationName()
       ));
-      emailService.sendMailWithAttachment(emailRequest);
+
+      if (request.isSendEmail()) {
+        emailService.sendMailWithAttachment(emailRequest);
+      }
     } catch (Exception e) {
       logger.error("Error generating report for location: " + request.getLocationName(), e);
     }

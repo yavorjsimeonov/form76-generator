@@ -34,6 +34,7 @@ public class SecurityConfig {
             .requestMatchers("/api/locations/**").hasAnyAuthority("ADMIN", "USER")
             .requestMatchers("/api/users").hasAnyAuthority("ADMIN")
             .requestMatchers("/api/users/**").hasAnyAuthority("ADMIN")
+            .requestMatchers("api/reports/**").hasAnyAuthority("ADMIN", "USER")
             .requestMatchers("/api/**").hasAnyAuthority("ADMIN")
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())

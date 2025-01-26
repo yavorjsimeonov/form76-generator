@@ -28,4 +28,6 @@ public class DoorOpeningLogRequest {
   private LocalDateTime startDateTime;
 
   private LocalDateTime endDateTime;
+
+  private boolean sendEmail;
 }

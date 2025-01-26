@@ -25,9 +25,16 @@ function ReportList({ locationId }) {
         fetchReports();
     }, [locationId]);
 
-    const handleDownload = async (reportId) => {
+    const handleDownload = async (reportId, reportFileName) => {
         try {
-            await form76GeneratorApi.downloadReport(reportId);
+            const response = await form76GeneratorApi.downloadReport(user, reportId);
+            const blob = new Blob([response.data], { type: response.headers["Content-Type"] });
+            let a = document.createElement('a');
+            let url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = reportFileName;
+            a.click();
+            document.body.removeChild(a);
         } catch (error) {
             console.error("Error sending file name to the backend:", error);
         }
@@ -55,7 +62,7 @@ function ReportList({ locationId }) {
                             <td>
                                 <Button
                                     variant="link"
-                                    onClick={() => handleDownload(user, report.id)}
+                                    onClick={() => handleDownload(report.id, report.fileName)}
                                 >
                                     {report.fileName}
                                 </Button>

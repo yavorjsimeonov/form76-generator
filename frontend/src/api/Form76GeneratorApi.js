@@ -157,13 +157,13 @@ function getReportsForLocation(user, locationId) {
 }
 
 function downloadReport(user, reportId) {
-    return instance.post(`/api/reports/${reportId}/download`, {
+    return instance.post(`/api/reports/${reportId}/download`, '', {
+        responseType: 'blob',
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             'Access-Control-Allow-Origin': "*",
             'Authorization': basicAuth(user)
-        }
-    });
+        }});
 }
 
 // -- Axios

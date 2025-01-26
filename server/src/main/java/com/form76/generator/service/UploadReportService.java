@@ -12,10 +12,7 @@ import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 
 @Service
@@ -50,8 +47,9 @@ public class UploadReportService {
 
     storage.downloadTo(blobInfo.getBlobId(), Paths.get(filePath));
 
-    FileInputStream byteArrayInputStream = new FileInputStream(filePath);
-    return new ReportDownloadResponse(fileName, byteArrayInputStream.readAllBytes());
+    try (FileInputStream byteArrayInputStream = new FileInputStream(filePath)) {
+      return new ReportDownloadResponse(fileName, byteArrayInputStream.readAllBytes());
+    }
   }
 
   private Storage getReportsBucket() throws IOException {

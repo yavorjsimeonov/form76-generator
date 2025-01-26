@@ -34,6 +34,7 @@ public class Report {
   @Column(name = "report_period_end_date_time", nullable = false)
   private LocalDateTime reportPeriodEndDateTime;
 
-  @OneToOne
+  @ManyToOne
+  @JoinColumn(name="location_id", nullable=false)
   private Location location;
 }
