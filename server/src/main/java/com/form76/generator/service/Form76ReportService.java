@@ -114,7 +114,7 @@ public class Form76ReportService {
           null, generatedFileName, LocalDateTime.now(),
           null,
           request.getStartDateTime(), request.getEndDateTime(),
-          request.getLocationId(), request.getLocationName()
+          request.getLocationId(), request.getLocationName(), null
       ));
 
       if (request.isSendEmail()) {
@@ -219,9 +219,9 @@ public class Form76ReportService {
 
       long timeToAdd = 0L;
       if (currentDoorEvent.isInEvent()) {
-        if (inEvent == null) { // ne mislq che tazi proverka e nujna
+
           inEvent = currentDoorEvent;
-        }
+
 
         DoorEvent outEvent = null;
         while (outEvent == null && i <  doorEvents.size() - 1) {

@@ -21,8 +21,9 @@ public class ReportResource {
   ReportService reportService;
 
   @GetMapping("")
-  public List<ReportData> listReports() {
-    return null;
+  public ResponseEntity<List<ReportData>> listReports() {
+    List<ReportData> reports = reportService.listReports();
+    return ResponseEntity.ok(reports);
   }
 
 
@@ -36,5 +37,7 @@ public class ReportResource {
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + downloadResponse.fileName())
         .body(downloadResponse.content());
   }
+
+
 
 }

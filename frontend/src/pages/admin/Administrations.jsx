@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import { config } from "../../api/Constants";
 import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Footer from "../../components/common/Footer";
@@ -51,7 +50,6 @@ function AdministrationsPage() {
                 <Row className="justify-content-md-center">
                     <Col md={12}>
                         <h2>Administrations List</h2>
-                        {/* Show the button only if the user is an ADMIN */}
                         {user.role === "ADMIN" && (
                             <Button
                                 variant="primary"

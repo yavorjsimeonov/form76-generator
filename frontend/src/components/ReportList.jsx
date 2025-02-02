@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "react-bootstrap";
 import { form76GeneratorApi } from "../api/Form76GeneratorApi";
-import {useAuth} from "./common/AuthContext";
+import { useAuth } from "./common/AuthContext";
 
-function ReportList({ locationId }) {
+function ReportList({ locationId = null, showAdminAndLocation = false }) {
     const Auth = useAuth();
     const user = Auth.getUser();
     const [reports, setReports] = useState([]);
@@ -13,7 +13,12 @@ function ReportList({ locationId }) {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const response = await form76GeneratorApi.getReportsForLocation(user, locationId);
+                let response;
+                if (locationId) {
+                    response = await form76GeneratorApi.getReportsForLocation(user, locationId);
+                } else {
+                    response = await form76GeneratorApi.getAllReports(user);
+                }
                 setReports(response.data);
             } catch (error) {
                 setError(error.message);
@@ -25,16 +30,10 @@ function ReportList({ locationId }) {
         fetchReports();
     }, [locationId]);
 
-    const handleDownload = async (reportId, reportFileName) => {
+    const handleDownload = async (fileName) => {
         try {
-            const response = await form76GeneratorApi.downloadReport(user, reportId);
-            const blob = new Blob([response.data], { type: response.headers["Content-Type"] });
-            let a = document.createElement('a');
-            let url = URL.createObjectURL(blob);
-            a.href = url;
-            a.download = reportFileName;
-            a.click();
-            document.body.removeChild(a);
+            await form76GeneratorApi.downloadReport(fileName);
+            alert(`Report "${fileName}" sent to the backend for processing.`);
         } catch (error) {
             console.error("Error sending file name to the backend:", error);
         }
@@ -54,6 +53,8 @@ function ReportList({ locationId }) {
                         <th>Creation Date</th>
                         <th>Period Start</th>
                         <th>Period End</th>
+                        {showAdminAndLocation && <th>Administration Name</th>}
+                        {showAdminAndLocation && <th>Location Name</th>}
                     </tr>
                     </thead>
                     <tbody>
@@ -62,7 +63,7 @@ function ReportList({ locationId }) {
                             <td>
                                 <Button
                                     variant="link"
-                                    onClick={() => handleDownload(report.id, report.fileName)}
+                                    onClick={() => handleDownload(report.fileName)}
                                 >
                                     {report.fileName}
                                 </Button>
@@ -70,12 +71,14 @@ function ReportList({ locationId }) {
                             <td>{new Date(report.creationDate).toLocaleString()}</td>
                             <td>{new Date(report.reportPeriodStartDateTime).toLocaleString()}</td>
                             <td>{new Date(report.reportPeriodEndDateTime).toLocaleString()}</td>
+                            {showAdminAndLocation && <td>{report.administrationName || "N/A"}</td>}
+                            {showAdminAndLocation && <td>{report.locationName || "N/A"}</td>}
                         </tr>
                     ))}
                     </tbody>
                 </Table>
             ) : (
-                <p>No reports available for this location.</p>
+                <p>No reports available.</p>
             )}
         </div>
     );

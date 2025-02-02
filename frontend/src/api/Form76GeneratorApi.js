@@ -16,7 +16,9 @@ export const form76GeneratorApi = {
     getUserDetails,
     updateUser,
     getReportsForLocation,
-    downloadReport
+    downloadReport,
+    getAllReports,
+    changePassword
 }
 
 function authenticate(username, password) {
@@ -134,6 +136,15 @@ function updateUser(user, userId, updatedUser) {
     });
 }
 
+function changePassword(user, passwordData) {
+    return instance.post(`/api/users/${user.id}/change-password`, passwordData, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        },
+    });
+}
 
 
 function generateReportForLocation(user, locationId, reportGenerationRequest) {
@@ -154,6 +165,17 @@ function getReportsForLocation(user, locationId) {
             'Access-Control-Allow-Origin': "*",
             'Authorization': basicAuth(user)
         }});
+}
+
+
+function getAllReports(user) {
+    return instance.get(`/api/reports`, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        },
+    });
 }
 
 function downloadReport(user, reportId) {

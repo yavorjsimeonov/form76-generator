@@ -28,4 +28,6 @@ public class ReportData {
   private String locationId;
 
   private String locationName;
+
+  private String administrationName;
 }

@@ -30,7 +30,6 @@ function LocationDetailsPage() {
     const [toastColor, setToastColor] = useState("primary");
 
     useEffect(() => {
-//        if (!location) {
             const fetchLocation = async () => {
                 try {
                     const response = await form76GeneratorApi.getLocation(user, id);
@@ -43,7 +42,6 @@ function LocationDetailsPage() {
             };
 
             fetchLocation();
- //       }
     }, [id]);
 
     const handleEdit = async (updatedLocation) => {
@@ -158,7 +156,7 @@ function LocationDetailsPage() {
                                 Back
                             </Button>
 
-                            <ReportList locationId={location.id} />
+                            <ReportList locationId={location.id} showAdminAndLocation={false} />
                         </Col>
                     </Row>
 

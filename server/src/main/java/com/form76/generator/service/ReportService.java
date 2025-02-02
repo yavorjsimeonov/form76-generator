@@ -29,8 +29,7 @@ public class ReportService {
   }
 
   public List<ReportData> listReports() {
-
-    return null;
+    return reportRepository.findAll().stream().map(this::convertToReportData).toList();
   }
 
   public List<ReportData> listReportsForLocation(String locationId) {
@@ -43,7 +42,7 @@ public class ReportService {
     return new ReportData(report.getId(), report.getFileName(),
         report.getCreationDate(), report.getCloudStorageReference(),
         report.getReportPeriodStartDateTime(), report.getReportPeriodEndDateTime(),
-        report.getLocation().getId(), report.getLocation().getName());
+        report.getLocation().getId(), report.getLocation().getName(), report.getLocation().getAdministration().getName());
   }
 
 
@@ -63,7 +62,8 @@ public class ReportService {
         report.getReportPeriodStartDateTime(),
         report.getReportPeriodEndDateTime(),
         report.getLocation().getId(),
-        report.getLocation().getName()
+        report.getLocation().getName(),
+        report.getLocation().getAdministration().getName()
     );
   }
   private Report convertToReport(ReportData reportData) {

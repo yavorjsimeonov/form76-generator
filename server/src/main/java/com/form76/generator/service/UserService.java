@@ -5,8 +5,10 @@ import com.form76.generator.db.entity.User;
 import com.form76.generator.db.repository.AdministrationRepository;
 import com.form76.generator.db.repository.UserRepository;
 import com.form76.generator.rest.model.AdministrationData;
+import com.form76.generator.rest.model.PasswordChangeRequest;
 import com.form76.generator.rest.model.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -117,5 +119,16 @@ public class UserService {
     );
   }
 
+  public void changeUserPassword(String userId, PasswordChangeRequest request) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+      throw new IllegalArgumentException("Current password is incorrect");
+    }
+
+    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+    userRepository.save(user);
+  }
 
 }
