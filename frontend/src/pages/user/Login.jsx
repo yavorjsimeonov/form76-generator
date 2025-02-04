@@ -5,10 +5,9 @@ import Footer from "../../components/common/Footer";
 
 function LoginPage() {
     return (
-        <div className="login-page">
-            <Header/>
+        <div className="d-flex align-items-center
+                        justify-content-center vh-100">
             <LoginForm />
-            <Footer />
         </div>
     );
 }

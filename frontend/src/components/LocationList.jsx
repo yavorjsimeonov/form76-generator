@@ -26,8 +26,8 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
     };
 
     return (
-        <div>
-            <h3>Locations</h3>
+        <div className="mt-3">
+            <h3>Локации</h3>
 
             {/* Create Location Button */}
             <Button
@@ -35,20 +35,20 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                 onClick={() => setShowLocationModal(true)}
                 style={{ marginBottom: "20px" }}
             >
-                Create Location
+                Добавяне на локация
             </Button>
 
             {locations.length > 0 ? (
-                <Table striped bordered hover>
+                <Table striped bordered hover mt-3>
                     <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Community ID</th>
-                        <th>Community UUID</th>
-                        <th>Report Algorithm</th>
-                        <th>Representative Name</th>
-                        <th>Representative Email</th>
+                        <th>Име</th>
+                        <th>Статус</th>
+                        <th>Външно ID</th>
+                        <th>Външно UUID</th>
+                        <th>Алгоритъм на справката</th>
+                        <th>Име на представител</th>
+                        <th>Електронна поща на представител</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,7 +78,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                     </tbody>
                 </Table>
             ) : (
-                <p>No locations found for this administration.</p>
+                <p>Няма регистрирани локации за избраната администрация.</p>
             )}
 
             {/* Modal for Creating Location */}
@@ -95,7 +95,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                     reportAlgorithm: "EVERY_IN_OUT",
                     active: true,
                 }}
-                title="Create Location"
+                title="Добавяне на локация"
             />
         </div>
     );

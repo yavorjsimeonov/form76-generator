@@ -21,14 +21,14 @@ function Header(props) {
     };
 
     return (
+        <>
         <Container fluid className="header">
             <Row>
                 <Col md={12}>
                     <Container fluid="md">
                         <Row className="justify-content-between align-items-center">
-                            <Col md={6} className="logo">Форма 76</Col>
-                            <Col md={6} className="userinfo d-flex justify-content-end">
-                                {user !== null && user.username && (
+                            <Col md={12} className="userinfo d-flex justify-content-end">
+                                {user !== null && (
                                     <Dropdown align="end">
                                         <Dropdown.Toggle as="div" id="profile-dropdown" className="d-flex align-items-center">
                                             <Image
@@ -39,9 +39,13 @@ function Header(props) {
                                                 height="40"
                                                 style={{ cursor: "pointer", marginRight: "10px" }}
                                             />
-                                            <span>{user.username}</span>
+                                            <span>{user.firstName}&nbsp;{user.lastName}</span>
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
+                                            <Container>
+                                                {user.userName}
+                                            </Container>
+                                            <Dropdown.Divider />
                                             <Dropdown.Item onClick={() => setShowChangePasswordModal(true)}>
                                                 Change Password
                                             </Dropdown.Item>
@@ -62,6 +66,7 @@ function Header(props) {
                 onHide={() => setShowChangePasswordModal(false)}
             />
         </Container>
+        </>
     );
 }
 

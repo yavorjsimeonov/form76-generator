@@ -34,11 +34,11 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     <Row>
                         <Col>
                             <Form.Group controlId="formLocationName">
-                                <Form.Label>Location Name</Form.Label>
+                                <Form.Label>Име на локация</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="name"
-                                    placeholder="Enter location name"
+                                    placeholder="Въведете име на локация"
                                     value={formData.name || ""}
                                     onChange={handleChange}
                                     required
@@ -51,11 +51,11 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     <Row>
                         <Col>
                             <Form.Group controlId="formExtCommunityId" className="">
-                                <Form.Label>Community ID</Form.Label>
+                                <Form.Label>Външно ID</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="extCommunityId"
-                                    placeholder="Enter external community ID"
+                                    placeholder="Въведете външно ID"
                                     value={formData.extCommunityId || ""}
                                     onChange={handleChange}
                                 />
@@ -63,11 +63,11 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                         </Col>
                         <Col>
                             <Form.Group controlId="formExtCommunityUuid" className="">
-                                <Form.Label>Community UUID</Form.Label>
+                                <Form.Label>Външно UUID</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="extCommunityUuid"
-                                    placeholder="Enter external community UUID"
+                                    placeholder="Въведете външно UUID"
                                     value={formData.extCommunityUuid || ""}
                                     onChange={handleChange}
                                 />
@@ -79,11 +79,11 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     <Row>
                         <Col>
                             <Form.Group controlId="formRepresentativeName" className="">
-                                <Form.Label>Representative Name</Form.Label>
+                                <Form.Label>Име на представител</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="representativeName"
-                                    placeholder="Enter representative name"
+                                    placeholder="Въведете име на представител"
                                     value={formData.representativeName || ""}
                                     onChange={handleChange}
                                 />
@@ -91,11 +91,11 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                         </Col>
                         <Col>
                             <Form.Group controlId="formRepresentativeEmail" className="">
-                                <Form.Label>Representative Email</Form.Label>
+                                <Form.Label>Електронна поща на представител</Form.Label>
                                 <Form.Control
                                     type="email"
                                     name="representativeEmail"
-                                    placeholder="Enter representative email"
+                                    placeholder="Въведете електронна поща на представител"
                                     value={formData.representativeEmail || ""}
                                     onChange={handleChange}
                                 />
@@ -107,7 +107,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     <Row>
                         <Col>
                             <Form.Group controlId="formReportAlgorithm" className="">
-                                <Form.Label>Report Algorithm</Form.Label>
+                                <Form.Label>Алгоритъм на справките</Form.Label>
                                 <Form.Select
                                     name="reportAlgorithm"
                                     value={formData.reportAlgorithm || "EVERY_IN_OUT"}
@@ -132,12 +132,13 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-                            <Form.Group controlId="formActive" className="" styleClass="float:left">
-                                <Form.Label>Status</Form.Label>
+
+                            <Form.Group controlId="formActive" className="">
+                                <Form.Label>Статус</Form.Label>
                                 <Form.Check
                                     type="checkbox"
                                     name="active"
-                                    label="Active"
+                                    label="Активен"
                                     checked={formData.active || false}
                                     onChange={handleChange}
                                 />
@@ -148,10 +149,10 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={onHide}>
-                    Cancel
+                    Откажи
                 </Button>
                 <Button variant="primary" onClick={handleSubmit}>
-                    {title === "Edit Location" ? "Save Changes" : "Create"}
+                    {title === "Редакция на локация" ? "Запази промените" : "Добави локация"}
                 </Button>
             </Modal.Footer>
         </Modal>

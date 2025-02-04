@@ -1,7 +1,8 @@
 body {
   padding: 0;
   margin: 0;
-  background: #dfe7dd;
+ /* background: #dfe7dd; */
+  background-color: #EDF3FC !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -24,3 +25,31 @@ code {
     monospace;
 }
 
+#page-content-wrapper {
+  padding: 15px;
+  width: 83.33333333%;
+  background-color: #EDF3FC !important;
+  margin: 70px 0 0;
+}
+
+.object {
+  color: #FFCA2D;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
+
+input {
+  --bs-secondary-color: #21252952;
+}
+
+.login-form-title {
+  background-color: #1E366F;
+  text-align: center;
+}
+
+.login-form-title img {
+  height: 40px;
+  margin: 15px 0;
+}

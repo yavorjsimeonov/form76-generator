@@ -1,0 +1,29 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    min-height: 100vh !important;
+    z-index: 100;
+    padding: 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    width: 16.66666667%;
+}
+#sidebar-wrapper{
+    min-height: 100vh !important;
+}
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+}
+
+.nav-bar-logo {
+    height: 70px;
+    background-color: #1E366F;
+    text-align: center;
+}
+
+.nav-bar-logo img {
+    height: 40px;
+    margin-top: 15px;
+}

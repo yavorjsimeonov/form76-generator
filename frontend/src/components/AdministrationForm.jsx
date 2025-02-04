@@ -27,10 +27,10 @@ function AdministrationFormModal({
             <Modal.Body>
                 <Form>
                     <Form.Group controlId="formAdminName">
-                        <Form.Label>Name</Form.Label>
+                        <Form.Label>Име</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter administration name"
+                            placeholder="Име на администрация"
                             value={formData.name}
                             onChange={(e) =>
                                 setFormData({ ...formData, name: e.target.value })
@@ -38,7 +38,7 @@ function AdministrationFormModal({
                         />
                     </Form.Group>
                     <Form.Group controlId="formAdminStatus" className="mt-3">
-                        <Form.Label>Status</Form.Label>
+                        <Form.Label>Статус</Form.Label>
                         <Form.Check
                             type="checkbox"
                             label="Active"

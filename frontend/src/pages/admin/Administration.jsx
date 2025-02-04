@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import {Container, Row, Col, Button, Card} from "react-bootstrap";
 import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Footer from "../../components/common/Footer";
@@ -8,6 +8,7 @@ import AdministrationFormModal from "../../components/AdministrationForm";
 import LocationList from "../../components/LocationList";
 import { useAuth } from "../../components/common/AuthContext";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
+import LeftMenu from "../../components/common/LeftMenu";
 
 function AdministrationPage() {
     const Auth = useAuth();
@@ -47,71 +48,111 @@ function AdministrationPage() {
     };
 
     return (
-        <div>
-            <Header />
-            <Menu activeKey="administrations" />
-            <Container fluid="md">
-                <Row className="justify-content-md-center">
-                    <Col md={12}>
-                        {loading ? (
-                            <p>Loading...</p>
-                        ) : error ? (
-                            <p>Error: {error}</p>
-                        ) : administration ? (
-                            <>
-                                <h2>Administration Details</h2>
-                                <div className="text-start">
+        <>
+            <Container fluid>
+                <Row>
+                    <Col md={2} id="sidebar-wrapper">
+                        <LeftMenu activeKey="administrations"/>
+                    </Col>
+                    <Col md={10} id="page-content-wrapper" >
+                        <Header/>
+                        <Container fluid="md" className="">
+                            <Row className="justify-content-md-center">
+                                {loading ? (
+                                    <p>Loading...</p>
+                                ) : error ? (
+                                    <p>Error: {error}</p>
+                                ) : administration ? (
+                                    <>
                                     <div>
-                                        <label>ID: </label><span>{administration.id}</span>
+                                        <h2>Администрация <span className="object">{administration.name}</span></h2>
                                     </div>
-                                    <div>
-                                        <label>Name: </label><span>{administration.name}</span>
-                                    </div>
-                                    <div>
-                                        <label>Status: </label><span>{administration.active ? "Active" : "Inactive"}</span>
-                                    </div>
-                                </div>
+                                    <Card class="card">
+                                        <Card.Title className="mt-3">Детайли</Card.Title>
 
-                                <Button
-                                    variant="warning"
-                                    onClick={() => setShowAdministrationModal(true)}
-                                    style={{ marginRight: "10px" }}
-                                >
-                                    Edit
-                                </Button>
-                                <Button variant="secondary" onClick={() => navigate(-1)}>
-                                    Back
-                                </Button>
+                                        <Card.Body>
+                                            <Container>
+                                                <Row>
+                                                    <Col md={6}>
+                                                        <b>Име: </b>{administration.name} <br/>
+                                                        <b>Статус: </b>{administration.active ? "Активен" : "Не активен"} <br/>
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                        </Card.Body>
+                                        <Card.Body>
+                                            <Container>
+                                                <Row>
+                                                    <Col>
+                                                        <Button
+                                                            variant="warning"
+                                                            onClick={() => setShowAdministrationModal(true)}
+                                                            style={{ marginRight: "10px" }}
+                                                        >
+                                                            Редакция
+                                                        </Button>
+                                                        <Button variant="secondary" onClick={() => navigate(-1)}>
+                                                            Назад
+                                                        </Button>
 
-                                {/* Locations List */}
-                                <LocationList
-                                    locations={administration.locations}
-                                    administrationId={id} // Pass the administration ID
-                                    onLocationCreated={(newLocation) =>
-                                        setAdministration((prev) => ({
-                                            ...prev,
-                                            locations: [...prev.locations, newLocation],
-                                        }))
-                                    }
-                                />
-                            </>
-                        ) : (
-                            <p>Administration not found.</p>
-                        )}
+
+
+                                                        {/*<Button
+                                                            variant="primary"
+                                                            onClick={() => setShowReportModal(true)}
+                                                            style={{ marginRight: "10px" }}
+                                                        >
+                                                            Добавяне на локация
+                                                        </Button>*/}
+
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+
+                                        </Card.Body>
+                                    </Card>
+
+                                    {/* Locations List */}
+                                    <LocationList
+                                        locations={administration.locations}
+                                        administrationId={id} // Pass the administration ID
+                                        onLocationCreated={(newLocation) =>
+                                            setAdministration((prev) => ({
+                                                ...prev,
+                                                locations: [...prev.locations, newLocation],
+                                            }))
+                                        }
+                                    />
+                                    </>
+                                ) : (
+                                    <p>Administration not found.</p>
+                                )}
+                            </Row>
+                        </Container>
+
+                        <Footer />
                     </Col>
                 </Row>
             </Container>
-            <Footer />
+            <div>
+                {/* Modal for Editing Administration */}
+                <AdministrationFormModal
+                    show={showAdministrationModal}
+                    onHide={() => setShowAdministrationModal(false)}
+                    onSubmit={handleEdit}
+                    initialData={administration || { name: "", active: true }}
+                    title="Edit Administration"
+                />
+            </div>
 
-            {/* Modal for Editing Administration */}
-            <AdministrationFormModal
-                show={showAdministrationModal}
-                onHide={() => setShowAdministrationModal(false)}
-                onSubmit={handleEdit}
-                initialData={administration || { name: "", active: true }}
-                title="Edit Administration"
-            />
-        </div>
+        </>
+
+
+
+
+
+
+
     );
 }
 
