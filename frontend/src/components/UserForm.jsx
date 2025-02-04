@@ -117,7 +117,7 @@ function UserForm({
                     <Row>
                         <Col>
                             <Form.Group controlId="formRole" className="">
-                                <Form.Label>Role</Form.Label>
+                                <Form.Label>Роля</Form.Label>
                                 <Form.Select
                                     value={formData.role}
                                     onChange={(e) =>
@@ -125,14 +125,14 @@ function UserForm({
                                     }
                                     required
                                 >
-                                    <option value="">Select Role</option>
+                                    <option value="">Изберете роля</option>
                                     <option value="USER">USER</option>
                                     <option value="ADMIN">ADMIN</option>
                                 </Form.Select>
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formAdministration" className="" hidden={formData.role !== "USER"}>
+                            <Form.Group controlId="formAdministration" className="" hidden={formData.role !== "USER" || title === "Редакция на потребител"}>
                                 <Form.Label>Administration</Form.Label>
                                 <Form.Select
                                     value={formData.administration}
@@ -200,7 +200,7 @@ function UserForm({
                     Cancel
                 </Button>
                 <Button variant="primary" onClick={handleSubmit}>
-                    {title === "Edit User" ? "Save Changes" : "Create"}
+                    {title === "Редакция на потребител" ? "Запази промените" : "Добави потребител"}
                 </Button>
             </Modal.Footer>
         </Modal>

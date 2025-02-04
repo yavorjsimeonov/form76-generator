@@ -35,6 +35,7 @@ function AdministrationFormModal({
                             onChange={(e) =>
                                 setFormData({ ...formData, name: e.target.value })
                             }
+                            required="true"
                         />
                     </Form.Group>
                     <Form.Group controlId="formAdminStatus" className="mt-3">

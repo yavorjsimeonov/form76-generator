@@ -49,7 +49,7 @@ function AdministrationsPage() {
             <Container fluid>
                 <Row>
                     <Col md={2} id="sidebar-wrapper">
-                        <LeftMenu activeKey="home"/>
+                        <LeftMenu activeKey="administrations"/>
                     </Col>
                     <Col md={10} id="page-content-wrapper" >
                         <Header/>
@@ -57,7 +57,7 @@ function AdministrationsPage() {
                         <Container fluid="md">
                             <Row className="justify-content-md-center">
                                 <Col md={12}>
-                                    <h2>Списък с администрации</h2>
+                                    <h2>Администрации</h2>
                                     {/* Show the button only if the user is an ADMIN */}
                                     {user.role === "ADMIN" && (
                                         <Button

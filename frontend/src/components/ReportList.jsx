@@ -43,18 +43,18 @@ function ReportList({ locationId = null, showAdminAndLocation = false }) {
     if (error) return <p>Error loading reports: {error}</p>;
 
     return (
-        <div>
-            <h3>Reports</h3>
+        <div className="mt-3">
+            <h2>Справки</h2>
             {reports.length > 0 ? (
-                <Table striped bordered hover>
+                <Table striped bordered hover >
                     <thead>
                     <tr>
-                        <th>File Name</th>
-                        <th>Creation Date</th>
-                        <th>Period Start</th>
-                        <th>Period End</th>
-                        {showAdminAndLocation && <th>Administration Name</th>}
-                        {showAdminAndLocation && <th>Location Name</th>}
+                        <th>Име на файл</th>
+                        <th>Дата на създаване</th>
+                        <th>Начална дата</th>
+                        <th>Крайна дата</th>
+                        {showAdminAndLocation && <th>Име на администрация</th>}
+                        {showAdminAndLocation && <th>Име на локация</th>}
                     </tr>
                     </thead>
                     <tbody>
