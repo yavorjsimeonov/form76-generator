@@ -36,10 +36,10 @@ function CreateLocationForm({
                     <Row>
                         <Col>
                             <Form.Group controlId="formLocationName">
-                                <Form.Label>Location Name</Form.Label>
+                                <Form.Label>Име на локация</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter location name"
+                                    placeholder="Въведете име на локация"
                                     value={formData.name}
                                     onChange={(e) =>
                                         setFormData({
@@ -57,10 +57,10 @@ function CreateLocationForm({
                     <Row>
                         <Col>
                             <Form.Group controlId="formExtCommunityId" className="mt-3">
-                                <Form.Label>Community ID</Form.Label>
+                                <Form.Label>Външно ID</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter external community ID"
+                                    placeholder="Въведете външно ID"
                                     value={formData.extCommunityId}
                                     onChange={(e) =>
                                         setFormData({
@@ -73,10 +73,10 @@ function CreateLocationForm({
                         </Col>
                         <Col>
                             <Form.Group controlId="formExtCommunityUuid" className="mt-3">
-                                <Form.Label>Community UUID</Form.Label>
+                                <Form.Label>Външно UUID</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter external community UUID"
+                                    placeholder="Въведете външно UUID"
                                     value={formData.extCommunityUuid}
                                     onChange={(e) =>
                                         setFormData({
@@ -96,10 +96,10 @@ function CreateLocationForm({
                                 controlId="formRepresentativeName"
                                 className="mt-3"
                             >
-                                <Form.Label>Representative Name</Form.Label>
+                                <Form.Label>Име на представител</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter representative name"
+                                    placeholder="Въведете име на представител"
                                     value={formData.representativeName}
                                     onChange={(e) =>
                                         setFormData({
@@ -115,10 +115,10 @@ function CreateLocationForm({
                                 controlId="formRepresentativeEmail"
                                 className="mt-3"
                             >
-                                <Form.Label>Representative Email</Form.Label>
+                                <Form.Label>Електронна поща на представител</Form.Label>
                                 <Form.Control
                                     type="email"
-                                    placeholder="Enter representative email"
+                                    placeholder="Въведете електронна поща на преставител"
                                     value={formData.representativeEmail}
                                     onChange={(e) =>
                                         setFormData({
@@ -138,7 +138,7 @@ function CreateLocationForm({
                                 controlId="formReportAlgorithm"
                                 className="mt-3"
                             >
-                                <Form.Label>Report Algorithm</Form.Label>
+                                <Form.Label>Алгоритъм на справката</Form.Label>
                                 <Form.Select
                                     value={formData.reportAlgorithm}
                                     onChange={(e) =>
@@ -158,7 +158,7 @@ function CreateLocationForm({
                         </Col>
                         <Col>
                             <Form.Group controlId="formActive" className="mt-3">
-                                <Form.Label>Status</Form.Label>
+                                <Form.Label>Статус</Form.Label>
                                 <Form.Check
                                     type="checkbox"
                                     label="Active"

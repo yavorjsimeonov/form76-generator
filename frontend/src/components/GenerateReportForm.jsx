@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, startOfDay, endOfDay } from "date-fns";
@@ -7,6 +7,8 @@ import { format, startOfDay, endOfDay } from "date-fns";
 function GenerateReportModal({ show, onHide, onSubmit }) {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [reportAlgorithm, setReportAlgorithm] = useState("EVERY_IN_OUT");
+    const reportAlgorithms = ["FIRST_IN_LAST_OUT", "EVERY_IN_OUT"];
 
     const handleGenerateReport = () => {
         if (!startDate || !endDate) {
@@ -25,28 +27,58 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
     return (
         <Modal show={show} onHide={onHide}>
             <Modal.Header closeButton>
-                <Modal.Title>Generate Report</Modal.Title>
+                <Modal.Title>Генериране на справка</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3" controlId="formStartDate">
-                        <Form.Label>Start Date</Form.Label>
-                        <DatePicker
-                            placeholderText="Select start date"
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formEndDate">
-                        <Form.Label>End Date</Form.Label>
-                        <DatePicker
-                            placeholderText="Select end date"
-                            selected={endDate}
-                            onChange={(date) => setEndDate(date)}
-                            dateFormat="yyyy-MM-dd"
-                        />
-                    </Form.Group>
+                    <Row>
+                        <Col>
+                            <Form.Group className="mb-3" controlId="formStartDate">
+                                <Form.Label>Start Date</Form.Label>
+                                <DatePicker
+                                    placeholderText="Select start date"
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="form-control"
+
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group className="mb-3" controlId="formEndDate">
+                                <Form.Label>End Date</Form.Label>
+                                <div>
+                                    <DatePicker
+                                        placeholderText="Select end date"
+                                        selected={endDate}
+                                        onChange={(date) => setEndDate(date)}
+                                        dateFormat="yyyy-MM-dd"
+                                        className="form-control"
+                                    />
+                                </div>
+
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="formReportAlgorithm" className="">
+                                <Form.Label>Алгоритъм на справките</Form.Label>
+                                <Form.Select
+                                    name="reportAlgorithm"
+                                    value={reportAlgorithm}
+                                    onChange={(algorithm) => setReportAlgorithm(algorithm.target.value)}
+                                >
+                                    {reportAlgorithms.map((algorithm) => (
+                                        <option key={algorithm} value={algorithm}>
+                                            {algorithm}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Col>
+                    </Row>
                 </Form>
             </Modal.Body>
             <Modal.Footer>

@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 
 import Header from "../components/common/Header";
 import Menu from "../components/common/Menu";
+import LeftMenu from "../components/common/LeftMenu";
 import Footer from "../components/common/Footer";
 
 import { useAuth } from '../components/common/AuthContext.jsx';
@@ -14,18 +15,22 @@ function HomePage() {
     const Auth = useAuth();
 
     return (
-        <div className="home-page">
-            <Header/>
-            <Menu activeKey="home"/>
-            <Container fluid="md" className="welcome">
-                <Row className="justify-content-md-center">
-                    <Col md={4}> <h3>Welcome {Auth.getUser().name}</h3></Col>
-                </Row>
-            </Container>
-
-            <Footer />
-        </div>
-
+        <Container fluid>
+            <Row>
+                <Col md={2} id="sidebar-wrapper">
+                    <LeftMenu activeKey="home"/>
+                </Col>
+                <Col md={10} id="page-content-wrapper" >
+                    <Header/>
+                    <Container fluid="md" className="welcome">
+                        <Row className="justify-content-md-center">
+                            <Col md={4}> <h3>Здравейте, {Auth.getUser().name}</h3></Col>
+                        </Row>
+                    </Container>
+                    <Footer />
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

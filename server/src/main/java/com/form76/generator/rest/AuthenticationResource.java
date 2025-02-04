@@ -34,7 +34,10 @@ public class AuthenticationResource {
       UserData userData = userOptional.get();
       logger.info("Found user for authenticate request");
 
-      return ResponseEntity.ok(new AuthResponse(userData.getId(), userData.getUsername(), userData.getEmail(), userData.getRole()));
+      return ResponseEntity.ok(new AuthResponse(
+          userData.getId(), userData.getUsername(),
+          userData.getFirstName(), userData.getLastName(),
+          userData.getEmail(), userData.getRole()));
     }
     logger.info("User not authenticated");
 

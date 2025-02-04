@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Table, Button } from "react-bootstrap";
+import { Container, Row, Col, Table, Button, Card } from "react-bootstrap";
 import { config } from "../../api/Constants"
 import LocationForm from "../../components/LocationForm";
 import GenerateReportModal from "../../components/GenerateReportForm";
@@ -11,6 +11,7 @@ import Toast from "../../components/common/Toast";
 import ApiCallToast from "../../components/common/ApiCallToast";
 import {useAuth} from "../../components/common/AuthContext";
 import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
+import LeftMenu from "../../components/common/LeftMenu";
 
 function LocationDetailsPage() {
     const Auth = useAuth();
@@ -95,97 +96,100 @@ function LocationDetailsPage() {
     }
 
     return (
+        <>
 
-        <div>
-            <div>
-                <Header />
-                <Menu activeKey="administrations" />
-                <Container>
-                    <Row>
-                        <Col>
-                            <h2>Location Details</h2>
-                            <Table striped bordered hover>
-                                <tbody>
-                                <tr>
-                                    <td>ID</td>
-                                    <td>{location.id}</td>
-                                </tr>
-                                <tr>
-                                    <td>Name</td>
-                                    <td>{location.name}</td>
-                                </tr>
-                                <tr>
-                                    <td>Status</td>
-                                    <td>{location.active ? "Active" : "Inactive"}</td>
-                                </tr>
-                                <tr>
-                                    <td>Community ID</td>
-                                    <td>{location.extCommunityId}</td>
-                                </tr>
-                                <tr>
-                                    <td>Community UUID</td>
-                                    <td>{location.extCommunityUuid}</td>
-                                </tr>
-                                <tr>
-                                    <td>Report Algorithm</td>
-                                    <td>{location.reportAlgorithm}</td>
-                                </tr>
-                                <tr>
-                                    <td>Representative Name</td>
-                                    <td>{location.representativeName}</td>
-                                </tr>
-                                <tr>
-                                    <td>Representative Email</td>
-                                    <td>{location.representativeEmail}</td>
-                                </tr>
-                                </tbody>
-                            </Table>
-                            <Button
-                                variant="warning"
-                                onClick={() => setShowModal(true)}
-                                style={{ marginRight: "10px" }}
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                variant="primary"
-                                onClick={() => setShowReportModal(true)}
-                                style={{ marginRight: "10px" }}
-                            >
-                                Generate Report
-                            </Button>
-                            <Button variant="secondary" onClick={() => navigate(-1)}>
-                                Back
-                            </Button>
-                        </Col>
-                    </Row>
+            <Container fluid>
+                <Row>
+                    <Col md={2} id="sidebar-wrapper">
+                        <LeftMenu activeKey="administrations"/>
+                    </Col>
+                    <Col md={10} id="page-content-wrapper" >
+                        <Header/>
+                        <Container fluid="md" className="">
+                            <Row className="justify-content-md-center">
+                                <div>
+                                <h2>Локация <span className="object">{location.name}</span></h2>
+                                </div>
+                                <Card class="card">
+                                    <Card.Title className="mt-3">Детайли</Card.Title>
 
-                    <LocationForm
-                        show={showModal}
-                        onHide={() => setShowModal(false)}
-                        onSubmit={handleEdit}
-                        initialData={location}
-                        title="Edit Location"
-                    />
+                                    <Card.Body>
+                                        <Container>
+                                            <Row>
+                                                <Col md={6}>
+                                                    <b>Външно Id: </b>{location.extCommunityId} <br/>
+                                                    <b>Външно UUId: </b>{location.extCommunityUuid} <br/>
+                                                    <b>Алгоритъм на справката: </b>{location.reportAlgorithm} <br/>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <b>Име на представител: </b>{location.representativeName} <br/>
+                                                    <b>Електронна поща на представител: </b>{location.representativeEmail} <br/>
+                                                    <b>Статус: </b>{location.active ? "Active" : "Inactive"} <br/>
+                                                </Col>
+                                            </Row>
+                                        </Container>
 
-                    <GenerateReportModal
-                        show={showReportModal}
-                        onHide={() => setShowReportModal(false)}
-                        onSubmit={handleGenerateReport}
-                    />
+                                    </Card.Body>
+                                    <Card.Body>
+                                         <Container>
 
-                    <Toast
-                        show={showToast}
-                        message={toastMessage}
-                        color={toastColor}
-                        onClose={() => setShowToast(false)}
-                    />
+                                            <Row>
+                                                <Col>
+                                                <Button
+                                                    variant="warning"
+                                                    onClick={() => setShowModal(true)}
+                                                    style={{ marginRight: "10px" }}
+                                                >
+                                                    Редакция
+                                                </Button>
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={() => setShowReportModal(true)}
+                                                    style={{ marginRight: "10px" }}
+                                                >
+                                                    Генериране на справка
+                                                </Button>
+                                                <Button variant="secondary" onClick={() => navigate(-1)}>
+                                                    Назад
+                                                </Button>
+                                                </Col>
+                                            </Row>
+                                        </Container>
 
-                </Container>
-                <Footer />
-            </div>
+                                    </Card.Body>
+                                </Card>
 
-        </div>
+
+
+                            </Row>
+                        </Container>
+                        <Footer />
+                    </Col>
+                </Row>
+            </Container>
+
+            <LocationForm
+                show={showModal}
+                onHide={() => setShowModal(false)}
+                onSubmit={handleEdit}
+                initialData={location}
+                title="Редакция на локация"
+            />
+
+            <GenerateReportModal
+                show={showReportModal}
+                onHide={() => setShowReportModal(false)}
+                onSubmit={handleGenerateReport}
+            />
+
+            <Toast
+                show={showToast}
+                message={toastMessage}
+                color={toastColor}
+                onClose={() => setShowToast(false)}
+            />
+
+        </>
 
     );
 }

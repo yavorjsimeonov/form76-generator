@@ -274,7 +274,7 @@ public class Form76ReportService {
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
-    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build().asFileOutputStream(outputFileName);
+    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build().asFileOutputStream("/tmp/" + outputFileName);
     generatedReportFile.flush();
     generatedReportFile.close();
 

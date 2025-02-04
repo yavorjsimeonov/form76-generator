@@ -57,10 +57,10 @@ function UserForm({
                        <Row>
                            <Col>
                            <Form.Group controlId="formFirstName">
-                               <Form.Label>First Name</Form.Label>
+                               <Form.Label>Собствено име</Form.Label>
                                <Form.Control
                                    type="text"
-                                   placeholder="Enter first name"
+                                   placeholder="Въведете собствено име"
                                    value={formData.firstName}
                                    onChange={(e) =>
                                        setFormData({ ...formData, firstName: e.target.value })
@@ -71,10 +71,10 @@ function UserForm({
                            </Col>
                            <Col>
                             <Form.Group controlId="formLastName" className="">
-                                <Form.Label>Last Name</Form.Label>
+                                <Form.Label>Фамилия</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter last name"
+                                    placeholder="Въведете фамилия"
                                     value={formData.lastName}
                                     onChange={(e) =>
                                         setFormData({ ...formData, lastName: e.target.value })
@@ -87,10 +87,10 @@ function UserForm({
                     <Row>
                         <Col>
                             <Form.Group controlId="formEmail" className="">
-                                <Form.Label>Email</Form.Label>
+                                <Form.Label>Електронна поща</Form.Label>
                                 <Form.Control
                                     type="email"
-                                    placeholder="Enter email"
+                                    placeholder="Въведете Електронна поща"
                                     value={formData.email}
                                     onChange={(e) =>
                                         setFormData({ ...formData, email: e.target.value })
@@ -100,10 +100,10 @@ function UserForm({
                         </Col>
                         <Col>
                             <Form.Group controlId="formUsername" className="">
-                                <Form.Label>Username</Form.Label>
+                                <Form.Label>Потребителско име</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter username"
+                                    placeholder="Въведете потребителско име"
                                     value={formData.username}
                                     onChange={(e) =>
                                         setFormData({ ...formData, username: e.target.value })
@@ -115,10 +115,10 @@ function UserForm({
                     <Row>
                         <Col>
                             <Form.Group controlId="formPassword" className="">
-                                <Form.Label>Password</Form.Label>
+                                <Form.Label>Парола</Form.Label>
                                 <Form.Control
                                     type="password"
-                                    placeholder="Enter password"
+                                    placeholder="Въведете парола"
                                     value={formData.password}
                                     onChange={(e) =>
                                         setFormData({ ...formData, password: e.target.value })
@@ -128,10 +128,10 @@ function UserForm({
                         </Col>
                         <Col>
                             <Form.Group controlId="formPassword" className="">
-                                <Form.Label>Confirm Password</Form.Label>
+                                <Form.Label>Потвърждение на парола</Form.Label>
                                 <Form.Control
                                     type="password"
-                                    placeholder="Confirm password"
+                                    placeholder="Въведете потвърждение на парола"
                                     value={formData.confirmPassword}
                                     onChange={(e) =>
                                         setFormData({ ...formData, confirmPassword: e.target.value })

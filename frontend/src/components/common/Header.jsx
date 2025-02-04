@@ -21,10 +21,9 @@ function Header(props) {
                 <Col md={12}>
                     <Container fluid="md">
                         <Row className="justify-content-md-center ">
-                            <Col md={6} className="logo">Форма 76</Col>
-                            <Col md={6} className="userinfo">
+                            <Col className="userinfo">
                                 { Auth.getUser() !==null &&
-                                <spn>Username: {Auth.getUser().name}, <a href="/logout" onClick={handleLogout}>Logout</a> </spn>
+                                <spn>{Auth.getUser().firstName} {Auth.getUser().firstName}, <a href="/logout" onClick={handleLogout} >Logout</a> </spn>
                                 }
                             </Col>
                         </Row>
