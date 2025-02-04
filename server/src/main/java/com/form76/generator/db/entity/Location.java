@@ -49,6 +49,9 @@ public class Location {
   @Enumerated(EnumType.STRING)
   private ReportAlgorithm reportAlgorithm;
 
+  @Column(name = "send-email", nullable = false)
+  private boolean sendEmail;
+
   @Column(name = "active", nullable = false)
   private boolean active;
 

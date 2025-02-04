@@ -4,6 +4,7 @@ import com.form76.generator.db.entity.Location;
 import com.form76.generator.rest.model.LocationData;
 import com.form76.generator.db.entity.ReportAlgorithm;
 import com.form76.generator.kafka.ReportGenerationRequestEventProducer;
+import com.form76.generator.rest.model.ReportData;
 import com.form76.generator.service.model.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -41,7 +42,13 @@ public class Form76ReportService {
   EmailService emailService;
 
   @Autowired
+  ReportService reportService;
+
+  @Autowired
   ReportGenerationRequestEventProducer reportGenerationRequestEventProducer;
+
+  @Autowired
+  UploadReportService uploadReportService;
 
   /**
    *   OK load active locations with active administrations (call method in LocationService)
@@ -61,12 +68,14 @@ public class Form76ReportService {
       for (LocationData locationData : locations) {
         // Generate DoorOpeningLogRequest for each location
         DoorOpeningLogRequest request = new DoorOpeningLogRequest(
+            locationData.getId(),
             locationData.getName(),
             locationData.getExtCommunityId(),
             locationData.getExtCommunityUuid(),
             locationData.getReportAlgorithm(),
             LocalDateTime.now().minusMonths(1),
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            locationData.isSendEmail()
         );
 
         reportGenerationRequestEventProducer.publishReportGenerationRequest(request.getLocationExtCommunityUuid(), request);
@@ -88,17 +97,29 @@ public class Form76ReportService {
       boolean firstLast = request.getReportAlgorithm() == ReportAlgorithm.FIRST_IN_LAST_OUT;
       calculateWorkedHours(request.getLocationName(), request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
-      String generatedFilePath = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
+      String generatedFileName = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
-      logger.info("generatedFilePath: " + generatedFilePath);
+      logger.info("generatedFileName: " + generatedFileName);
 
       EmailRequest emailRequest = new EmailRequest();
       emailRequest.setRecipient("yavorjsimeonov@gmail.com");
-      emailRequest.setMsgBody(generatedFilePath);
+      emailRequest.setMsgBody(generatedFileName);
       emailRequest.setSubject("test");
-      emailRequest.setAttachment(generatedFilePath);
+      emailRequest.setAttachment(generatedFileName);
 
-      emailService.sendMailWithAttachment(emailRequest);
+      uploadReportService.uploadFile(generatedFileName);
+
+      //create report record in record table
+      reportService.saveReport(new ReportData(
+          null, generatedFileName, LocalDateTime.now(),
+          null,
+          request.getStartDateTime(), request.getEndDateTime(),
+          request.getLocationId(), request.getLocationName(), null
+      ));
+
+      if (request.isSendEmail()) {
+        emailService.sendMailWithAttachment(emailRequest);
+      }
     } catch (Exception e) {
       logger.error("Error generating report for location: " + request.getLocationName(), e);
     }
@@ -198,9 +219,9 @@ public class Form76ReportService {
 
       long timeToAdd = 0L;
       if (currentDoorEvent.isInEvent()) {
-        if (inEvent == null) { // ne mislq che tazi proverka e nujna
+
           inEvent = currentDoorEvent;
-        }
+
 
         DoorEvent outEvent = null;
         while (outEvent == null && i <  doorEvents.size() - 1) {

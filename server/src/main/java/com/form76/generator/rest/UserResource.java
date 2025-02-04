@@ -1,5 +1,6 @@
 package com.form76.generator.rest;
 
+import com.form76.generator.rest.model.PasswordChangeRequest;
 import com.form76.generator.rest.model.UserData;
 import com.form76.generator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,22 @@ public class UserResource {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
   }
+  @PutMapping("/{Id}")
+  public ResponseEntity<?> updateUser(@PathVariable String Id, @RequestBody UserData request) {
+    UserData updatedUser = userService.updateUser(Id, request);
+    return ResponseEntity.ok(updatedUser);
+  }
 
   @GetMapping("/{id}")
   public UserData getUserById(@PathVariable String id) {
     return userService.findById(id)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+  }
+
+  @PostMapping("/{userId}/change-password")
+  public ResponseEntity<?> changePassword(@PathVariable String userId, @RequestBody PasswordChangeRequest request) {
+    userService.changeUserPassword(userId, request);
+    return ResponseEntity.ok().build();
   }
 
 }

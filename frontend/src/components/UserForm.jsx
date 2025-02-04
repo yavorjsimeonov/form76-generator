@@ -95,6 +95,7 @@ function UserForm({
                                     onChange={(e) =>
                                         setFormData({ ...formData, email: e.target.value })
                                     }
+                                    required
                                 />
                             </Form.Group>
                         </Col>
@@ -108,34 +109,7 @@ function UserForm({
                                     onChange={(e) =>
                                         setFormData({ ...formData, username: e.target.value })
                                     }
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group controlId="formPassword" className="">
-                                <Form.Label>Парола</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Въведете парола"
-                                    value={formData.password}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, password: e.target.value })
-                                    }
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col>
-                            <Form.Group controlId="formPassword" className="">
-                                <Form.Label>Потвърждение на парола</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Въведете потвърждение на парола"
-                                    value={formData.confirmPassword}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, confirmPassword: e.target.value })
-                                    }
+                                    required
                                 />
                             </Form.Group>
                         </Col>
@@ -186,6 +160,34 @@ function UserForm({
                                     checked={formData.active}
                                     onChange={(e) =>
                                         setFormData({ ...formData, active: e.target.checked })
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="formPassword" className="">
+                                <Form.Label>Парола</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    placeholder="Въведете парола"
+                                    value={formData.password}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, password: e.target.value })
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="formPassword" className="">
+                                <Form.Label>Потвърждение на парола</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    placeholder="Въведете потвърждение на парола"
+                                    value={formData.confirmPassword}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, confirmPassword: e.target.value })
                                     }
                                 />
                             </Form.Group>

@@ -2,8 +2,10 @@ package com.form76.generator.rest;
 
 import com.form76.generator.db.entity.Location;
 import com.form76.generator.rest.model.LocationData;
+import com.form76.generator.rest.model.ReportData;
 import com.form76.generator.service.Form76ReportService;
 import com.form76.generator.service.LocationService;
+import com.form76.generator.service.ReportService;
 import com.form76.generator.service.model.DoorOpeningLogRequest;
 import com.form76.generator.service.model.ReportRequest;
 import org.slf4j.Logger;
@@ -27,6 +29,9 @@ public class LocationResource {
 
   @Autowired
   LocationService locationService;
+
+  @Autowired
+  ReportService reportService;
 
 
   @Autowired
@@ -66,12 +71,20 @@ public class LocationResource {
     logger.info("Loaded location [" + locationId + "]: " + locationData);
 
     DoorOpeningLogRequest doorOpeningLogRequest = new DoorOpeningLogRequest(
-        locationData.getName(), locationData.getExtCommunityId(), locationData.getExtCommunityUuid(), locationData.getReportAlgorithm(),
-        startDateTime, endDateTime);
+        locationId, locationData.getName(),
+        locationData.getExtCommunityId(), locationData.getExtCommunityUuid(),
+        locationData.getReportAlgorithm(),
+        startDateTime, endDateTime, locationData.isSendEmail());
 
     form76ReportService.generateReportForLocation(doorOpeningLogRequest);
 
     return ResponseEntity.ok("Report generation triggered successfully.");
   }
 
+
+
+  @GetMapping("/{id}/reports")
+  public List<ReportData> listReportsForLocation(@PathVariable("id") String locationId) {
+    return reportService.listReportsForLocation(locationId);
+  }
 }

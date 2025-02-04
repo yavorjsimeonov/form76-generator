@@ -17,7 +17,7 @@ function LeftMenu({ activeKey }) {
                 <div className="nav-bar-logo">
                     <img src="/form76generatorlogo-small.png"/>
                 </div>
-                <Nav.Item as="div">
+                <Nav.Item as="div" className="mt-3">
                     <Nav.Link href="/home" eventKey="home">Начало</Nav.Link>
                 </Nav.Item>
                 <Nav.Item as="div">

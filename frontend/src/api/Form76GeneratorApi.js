@@ -14,7 +14,11 @@ export const form76GeneratorApi = {
     getUsers,
     createUser,
     getUserDetails,
-    updateUser
+    updateUser,
+    getReportsForLocation,
+    downloadReport,
+    getAllReports,
+    changePassword
 }
 
 function authenticate(username, password) {
@@ -122,8 +126,8 @@ function getUserDetails(user, userId) {
     });
 }
 
-function updateUser(user, userId, updatedUser) {
-    return instance.put(`/api/users/${userId}`, updatedUser, {
+function updateUser(user, id, updatedUser) {
+    return instance.put(`/api/users/${id}`, updatedUser, {
         headers: {
             "Content-Type": "application/json",
             'Access-Control-Allow-Origin': "*",
@@ -132,6 +136,16 @@ function updateUser(user, userId, updatedUser) {
     });
 }
 
+
+function changePassword(user, passwordData) {
+    return instance.post(`/api/users/${user.id}/change-password`, passwordData, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        },
+    });
+}
 
 
 function generateReportForLocation(user, locationId, reportGenerationRequest) {
@@ -144,6 +158,35 @@ function generateReportForLocation(user, locationId, reportGenerationRequest) {
             'Authorization': basicAuth(user)
         }
     })
+}
+
+function getReportsForLocation(user, locationId) {
+    return instance.get(`/api/locations/${locationId}/reports`, {
+        headers: {
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        }});
+}
+
+
+function getAllReports(user) {
+    return instance.get(`/api/reports`, {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        },
+    });
+}
+
+function downloadReport(user, reportId) {
+    return instance.post(`/api/reports/${reportId}/download`, '', {
+        responseType: 'blob',
+        headers: {
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            'Access-Control-Allow-Origin': "*",
+            'Authorization': basicAuth(user)
+        }});
 }
 
 // -- Axios

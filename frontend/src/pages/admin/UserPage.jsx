@@ -21,7 +21,7 @@ function UserDetailsPage() {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await form76GeneratorApi.getUserDetails(user, id); // Fetch user details
+                const response = await form76GeneratorApi.getUserDetails(user, id);
                 setUserDetails(response.data);
             } catch (error) {
                 setError(error.message);
@@ -35,18 +35,24 @@ function UserDetailsPage() {
 
     const handleEditUser = async (updatedUser) => {
         try {
-            const response = await form76GeneratorApi.updateUser(user, id, updatedUser);
+            if (!updatedUser.password?.trim() || !updatedUser.confirmPassword?.trim()) {
+                delete updatedUser.password;
+                delete updatedUser.confirmPassword;
+            } else {
+                if (updatedUser.password !== updatedUser.confirmPassword) {
+                    alert("Passwords do not match!");
+                    return;
+                }
+            }
+
+            const response = await form76GeneratorApi.updateUser(user, userDetails.id, updatedUser);
             setUserDetails(response.data);
         } catch (error) {
             console.error("Error updating user:", error);
+            alert(error.response?.data?.message || "An error occurred while updating user details.");
         } finally {
             setShowEditModal(false);
         }
-    };
-
-    const handleChangePassword = () => {
-        // Implement password change logic or redirect to a password change page
-        alert("Redirecting to password change...");
     };
 
     if (loading) return <p>Loading...</p>;
@@ -96,9 +102,6 @@ function UserDetailsPage() {
                         >
                             Edit User
                         </Button>
-                        <Button variant="primary" onClick={handleChangePassword}>
-                            Change Password
-                        </Button>
                     </Col>
                 </Row>
             </Container>
@@ -108,7 +111,7 @@ function UserDetailsPage() {
                 show={showEditModal}
                 onHide={() => setShowEditModal(false)}
                 onSubmit={handleEditUser}
-                initialData={userDetails}
+                initialData={{ ...userDetails, password: "", confirmPassword: "" }}
                 title="Edit User"
             />
         </div>

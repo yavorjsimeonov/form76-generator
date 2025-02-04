@@ -8,9 +8,9 @@ import Footer from "../../components/common/Footer";
 import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Toast from "../../components/common/Toast";
-import ApiCallToast from "../../components/common/ApiCallToast";
 import {useAuth} from "../../components/common/AuthContext";
 import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
+import ReportList from "../../components/ReportList";
 import LeftMenu from "../../components/common/LeftMenu";
 
 function LocationDetailsPage() {
@@ -31,7 +31,6 @@ function LocationDetailsPage() {
     const [toastColor, setToastColor] = useState("primary");
 
     useEffect(() => {
-//        if (!location) {
             const fetchLocation = async () => {
                 try {
                     const response = await form76GeneratorApi.getLocation(user, id);
@@ -44,7 +43,6 @@ function LocationDetailsPage() {
             };
 
             fetchLocation();
- //       }
     }, [id]);
 
     const handleEdit = async (updatedLocation) => {
@@ -158,6 +156,9 @@ function LocationDetailsPage() {
 
                                     </Card.Body>
                                 </Card>
+
+                                <ReportList locationId={location.id} showAdminAndLocation={false} />
+
 
 
 

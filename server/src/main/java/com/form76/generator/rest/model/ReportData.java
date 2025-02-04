@@ -1,6 +1,7 @@
 package com.form76.generator.rest.model;
 
 import com.form76.generator.db.entity.Location;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,13 @@ public class ReportData {
 
   private String cloudStorageReference;
 
-  private Location location;
+  private LocalDateTime reportPeriodStartDateTime;
+
+  private LocalDateTime reportPeriodEndDateTime;
+
+  private String locationId;
+
+  private String locationName;
+
+  private String administrationName;
 }
