@@ -35,7 +35,6 @@ function UserDetailsPage() {
 
     const handleEditUser = async (updatedUser) => {
         try {
-            // Only include password in the request if it's filled
             if (!updatedUser.password?.trim() || !updatedUser.confirmPassword?.trim()) {
                 delete updatedUser.password;
                 delete updatedUser.confirmPassword;

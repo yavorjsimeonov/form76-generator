@@ -39,10 +39,7 @@ public class ReportService {
   public ReportData findReportById(String reportId) {
     Report report = reportRepository.findById(reportId).orElseThrow(() -> new IllegalArgumentException("Failed to get report for id: " + reportId));
 
-    return new ReportData(report.getId(), report.getFileName(),
-        report.getCreationDate(), report.getCloudStorageReference(),
-        report.getReportPeriodStartDateTime(), report.getReportPeriodEndDateTime(),
-        report.getLocation().getId(), report.getLocation().getName(), report.getLocation().getAdministration().getName());
+    return convertToReportData(report);
   }
 
 
