@@ -34,6 +34,11 @@ public class UserResource {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
   }
+  @PutMapping("/{Id}")
+  public ResponseEntity<?> updateUser(@PathVariable String Id, @RequestBody UserData request) {
+    UserData updatedUser = userService.updateUser(Id, request);
+    return ResponseEntity.ok(updatedUser);
+  }
 
   @GetMapping("/{id}")
   public UserData getUserById(@PathVariable String id) {

@@ -14,25 +14,6 @@ function UserForm({
     const Auth = useAuth();
     const user = Auth.getUser();
     const [formData, setFormData] = useState(initialData);
-    const [administrations, setAdministrations] = useState([]);
-
-    // Fetch administrations for the dropdown
-    useEffect(() => {
-        const fetchAdministrations = async () => {
-            try {
-                const response = await form76GeneratorApi.getAdministrations(user);
-                setAdministrations(response.data);
-            } catch (error) {
-                console.error("Error fetching administrations:", error);
-            }
-        };
-
-        fetchAdministrations();
-    }, []);
-
-    // useEffect(() => {
-    //     setFormData(initialData);
-    // }, [initialData]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -116,6 +97,37 @@ function UserForm({
                     </Row>
                     <Row>
                         <Col>
+                            <Form.Group controlId="formRole" className="">
+                                <Form.Label>Role</Form.Label>
+                                <Form.Select
+                                    value={formData.role}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, role: e.target.value })
+                                    }
+                                    required
+                                >
+                                    <option value="">Select Role</option>
+                                    <option value="USER">USER</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="formAdminStatus" className="">
+                                <Form.Label>Status</Form.Label>
+                                <Form.Check
+                                    type="checkbox"
+                                    label="Active"
+                                    checked={formData.active}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, active: e.target.checked })
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             <Form.Group controlId="formPassword" className="">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control
@@ -140,57 +152,6 @@ function UserForm({
                                         setFormData({ ...formData, confirmPassword: e.target.value })
                                     }
                                     required
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group controlId="formRole" className="">
-                                <Form.Label>Role</Form.Label>
-                                <Form.Select
-                                    value={formData.role}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, role: e.target.value })
-                                    }
-                                    required
-                                >
-                                    <option value="">Select Role</option>
-                                    <option value="USER">USER</option>
-                                    <option value="ADMIN">ADMIN</option>
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                        <Col>
-                            <Form.Group controlId="formAdministration" className="" hidden={formData.role !== "USER"}>
-                                <Form.Label>Administration</Form.Label>
-                                <Form.Select
-                                    value={formData.administration}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, administration: e.target.value })
-                                    }
-                                >
-                                    <option value="">Select Administration</option>
-                                    {administrations.map((admin) => (
-                                        <option key={admin.id} value={admin.id}>
-                                            {admin.name}
-                                        </option>
-                                    ))}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group controlId="formAdminStatus" className="">
-                                <Form.Label>Status</Form.Label>
-                                <Form.Check
-                                    type="checkbox"
-                                    label="Active"
-                                    checked={formData.active}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, active: e.target.checked })
-                                    }
                                 />
                             </Form.Group>
                         </Col>

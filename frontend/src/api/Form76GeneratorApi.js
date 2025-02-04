@@ -126,8 +126,8 @@ function getUserDetails(user, userId) {
     });
 }
 
-function updateUser(user, userId, updatedUser) {
-    return instance.put(`/api/users/${userId}`, updatedUser, {
+function updateUser(user, id, updatedUser) {
+    return instance.put(`/api/users/${id}`, updatedUser, {
         headers: {
             "Content-Type": "application/json",
             'Access-Control-Allow-Origin': "*",
@@ -135,6 +135,7 @@ function updateUser(user, userId, updatedUser) {
         },
     });
 }
+
 
 function changePassword(user, passwordData) {
     return instance.post(`/api/users/${user.id}/change-password`, passwordData, {
