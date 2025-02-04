@@ -42,6 +42,10 @@ function Header(props) {
                                             <span>{user.firstName}&nbsp;{user.lastName}</span>
                                         </Dropdown.Toggle>
                                         <Dropdown.Menu>
+                                            <Container>
+                                                {user.userName}
+                                            </Container>
+                                            <Dropdown.Divider />
                                             <Dropdown.Item onClick={() => setShowChangePasswordModal(true)}>
                                                 Change Password
                                             </Dropdown.Item>

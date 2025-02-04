@@ -73,8 +73,8 @@ function LogInForm() {
         <form onSubmit={handleSubmit} className="login-form">
             <Card class="card justify-content-md-center shadow" style={{ width: '20rem' }}>
                 <Card.Body>
-                    <Card.Title>
-                        <img src="./static/form76generatorlogo.png"/>
+                    <Card.Title className="login-form-title">
+                        <img src="/form76generatorlogo-small.png"/>
                     </Card.Title>
                         <Container fluid="sm">
                             <Row className="justify-content-md-center">
@@ -84,7 +84,7 @@ function LogInForm() {
                             </Row>
                             <Row className="justify-content-md-center">
                                 <Col>
-                                    <label htmlFor="username" className="form-label">Потребителско име:</label>
+                                    <label htmlFor="username" className="form-label">Потребителско име</label>
                                     <input
                                         type="text"
                                         id="username"

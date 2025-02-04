@@ -43,3 +43,13 @@ code {
 input {
   --bs-secondary-color: #21252952;
 }
+
+.login-form-title {
+  background-color: #1E366F;
+  text-align: center;
+}
+
+.login-form-title img {
+  height: 40px;
+  margin: 15px 0;
+}

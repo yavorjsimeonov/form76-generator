@@ -13,6 +13,7 @@ import { useAuth } from '../components/common/AuthContext.jsx';
 
 function HomePage() {
     const Auth = useAuth();
+    const user = Auth.getUser();
 
     return (
         <Container fluid>
@@ -24,7 +25,7 @@ function HomePage() {
                     <Header/>
                     <Container fluid="md" className="welcome">
                         <Row className="justify-content-md-center">
-                            <Col md={4}> <h3>Здравейте, {Auth.getUser().name}</h3></Col>
+                            <Col md={4}> <h3>Здравейте, {user.firstName} {user.lastName}</h3></Col>
                         </Row>
                     </Container>
                     <Footer />
