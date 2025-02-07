@@ -8,7 +8,9 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [reportAlgorithm, setReportAlgorithm] = useState("EVERY_IN_OUT");
+    const [fileFormat, setFileFormat] = useState("XLSX");
     const reportAlgorithms = ["FIRST_IN_LAST_OUT", "EVERY_IN_OUT"];
+    const fileFormats = ["XLS", "XLSX"]
 
     const handleGenerateReport = () => {
         if (!startDate || !endDate) {
@@ -20,7 +22,7 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
         const formattedStartDate = format(startOfDay(startDate), "yyyy-MM-dd HH:mm:ss");
         const formattedEndDate = format(endOfDay(endDate), "yyyy-MM-dd HH:mm:ss");
 
-        onSubmit({ startDateTime: formattedStartDate, endDateTime: formattedEndDate });
+        onSubmit({ startDateTime: formattedStartDate, endDateTime: formattedEndDate, reportAlgorithm: reportAlgorithm, reportFileFormat: fileFormat });
         onHide();
     };
 
@@ -73,6 +75,22 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
                                     {reportAlgorithms.map((algorithm) => (
                                         <option key={algorithm} value={algorithm}>
                                             {algorithm}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="formReportFileFormat" className="">
+                                <Form.Label>Файлов формат</Form.Label>
+                                <Form.Select
+                                    name="fileFormat"
+                                    value={fileFormat}
+                                    onChange={(format) => setFileFormat(format.target.value)}
+                                >
+                                    {fileFormats.map((format) => (
+                                        <option key={format} value={format}>
+                                            {format}
                                         </option>
                                     ))}
                                 </Form.Select>

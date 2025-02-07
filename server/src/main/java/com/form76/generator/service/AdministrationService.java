@@ -130,6 +130,7 @@ public class AdministrationService {
         location.getRepresentativeName(),
         location.getRepresentativeEmail(),
         location.getReportAlgorithm(),
+        location.getFileFormat(),
         location.isActive(),
         location.isSendEmail(),
         null,

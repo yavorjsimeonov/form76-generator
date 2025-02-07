@@ -12,6 +12,8 @@ public class ReportRequest {
 
   private String startDateTime;
   private String endDateTime;
+  private String reportAlgorithm;
+  private String reportFileFormat;
 
   public LocalDateTime getStartDateTimeMillis() {
     return LocalDateTime.parse(startDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS"));

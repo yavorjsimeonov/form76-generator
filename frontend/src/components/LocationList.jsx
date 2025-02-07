@@ -39,7 +39,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
             </Button>
 
             {locations.length > 0 ? (
-                <Table striped bordered hover mt-3>
+                <Table striped bordered hover>
                     <thead>
                     <tr>
                         <th>Име</th>
@@ -47,6 +47,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                         <th>Външно ID</th>
                         <th>Външно UUID</th>
                         <th>Алгоритъм на справката</th>
+                        <th>Файлов формат</th>
                         <th>Име на представител</th>
                         <th>Електронна поща на представител</th>
                     </tr>
@@ -71,6 +72,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                             <td>{location.extCommunityId || "N/A"}</td>
                             <td>{location.extCommunityUuid || "N/A"}</td>
                             <td>{location.reportAlgorithm || "N/A"}</td>
+                            <td>{location.fileFormat || "N/A"}</td>
                             <td>{location.representativeName || "N/A"}</td>
                             <td>{location.representativeEmail || "N/A"}</td>
                         </tr>
@@ -93,6 +95,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                     representativeName: "",
                     representativeEmail: "",
                     reportAlgorithm: "EVERY_IN_OUT",
+                    fileFormat: "XLSX",
                     active: true,
                 }}
                 title="Добавяне на локация"

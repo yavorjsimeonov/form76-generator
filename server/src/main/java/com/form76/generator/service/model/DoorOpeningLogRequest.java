@@ -2,6 +2,7 @@ package com.form76.generator.service.model;
 
 import com.form76.generator.db.entity.Location;
 import com.form76.generator.db.entity.ReportAlgorithm;
+import com.form76.generator.db.entity.ReportFileFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,8 @@ public class DoorOpeningLogRequest {
   private String locationExtCommunityUuid;
 
   private ReportAlgorithm reportAlgorithm;
+
+  private ReportFileFormat fileFormat;
 
   private LocalDateTime startDateTime;
 

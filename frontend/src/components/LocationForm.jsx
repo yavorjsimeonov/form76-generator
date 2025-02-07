@@ -4,9 +4,9 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 function LocationForm({ show, onHide, onSubmit, initialData, title }) {
     const [formData, setFormData] = useState(initialData);
     const reportAlgorithms = ["FIRST_IN_LAST_OUT", "EVERY_IN_OUT"];
+    const reportFileFormats = ["XLS", "XLSX"]; // Added file format options
 
     useEffect(() => {
-        // Update form data when initialData changes (e.g., when switching from create to edit)
         setFormData(initialData);
     }, [initialData]);
 
@@ -50,7 +50,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     {/* Second Row: Community ID and Community UUID */}
                     <Row>
                         <Col>
-                            <Form.Group controlId="formExtCommunityId" className="">
+                            <Form.Group controlId="formExtCommunityId">
                                 <Form.Label>Външно ID</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -62,7 +62,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formExtCommunityUuid" className="">
+                            <Form.Group controlId="formExtCommunityUuid">
                                 <Form.Label>Външно UUID</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -78,7 +78,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     {/* Third Row: Representative Name and Email */}
                     <Row>
                         <Col>
-                            <Form.Group controlId="formRepresentativeName" className="">
+                            <Form.Group controlId="formRepresentativeName">
                                 <Form.Label>Име на представител</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -90,7 +90,7 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formRepresentativeEmail" className="">
+                            <Form.Group controlId="formRepresentativeEmail">
                                 <Form.Label>Електронна поща на представител</Form.Label>
                                 <Form.Control
                                     type="email"
@@ -103,10 +103,10 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                         </Col>
                     </Row>
 
-                    {/* Fourth Row: Report Algorithm and Active Status */}
+                    {/* Fourth Row: Report Algorithm and File Format */}
                     <Row>
                         <Col>
-                            <Form.Group controlId="formReportAlgorithm" className="">
+                            <Form.Group controlId="formReportAlgorithm">
                                 <Form.Label>Алгоритъм на справките</Form.Label>
                                 <Form.Select
                                     name="reportAlgorithm"
@@ -122,18 +122,27 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                             </Form.Group>
                         </Col>
                         <Col>
-                            <Form.Group controlId="formActive" className="" styleClass="float:left">
-                                <Form.Label>Send Email</Form.Label>
-                                <Form.Check
-                                    type="checkbox"
-                                    name="active"
-                                    label="Active"
-                                    checked={formData.active || false}
+                            <Form.Group controlId="formReportFileFormat">
+                                <Form.Label>Формат на файла</Form.Label>
+                                <Form.Select
+                                    name="fileFormat"
+                                    value={formData.fileFormat || "XLSX"}
                                     onChange={handleChange}
-                                />
+                                >
+                                    {reportFileFormats.map((format) => (
+                                        <option key={format} value={format}>
+                                            {format}
+                                        </option>
+                                    ))}
+                                </Form.Select>
                             </Form.Group>
+                        </Col>
+                    </Row>
 
-                            <Form.Group controlId="formActive" className="">
+                    {/* Fifth Row: Active Status */}
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="formActive">
                                 <Form.Label>Статус</Form.Label>
                                 <Form.Check
                                     type="checkbox"

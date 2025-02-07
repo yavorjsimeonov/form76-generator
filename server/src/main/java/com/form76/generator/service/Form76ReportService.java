@@ -73,6 +73,7 @@ public class Form76ReportService {
             locationData.getExtCommunityId(),
             locationData.getExtCommunityUuid(),
             locationData.getReportAlgorithm(),
+            locationData.getFileFormat(),
             LocalDateTime.now().minusMonths(1),
             LocalDateTime.now(),
             locationData.isSendEmail()
@@ -95,9 +96,10 @@ public class Form76ReportService {
 
       Map<String, Map<String, Employee>> monthEmployeeMap = readDataFromResponse(response);
       boolean firstLast = request.getReportAlgorithm() == ReportAlgorithm.FIRST_IN_LAST_OUT;
+      String fileFormat = request.getFileFormat().toString();
       calculateWorkedHours(request.getLocationName(), request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
 
-      String generatedFileName = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
+      String generatedFileName = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast, fileFormat);
 
       logger.info("generatedFileName: " + generatedFileName);
 
@@ -288,14 +290,14 @@ public class Form76ReportService {
 
     return 0L;
   }
-  private String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast) throws IOException, ParseException {
+  private String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat) throws IOException, ParseException {
 
-    String outputFileName = getOutputFileName(locationExtCommunityUuid, firstLast);
+    String outputFileName = getOutputFileName(locationExtCommunityUuid, firstLast, fileFormat.toLowerCase());
     logger.info("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
-    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build().asFileOutputStream("/tmp/" + outputFileName);
+    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build(fileFormat).asFileOutputStream("/tmp/" + outputFileName);
     generatedReportFile.flush();
     generatedReportFile.close();
 
@@ -304,7 +306,7 @@ public class Form76ReportService {
     return outputFileName;
   }
 
-  private String getOutputFileName(String locationExtCommunityUuid, Boolean firstLast) {
-    return "Report_Forma76_" + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + DateHelper.getTimeStampForReportFile(new Date()) + ".xlsx";
+  private String getOutputFileName(String locationExtCommunityUuid, Boolean firstLast, String fileFormat) {
+    return "Report_Forma76_" + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + DateHelper.getTimeStampForReportFile(new Date()) + "." + fileFormat;
   }
 }

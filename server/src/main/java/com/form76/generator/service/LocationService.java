@@ -48,6 +48,7 @@ public class LocationService {
       existingLocation.setExtCommunityId(updatedLocationData.getExtCommunityId());
       existingLocation.setExtCommunityUuid(updatedLocationData.getExtCommunityUuid());
       existingLocation.setReportAlgorithm(updatedLocationData.getReportAlgorithm());
+      existingLocation.setFileFormat(updatedLocationData.getFileFormat());
       existingLocation.setRepresentativeName(updatedLocationData.getRepresentativeName());
       existingLocation.setRepresentativeEmail(updatedLocationData.getRepresentativeEmail());
 
@@ -70,6 +71,7 @@ public class LocationService {
     location.setRepresentativeName(locationData.getRepresentativeName());
     location.setRepresentativeEmail(locationData.getRepresentativeEmail());
     location.setReportAlgorithm(locationData.getReportAlgorithm());
+    location.setFileFormat(locationData.getFileFormat());
     location.setActive(locationData.isActive());
     location.setSendEmail(locationData.isSendEmail());
 
@@ -91,28 +93,12 @@ public class LocationService {
         location.getRepresentativeName(),
         location.getRepresentativeEmail(),
         location.getReportAlgorithm(),
+        location.getFileFormat(),
         location.isActive(),
         location.isSendEmail(),
         location.getAdministration() != null ? location.getAdministration().getId() : null,
-        null // Handle device conversion if necessary
+        null
     );
   }
 
-  private Administration convertToEntity(AdministrationData administrationData) {
-    Administration administration = new Administration();
-    administration.setId(administrationData.getId());
-    administration.setName(administrationData.getName());
-    administration.setActive(administrationData.isActive());
-
-    return administration;
-  }
-
-  private AdministrationData convertToDTO(Administration administration) {
-    return new AdministrationData(
-        administration.getId(),
-        administration.getName(),
-        administration.isActive(),
-        null // Handle location conversion if necessary
-    );
-  }
 }

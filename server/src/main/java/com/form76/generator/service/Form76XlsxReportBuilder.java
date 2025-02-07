@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.IntStream;
 
+import static com.form76.generator.db.entity.ReportFileFormat.XLSX;
 import static com.form76.generator.service.Form76ReportService.xlsxFile;
 
 @Getter
@@ -48,8 +49,8 @@ public class Form76XlsxReportBuilder {
     this.employeesData = employeesData;
   }
 
-  public Form76XlsxReportBuilder build() throws ParseException {
-    createWorkbook();
+  public Form76XlsxReportBuilder build(String fileFormat) throws ParseException {
+    createWorkbook(fileFormat);
     populateWorkbook();
     return this;
   }
@@ -70,8 +71,8 @@ public class Form76XlsxReportBuilder {
     return workbook;
   }
 
-  protected void createWorkbook() {
-    if(xlsxFile){
+  protected void createWorkbook(String fileFormat) {
+    if(fileFormat.equals(XLSX.toString())){
       workbook = new XSSFWorkbook(XSSFWorkbookType.XLSX);
     } else {
       workbook = new HSSFWorkbook();
@@ -342,15 +343,15 @@ public class Form76XlsxReportBuilder {
   }
 
   protected ExcelSheet createSheet(String sheetName) {
-    return new ExcelSheet((XSSFSheet) workbook.createSheet(sheetName));
+    return new ExcelSheet(workbook.createSheet(sheetName));
   }
 
 
   // utility wrapper class to simplify sheet manipulation and cells creation;
   protected class ExcelSheet {
-    final XSSFSheet sheet;
+    final Sheet sheet;
 
-    ExcelSheet(XSSFSheet sheet) {
+    ExcelSheet(Sheet sheet) {
       this.sheet = sheet;
     }
 

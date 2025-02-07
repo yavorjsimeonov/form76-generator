@@ -49,6 +49,10 @@ public class Location {
   @Enumerated(EnumType.STRING)
   private ReportAlgorithm reportAlgorithm;
 
+  @Column(name = "report_file_format", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private ReportFileFormat fileFormat;
+
   @Column(name = "send-email", nullable = false)
   private boolean sendEmail;
 

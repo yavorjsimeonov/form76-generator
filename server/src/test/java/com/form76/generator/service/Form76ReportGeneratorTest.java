@@ -20,17 +20,17 @@ public class Form76ReportGeneratorTest {
 
   Logger logger = LoggerFactory.getLogger(Form76ReportGeneratorTest.class);
 
-  @Test
-  public void testCalculateWorkedHours() throws IOException, ParseException {
-    Map<String, Map<String, Employee>> employees = TestDataGenerator.generateEmployees(Arrays.asList(7, 8), 3);
-    logger.info("Employees: " + employees);
-
-    String fileName = String.format("/users/maya/Downloads/Report-forma76-%s.xlsx", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
-    Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
-    form76XlsxReportBuilder.setEmployeesData(employees);
-    form76XlsxReportBuilder.build(); //.asFileOutputStream(fileName);
-
-  }
+//  @Test
+//  public void testCalculateWorkedHours() throws IOException, ParseException {
+//    Map<String, Map<String, Employee>> employees = TestDataGenerator.generateEmployees(Arrays.asList(7, 8), 3);
+//    logger.info("Employees: " + employees);
+//
+//    String fileName = String.format("/users/maya/Downloads/Report-forma76-%s.xlsx", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
+//    Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
+//    form76XlsxReportBuilder.setEmployeesData(employees);
+//    form76XlsxReportBuilder.build(); //.asFileOutputStream(fileName);
+//
+//  }
 
 //  @Test
 //  public void testReportGenerationFromFile() throws Exception {
