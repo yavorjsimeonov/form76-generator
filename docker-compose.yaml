@@ -14,7 +14,7 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: form76-generator-db
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     networks:
       - localnet
   zookeeper:
@@ -70,8 +70,11 @@ services:
     environment:
       - DB_HOST=mysql:3306
       - DB_USER=root
-      - DB_PASSWORD=test
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - DB_DATABASE=form76-generator-db
+      - MY_LINK_API_TOKEN=${MY_LINK_API_TOKEN}
+      - GOOGLE_CLOUD_PROJECT_ID=${GOOGLE_CLOUD_PROJECT_ID}
+      - GOOGLE_CLOUD_BUCKET_NAME=${GOOGLE_CLOUD_BUCKET_NAME}
     ports:
       - "8080:8080"
     networks:

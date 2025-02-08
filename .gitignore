@@ -37,3 +37,4 @@ out/
 .vscode/
 /server/src/test/java/com/form76/generator/MyTests.java
 /server/src/main/resources/nimble-theme-448917-u5-c5df7d240535.json
+/.env

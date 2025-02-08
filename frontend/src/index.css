@@ -53,3 +53,8 @@ input {
   height: 40px;
   margin: 15px 0;
 }
+.linkColumn {
+  text-align: left !important;
+  min-width: 300px;
+  max-width: 600px;
+}

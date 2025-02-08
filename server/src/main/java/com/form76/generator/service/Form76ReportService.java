@@ -29,8 +29,8 @@ public class Form76ReportService {
 
   private static final List<String> ACCEPTED_OPEN_DOOR_TYPES = Arrays.asList("Mobile phone bluetooth door", "Face open door", "Open door card", "Open the door remotely");
 
-  @Value("${form76-generator.output.file.name.format}")
-  private String outputFileNameFormat;
+  @Value("${form76-generator.output.file.name.prefix}")
+  private String outputFileNamePrefix;
 
   @Autowired
   LocationService locationService;
@@ -76,6 +76,7 @@ public class Form76ReportService {
             locationData.getFileFormat(),
             LocalDateTime.now().minusMonths(1),
             LocalDateTime.now(),
+            locationData.getRepresentativeEmail(),
             locationData.isSendEmail()
         );
 
@@ -104,9 +105,9 @@ public class Form76ReportService {
       logger.info("generatedFileName: " + generatedFileName);
 
       EmailRequest emailRequest = new EmailRequest();
-      emailRequest.setRecipient("yavorjsimeonov@gmail.com");
+      emailRequest.setRecipient(request.getEmailRecipient());
       emailRequest.setMsgBody(generatedFileName);
-      emailRequest.setSubject("test");
+      emailRequest.setSubject("Присъствена справка Форма 76 (" + generatedFileName + ")");
       emailRequest.setAttachment(generatedFileName);
 
       uploadReportService.uploadFile(generatedFileName);
@@ -120,7 +121,10 @@ public class Form76ReportService {
       ));
 
       if (request.isSendEmail()) {
+        logger.info("Going to send generated report " + generatedFileName + " to email: " + request.getEmailRecipient());
         emailService.sendMailWithAttachment(emailRequest);
+      } else {
+        logger.info("Email sending for location " + request.getLocationId() + " is disabled so generated report " + generatedFileName + " will not be sent on email");
       }
     } catch (Exception e) {
       logger.error("Error generating report for location: " + request.getLocationName(), e);
@@ -307,6 +311,6 @@ public class Form76ReportService {
   }
 
   private String getOutputFileName(String locationExtCommunityUuid, Boolean firstLast, String fileFormat) {
-    return "Report_Forma76_" + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + DateHelper.getTimeStampForReportFile(new Date()) + "." + fileFormat;
+    return outputFileNamePrefix + locationExtCommunityUuid + "_" + (firstLast ? "FL_" : "") + DateHelper.getTimeStampForReportFile(new Date()) + "." + fileFormat;
   }
 }

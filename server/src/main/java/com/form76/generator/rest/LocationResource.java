@@ -77,7 +77,9 @@ public class LocationResource {
         locationData.getExtCommunityId(), locationData.getExtCommunityUuid(),
         ReportAlgorithm.valueOf(reportRequest.getReportAlgorithm()),
         ReportFileFormat.valueOf(reportRequest.getReportFileFormat()),
-        startDateTime, endDateTime, locationData.isSendEmail());
+        startDateTime, endDateTime,
+        reportRequest.getSendToEmail() != null ? reportRequest.getSendToEmail() : locationData.getRepresentativeEmail(),
+        locationData.isSendEmail());
 
     form76ReportService.generateReportForLocation(doorOpeningLogRequest);
 

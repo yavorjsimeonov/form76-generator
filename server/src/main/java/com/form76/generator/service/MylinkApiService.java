@@ -34,6 +34,7 @@ public class MylinkApiService {
 
 
   public DoorOpeningLogResponse loadDoorOpeningLog(DoorOpeningLogRequest doorOpeningLogRequest) {
+    logger.info("myLinkApiToken: " + myLinkApiToken);
     logger.info("Calling mylink to obtain door opening log for doorOpeningLogRequest: " + doorOpeningLogRequest);
     ResponseEntity<DoorOpeningLogResponse> response = callExternalApi(doorOpeningLogRequest).block();
     logger.info("Received response from mylink: " + ( response != null && response.getBody() != null  ? response.getBody().getMsg() : null));

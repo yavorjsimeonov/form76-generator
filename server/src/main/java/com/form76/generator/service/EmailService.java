@@ -22,6 +22,9 @@ public class EmailService {
   @Autowired
   private JavaMailSender javaMailSender;
 
+  @Value("${form76-generator.emails.enabled}")
+  private boolean emailsEnabled = false;
+
   @Value("${spring.mail.username}")
   private String sender;
 
@@ -39,8 +42,13 @@ public class EmailService {
       mailMessage.setText(details.getMsgBody());
       mailMessage.setSubject(details.getSubject());
 
-      javaMailSender.send(mailMessage);
-      logger.info("Mail sent successfully.");
+      if (emailsEnabled) {
+        javaMailSender.send(mailMessage);
+        logger.info("Email sent successfully to " + details.getRecipient());
+      } else {
+        logger.info("Actual sending of emails is disabled (application.properties -> form76-generator.emails.enabled=false). " +
+            "So sending email to " + details.getRecipient() + " is skipped");
+      }
     } catch (Exception e) {
       logger.error("Error while sending Mail:", e);
       throw  e;
@@ -66,11 +74,15 @@ public class EmailService {
           = new FileSystemResource(
           new File(details.getAttachment()));
 
-      mimeMessageHelper.addAttachment(
-          file.getFilename(), file);
+      mimeMessageHelper.addAttachment(file.getFilename(), file);
 
-      // javaMailSender.send(mimeMessage);
-      logger.info("Mail sent successfully.");
+      if (emailsEnabled) {
+        javaMailSender.send(mimeMessage);
+        logger.info("Email sent successfully to " + details.getRecipient());
+      } else {
+        logger.info("Actual sending of emails is disabled (application.properties -> form76-generator.emails.enabled=false). " +
+            "So sending email to " + details.getRecipient() + " is skipped");
+      }
     } catch (MessagingException e) {
       logger.error("Error while sending mail:", e);
     }

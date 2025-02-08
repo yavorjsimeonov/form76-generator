@@ -30,12 +30,19 @@ function ReportList({ locationId = null, showAdminAndLocation = false }) {
         fetchReports();
     }, [locationId]);
 
-    const handleDownload = async (fileName) => {
+    const handleDownload = async (reportId, reportFileName) => {
         try {
-            await form76GeneratorApi.downloadReport(fileName);
-            alert(`Report "${fileName}" sent to the backend for processing.`);
+            const response = await form76GeneratorApi.downloadReport(user, reportId);
+            const blob = new Blob([response.data], { type: response.headers["Content-Type"] });
+            let a = document.createElement('a');
+            let url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = reportFileName;
+            a.click();
+            document.body.removeChild(a);
+            console.log(`Report "${reportId}" download completed.`);
         } catch (error) {
-            console.error("Error sending file name to the backend:", error);
+            console.error("Error sending report download to the backend:", error);
         }
     };
 
@@ -63,7 +70,7 @@ function ReportList({ locationId = null, showAdminAndLocation = false }) {
                             <td>
                                 <Button
                                     variant="link"
-                                    onClick={() => handleDownload(report.fileName)}
+                                    onClick={() => handleDownload(report.id, report.fileName)}
                                 >
                                     {report.fileName}
                                 </Button>

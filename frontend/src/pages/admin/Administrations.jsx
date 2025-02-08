@@ -83,7 +83,7 @@ function AdministrationsPage() {
                                             <tbody>
                                             {administrations.map((administration) => (
                                                 <tr key={administration.id}>
-                                                    <td>
+                                                    <td className="linkColumn">
                                                         <Link to={`/administrations/${administration.id}`}>
                                                             {administration.name}
                                                         </Link>

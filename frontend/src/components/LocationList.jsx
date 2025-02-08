@@ -43,19 +43,19 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                     <thead>
                     <tr>
                         <th>Име</th>
-                        <th>Статус</th>
                         <th>Външно ID</th>
                         <th>Външно UUID</th>
                         <th>Алгоритъм на справката</th>
                         <th>Файлов формат</th>
                         <th>Име на представител</th>
                         <th>Електронна поща на представител</th>
+                        <th>Статус</th>
                     </tr>
                     </thead>
                     <tbody>
                     {locations.map((location) => (
                         <tr key={location.id}>
-                            <td>
+                            <td className="linkColumn">
                                 {/* Link to Location Details Page */}
                                 <Button
                                     variant="link"
@@ -68,13 +68,13 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                                     {location.name || "N/A"}
                                 </Button>
                             </td>
-                            <td>{location.active ? "Active" : "Inactive"}</td>
                             <td>{location.extCommunityId || "N/A"}</td>
                             <td>{location.extCommunityUuid || "N/A"}</td>
                             <td>{location.reportAlgorithm || "N/A"}</td>
                             <td>{location.fileFormat || "N/A"}</td>
                             <td>{location.representativeName || "N/A"}</td>
                             <td>{location.representativeEmail || "N/A"}</td>
+                            <td>{location.active ? "Active" : "Inactive"}</td>
                         </tr>
                     ))}
                     </tbody>
@@ -96,6 +96,7 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
                     representativeEmail: "",
                     reportAlgorithm: "EVERY_IN_OUT",
                     fileFormat: "XLSX",
+                    sendEmail: true,
                     active: true,
                 }}
                 title="Добавяне на локация"

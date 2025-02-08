@@ -142,6 +142,18 @@ function LocationForm({ show, onHide, onSubmit, initialData, title }) {
                     {/* Fifth Row: Active Status */}
                     <Row>
                         <Col>
+                            <Form.Group controlId="formActive" className="" styleClass="float:left">
+                                <Form.Label>Изпращане на електронно писмо</Form.Label>
+                                <Form.Check
+                                    type="checkbox"
+                                    name="sendEmail"
+                                    label="Изпрати"
+                                    checked={formData.sendEmail || false}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
                             <Form.Group controlId="formActive">
                                 <Form.Label>Статус</Form.Label>
                                 <Form.Check

@@ -9,6 +9,7 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
     const [endDate, setEndDate] = useState(null);
     const [reportAlgorithm, setReportAlgorithm] = useState("EVERY_IN_OUT");
     const [fileFormat, setFileFormat] = useState("XLSX");
+    const [sendToEmail, setSendToEmail] = useState('aaa');
     const reportAlgorithms = ["FIRST_IN_LAST_OUT", "EVERY_IN_OUT"];
     const fileFormats = ["XLS", "XLSX"]
 
@@ -22,7 +23,10 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
         const formattedStartDate = format(startOfDay(startDate), "yyyy-MM-dd HH:mm:ss");
         const formattedEndDate = format(endOfDay(endDate), "yyyy-MM-dd HH:mm:ss");
 
-        onSubmit({ startDateTime: formattedStartDate, endDateTime: formattedEndDate, reportAlgorithm: reportAlgorithm, reportFileFormat: fileFormat });
+        onSubmit({ startDateTime: formattedStartDate, endDateTime: formattedEndDate,
+            reportAlgorithm: reportAlgorithm, reportFileFormat: fileFormat,
+            sendToEmail: sendToEmail
+        });
         onHide();
     };
 
@@ -94,6 +98,20 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
                                         </option>
                                     ))}
                                 </Form.Select>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="formSendToEmail" className="">
+                                <Form.Label>Изпрати на</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    name="sendToEmail"
+                                    placeholder="Въведете електронна поща"
+                                    value={sendToEmail}
+                                    onChange={(e) => setSendToEmail(e.target.value)}
+                                />
                             </Form.Group>
                         </Col>
                     </Row>
