@@ -2,7 +2,7 @@ Form76 generator App
 
 Running the application
 
-1. Make sure u have docker desktop installed
+1. Make sure you have docker desktop installed
 2. Create `.env` file in project root directory and add following env variables with the corresponding values
    MYSQL_ROOT_PASSWORD=<password_for_myslq_root_account>
 

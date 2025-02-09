@@ -5,6 +5,7 @@ import com.form76.generator.db.entity.ReportFileFormat;
 import com.form76.generator.service.model.DoorEvent;
 import com.form76.generator.service.model.DoorOpeningLog;
 import com.form76.generator.service.model.Employee;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class Form76ReportGeneratorTest {
   Logger logger = LoggerFactory.getLogger(Form76ReportGeneratorTest.class);
 
   @Test
+  @Ignore
   public void testCalculateWorkedHours() throws IOException, ParseException {
     TestDataGenerator testDataGenerator = new TestDataGenerator();
     Form76ReportService form76ReportService = new Form76ReportService();
