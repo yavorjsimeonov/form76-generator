@@ -131,7 +131,7 @@ public class Form76ReportService {
     }
   }
 
-  private Map<String, Map<String, Employee>> readDataFromResponse(DoorOpeningLogResponse doorOpeningLogResponse) throws ParseException {
+  public Map<String, Map<String, Employee>> readDataFromResponse(DoorOpeningLogResponse doorOpeningLogResponse) throws ParseException {
     Map<String, Map<String, Employee>> monthEmployeeMap = new HashMap<>();
     List<DoorEvent> allEvents = doorOpeningLogResponse.getData().getList();
 
@@ -226,7 +226,7 @@ public class Form76ReportService {
       long timeToAdd = 0L;
       if (currentDoorEvent.isInEvent()) {
 
-          inEvent = currentDoorEvent;
+        inEvent = currentDoorEvent;
 
 
         DoorEvent outEvent = null;
@@ -258,6 +258,7 @@ public class Form76ReportService {
   }
 
   private void calculateWorkedHoursForFirstInLastOut(Employee employee, String date, List<DoorEvent> doorEvents) throws ParseException {
+    doorEvents.sort(Comparator.comparing(de -> de.getEventDateTime()));
 
     DoorEvent firstInEvent = null;
     DoorEvent lastOutEvent = null;
@@ -294,7 +295,7 @@ public class Form76ReportService {
 
     return 0L;
   }
-  private String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat) throws IOException, ParseException {
+  public String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat) throws IOException, ParseException {
 
     String outputFileName = getOutputFileName(locationExtCommunityUuid, firstLast, fileFormat.toLowerCase());
     logger.info("Start exporting data in xls file: " + outputFileName);
