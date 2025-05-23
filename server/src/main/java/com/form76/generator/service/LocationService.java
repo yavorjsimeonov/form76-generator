@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class LocationService {
 
   @Autowired
-  private LocationRepository locationRepository;
+  LocationRepository locationRepository;
 
   @Autowired
-  private AdministrationRepository administrationRepository;
+  AdministrationRepository administrationRepository;
 
   public List<LocationData> getActiveLocationsInActiveAdministrations() {
     return locationRepository.findAllActiveLocationsInActiveAdministrations().stream()

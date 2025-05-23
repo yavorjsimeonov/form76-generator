@@ -36,6 +36,7 @@ public class LocationRepositoryTest {
 
     Location location = new Location();
     location.setName("Test Location");
+    location.setExtCommunityId(1);
     location.setAdministration(savedAdministration);
 
     Location savedLocation = locationRepository.save(location);

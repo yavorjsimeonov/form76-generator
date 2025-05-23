@@ -46,14 +46,14 @@ public class Form76ReportGeneratorTest {
 
     form76ReportService.calculateWorkedHours("aaa", "cccc", monthEmployeeMap, firstLast);
 
-    String generatedFileName = form76ReportService.generateReportFile("cccc", monthEmployeeMap, firstLast, fileFormat);
+    String generatedFileName = form76ReportService.generateReportFile("cccc", monthEmployeeMap, firstLast, fileFormat, "Test Administration", "Test location");
 
 
 
     String fileName = String.format("/users/maya/Downloads/Report-forma76-%s.xlsx", DateHelper.formatReportDate(new Date()));
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     //form76XlsxReportBuilder.setEmployeesData(employees);
-    form76XlsxReportBuilder.build(ReportFileFormat.XLSX.toString()).asFileOutputStream(fileName);
+    form76XlsxReportBuilder.build(ReportFileFormat.XLSX.toString(), "Test Administration", "Test location").asFileOutputStream(fileName);
 
   }
 

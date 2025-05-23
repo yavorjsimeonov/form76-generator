@@ -1,10 +1,10 @@
 package com.form76.generator.rest;
 
-import com.form76.generator.db.entity.Location;
 import com.form76.generator.db.entity.ReportAlgorithm;
 import com.form76.generator.db.entity.ReportFileFormat;
 import com.form76.generator.rest.model.LocationData;
 import com.form76.generator.rest.model.ReportData;
+import com.form76.generator.service.AdministrationService;
 import com.form76.generator.service.Form76ReportService;
 import com.form76.generator.service.LocationService;
 import com.form76.generator.service.ReportService;
@@ -35,6 +35,8 @@ public class LocationResource {
   @Autowired
   ReportService reportService;
 
+  @Autowired
+  AdministrationService administrationService;
 
   @Autowired
   Form76ReportService form76ReportService;
@@ -72,7 +74,11 @@ public class LocationResource {
     LocationData locationData = locationService.getLocationById(locationId);
     logger.info("Loaded location [" + locationId + "]: " + locationData);
 
+    String administrationId = locationData.getAdministrationId();
+    String administrationName = administrationService.findById(administrationId).getName();
+
     DoorOpeningLogRequest doorOpeningLogRequest = new DoorOpeningLogRequest(
+        administrationName,
         locationId, locationData.getName(),
         locationData.getExtCommunityId(), locationData.getExtCommunityUuid(),
         ReportAlgorithm.valueOf(reportRequest.getReportAlgorithm()),

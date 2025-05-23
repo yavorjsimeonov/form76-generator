@@ -36,6 +36,13 @@ public class DoorEvent implements Serializable {
   public DoorEvent() {
   }
 
+  public DoorEvent(int empId, String empName, String eventTime, Integer inEvent) {
+    this.empId = empId;
+    this.empName = empName;
+    this.eventTime = eventTime;
+    this.eventType = inEvent;
+  }
+
   public DoorEvent(String eventTime, String doorName, String devName) {
     this.eventTime = eventTime;
     this.doorName = doorName;

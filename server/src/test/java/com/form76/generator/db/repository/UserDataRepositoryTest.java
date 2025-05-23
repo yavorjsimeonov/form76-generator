@@ -1,5 +1,6 @@
 package com.form76.generator.db.repository;
 
+import com.form76.generator.db.entity.Role;
 import com.form76.generator.db.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ public class UserDataRepositoryTest {
     user.setLastName("Mishov");
     user.setPassword("test");
     user.setEmail("mishom@mail.com");
+    user.setRole(Role.USER);
     user.setActive(true);
 
     User savedUser = userRepository.save(user);

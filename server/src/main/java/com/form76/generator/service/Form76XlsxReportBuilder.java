@@ -49,9 +49,9 @@ public class Form76XlsxReportBuilder {
     this.employeesData = employeesData;
   }
 
-  public Form76XlsxReportBuilder build(String fileFormat) throws ParseException {
+  public Form76XlsxReportBuilder build(String fileFormat, String administration, String location) throws ParseException {
     createWorkbook(fileFormat);
-    populateWorkbook();
+    populateWorkbook(administration, location);
     return this;
   }
 
@@ -81,7 +81,7 @@ public class Form76XlsxReportBuilder {
     createStyles();
   }
 
-  protected void populateWorkbook() throws ParseException {
+  protected void populateWorkbook(String administration, String location) throws ParseException {
     List<Map<String, Employee>> list = employeesData.values().stream().toList();
 
     for(Map<String, Employee> map : list){
@@ -91,7 +91,7 @@ public class Form76XlsxReportBuilder {
       String monthYearStr = getMonthAndYerStrFromDate(date);
       String sheetName = SHEET_NAME + " - " + monthYearStr;
       form76Sheet = createSheet(sheetName);
-      populateForma76Sheet(map);
+      populateForma76Sheet(map, administration, location);
       form76Sheet.autoSizeColumns();
 
     }
@@ -99,7 +99,7 @@ public class Form76XlsxReportBuilder {
 
   }
 
-  private void populateForma76Sheet(Map<String, Employee> map) throws ParseException {
+  private void populateForma76Sheet(Map<String, Employee> map, String administrationName, String locationName) throws ParseException {
     int row = 0;
     int column = 0;
 
@@ -107,7 +107,8 @@ public class Form76XlsxReportBuilder {
     form76Sheet.createEmptyCells(0, 1, 47, defaultStyle);
 
     form76Sheet.createCell(1, 0, "Предприятие:", defaultStyle);
-    form76Sheet.createEmptyCells(1, 1, 4, defaultStyle);
+    form76Sheet.createCell(1, 1, administrationName, defaultStyle);
+    form76Sheet.createEmptyCells(1, 2, 4, defaultStyle);
     form76Sheet.createCell(1, 5, "ТАБЛИЦА", sheetHeaderCenterStyle);
     form76Sheet.createEmptyCells(1, 6, 33, defaultStyle);
     form76Sheet.mergeCells(new CellRangeAddress(1, 1, 5, 33));
@@ -138,7 +139,9 @@ public class Form76XlsxReportBuilder {
     form76Sheet.mergeCells(new CellRangeAddress(2, 2, 5, 33));
 
     form76Sheet.createCell(3, 0, "Адрес:", defaultStyle);
-    form76Sheet.createEmptyCells(3, 1, 4, defaultStyle);
+    form76Sheet.createCell(3, 1, locationName, defaultStyle);
+
+    form76Sheet.createEmptyCells(3, 2, 4, defaultStyle);
     form76Sheet.createCell(3, 5, "отдел:", sheetHeaderStyle);
     form76Sheet.createEmptyCells(3, 6, 33, defaultStyle);
     form76Sheet.mergeCells(new CellRangeAddress(3, 3, 5, 33));

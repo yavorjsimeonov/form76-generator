@@ -1,5 +1,6 @@
 package com.form76.generator.db.repository;
 
+import com.form76.generator.db.entity.Administration;
 import com.form76.generator.db.entity.Device;
 import com.form76.generator.db.entity.DeviceType;
 import com.form76.generator.db.entity.Location;
@@ -21,6 +22,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class DeviceRepositoryTest {
 
   @Autowired
+  private AdministrationRepository administrationRepository;
+
+  @Autowired
   private DeviceRepository deviceRepository;
 
   @Autowired
@@ -28,8 +32,13 @@ public class DeviceRepositoryTest {
 
   @Test
   public void testSaveAndFindDevice() {
+    Administration administration = new Administration();
+    administration.setName("Test Administration");
+    administration = administrationRepository.save(administration);
+
     Location location = new Location();
     location.setName("Test Location");
+    location.setAdministration(administration);
     location = locationRepository.save(location);
 
     Device device = new Device();
