@@ -49,8 +49,8 @@ jobs:
 
       - name: Build with Gradle
         working-directory: ./server
-        run: ./gradlew clean build --no-daemon
+        run: ../gradlew clean build --no-daemon
 
       - name: Run Tests
         working-directory: ./server
-        run: ./gradlew test --no-daemon
+        run: ../gradlew test --no-daemon
