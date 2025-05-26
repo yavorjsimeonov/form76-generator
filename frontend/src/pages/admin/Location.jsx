@@ -8,8 +8,8 @@ import Footer from "../../components/common/Footer";
 import Header from "../../components/common/Header";
 import Menu from "../../components/common/Menu";
 import Toast from "../../components/common/Toast";
-import {useAuth} from "../../components/common/AuthContext";
-import {form76GeneratorApi} from "../../api/Form76GeneratorApi";
+import { useAuth } from "../../components/common/AuthContext";
+import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
 import ReportList from "../../components/ReportList";
 import LeftMenu from "../../components/common/LeftMenu";
 
@@ -21,8 +21,8 @@ function LocationDetailsPage() {
     const { state } = useLocation();
     const navigate = useNavigate();
 
-    const [location, setLocation] = useState(/*state?.location || */null);
-    const [loading, setLoading] = useState(/*!state?.locationId*/true);
+    const [location, setLocation] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
@@ -31,27 +31,32 @@ function LocationDetailsPage() {
     const [toastColor, setToastColor] = useState("primary");
 
     useEffect(() => {
-            const fetchLocation = async () => {
-                try {
-                    const response = await form76GeneratorApi.getLocation(user, id);
-                    setLocation(response.data);
-                } catch (error) {
-                    setError(error.message);
-                } finally {
-                    setLoading(false);
-                }
-            };
+        const fetchLocation = async () => {
+            try {
+                const response = await form76GeneratorApi.getLocation(user, id);
+                setLocation(response.data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            fetchLocation();
+        fetchLocation();
     }, [id]);
 
     const handleEdit = async (updatedLocation) => {
         try {
             const response = await form76GeneratorApi.updateLocation(user, id, updatedLocation);
             setLocation(response.data);
+            setToastMessage("Локацията беше успешно редактирана.");
+            setToastColor("success");
         } catch (error) {
             console.error("Error editing location:", error);
+            setToastMessage("Редакцията на локацията беше неуспешна.");
+            setToastColor("danger");
         } finally {
+            setShowToast(true);
             setShowModal(false);
         }
     };
@@ -68,7 +73,7 @@ function LocationDetailsPage() {
 
             if (response.status === 200 && response.data) {
                 setToastMessage(`Report generation triggered successfully! An email will be send to ${location.representativeEmail}`);
-                setToastColor("success"); // Green toast for success
+                setToastColor("success");
                 setShowToast(true);
             }
         } catch (error) {
@@ -77,88 +82,75 @@ function LocationDetailsPage() {
             setToastColor("danger");
             setShowToast(true);
         }
-
-
     };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
-
-    if (!location) {
-        return <p>Location not found.</p>;
-    }
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
+    if (!location) return <p>Location not found.</p>;
 
     return (
         <>
-
             <Container fluid>
                 <Row>
                     <Col md={2} id="sidebar-wrapper">
-                        <LeftMenu activeKey="administrations"/>
+                        <LeftMenu activeKey="administrations" />
                     </Col>
-                    <Col md={10} id="page-content-wrapper" >
-                        <Header/>
-                        <Container fluid="md" className="">
+                    <Col md={10} id="page-content-wrapper">
+                        <Header />
+                        <Container fluid="md">
                             <Row className="justify-content-md-center">
                                 <div>
-                                <h2>Локация <span className="object">{location.name}</span></h2>
+                                    <h2>Локация <span className="object">{location.name}</span></h2>
                                 </div>
-                                <Card class="card">
+                                <Card className="card">
                                     <Card.Title className="mt-3">Детайли</Card.Title>
-
                                     <Card.Body>
                                         <Container>
                                             <Row>
                                                 <Col md={6}>
-                                                    <b>Име: </b>{location.name} <br/>
-                                                    <b>Външно Id: </b>{location.extCommunityId} <br/>
-                                                    <b>Външно UUId: </b>{location.extCommunityUuid} <br/>
-                                                    <b>Алгоритъм на справката: </b>{location.reportAlgorithm} <br/>
+                                                    <b>Име: </b>{location.name} <br />
+                                                    <b>Външно Id: </b>{location.extCommunityId} <br />
+                                                    <b>Външно UUId: </b>{location.extCommunityUuid} <br />
+                                                    <b>Алгоритъм на справката: </b>{location.reportAlgorithm} <br />
                                                 </Col>
                                                 <Col md={6}>
-                                                    <b>Име на представител: </b>{location.representativeName} <br/>
-                                                    <b>Електронна поща на представител: </b>{location.representativeEmail} <br/>
-                                                    <b>Изпращане на email: </b>{location.sendEmail ? "Да" : "Не"} <br/>
-                                                    <b>Статус: </b>{location.active ? "Active" : "Inactive"} <br/>
+                                                    <b>Име на представител: </b>{location.representativeName} <br />
+                                                    <b>Електронна поща на представител: </b>{location.representativeEmail} <br />
+                                                    <b>Изпращане на email: </b>{location.sendEmail ? "Да" : "Не"} <br />
+                                                    <b>Статус: </b>{location.active ? "Active" : "Inactive"} <br />
                                                 </Col>
                                             </Row>
                                         </Container>
-
                                     </Card.Body>
                                     <Card.Body>
-                                         <Container>
-
+                                        <Container>
                                             <Row>
                                                 <Col>
-                                                <Button
-                                                    variant="warning"
-                                                    onClick={() => setShowModal(true)}
-                                                    style={{ marginRight: "10px" }}
-                                                >
-                                                    Редакция
-                                                </Button>
-                                                <Button
-                                                    variant="primary"
-                                                    onClick={() => setShowReportModal(true)}
-                                                    style={{ marginRight: "10px" }}
-                                                >
-                                                    Генериране на справка
-                                                </Button>
-                                                <Button variant="secondary" onClick={() => navigate(-1)}>
-                                                    Назад
-                                                </Button>
+                                                    <Button
+                                                        variant="warning"
+                                                        onClick={() => setShowModal(true)}
+                                                        style={{ marginRight: "10px" }}
+                                                    >
+                                                        Редакция
+                                                    </Button>
+                                                    <Button
+                                                        variant="primary"
+                                                        onClick={() => setShowReportModal(true)}
+                                                        style={{ marginRight: "10px" }}
+                                                    >
+                                                        Генериране на справка
+                                                    </Button>
+                                                    <Button
+                                                        variant="secondary"
+                                                        onClick={() => navigate(-1)}
+                                                    >
+                                                        Назад
+                                                    </Button>
                                                 </Col>
                                             </Row>
                                         </Container>
-
                                     </Card.Body>
                                 </Card>
-
                                 <ReportList locationId={location.id} showAdminAndLocation={false} />
                             </Row>
                         </Container>
@@ -187,9 +179,7 @@ function LocationDetailsPage() {
                 color={toastColor}
                 onClose={() => setShowToast(false)}
             />
-
         </>
-
     );
 }
 

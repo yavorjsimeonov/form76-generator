@@ -9,7 +9,7 @@ function GenerateReportModal({ show, onHide, onSubmit }) {
     const [endDate, setEndDate] = useState(null);
     const [reportAlgorithm, setReportAlgorithm] = useState("EVERY_IN_OUT");
     const [fileFormat, setFileFormat] = useState("XLSX");
-    const [sendToEmail, setSendToEmail] = useState('aaa');
+    const [sendToEmail, setSendToEmail] = useState('');
     const reportAlgorithms = ["FIRST_IN_LAST_OUT", "EVERY_IN_OUT"];
     const fileFormats = ["XLS", "XLSX"]
 

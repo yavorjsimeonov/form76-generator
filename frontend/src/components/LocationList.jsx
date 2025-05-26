@@ -11,15 +11,21 @@ function LocationList({ locations, administrationId, onLocationCreated }) {
     const navigate = useNavigate();
     const [showLocationModal, setShowLocationModal] = useState(false);
 
+    // Handle location creation
     const handleCreateLocation = async (newLocation) => {
         try {
             const response = await form76GeneratorApi.createLocation(user, {
                 ...newLocation,
                 administrationId,
             });
-            onLocationCreated(response.data); // Update parent state with the new location
+
+            // Call the callback with success
+            onLocationCreated(response.data, true);
         } catch (error) {
             console.error("Error creating location:", error);
+
+            // Call the callback with failure
+            onLocationCreated(null, false);
         } finally {
             setShowLocationModal(false);
         }
