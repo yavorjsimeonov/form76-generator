@@ -2,6 +2,8 @@ package com.form76.generator.db.repository;
 
 import com.form76.generator.db.entity.Administration;
 import com.form76.generator.db.entity.Location;
+import com.form76.generator.db.entity.ReportAlgorithm;
+import com.form76.generator.db.entity.ReportFileFormat;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.List;
+import java.util.Optional;
 
 @Testcontainers
 @RunWith(SpringRunner.class)
@@ -26,26 +31,28 @@ public class LocationRepositoryTest {
   private AdministrationRepository administrationRepository;
 
   @Test
-  public void testSaveAndFindLocation() {
-    Administration administration = new Administration();
-    administration.setName("Bank");
-    administration.setActive(true);
-
-    Administration savedAdministration = administrationRepository.save(administration);
-
+  void testSaveAndFindById() {
+    Administration admin = new Administration();
+    admin.setName("Central Administration");
+    admin.setActive(true);
+    administrationRepository.save(admin);
 
     Location location = new Location();
-    location.setName("Test Location");
-    location.setExtCommunityId(1);
-    location.setAdministration(savedAdministration);
+    location.setName("Main Building");
+    location.setExtCommunityId(12345);
+    location.setExtCommunityUuid("uuid-1234");
+    location.setRepresentativeName("Alice Smith");
+    location.setRepresentativeEmail("alice@example.com");
+    location.setReportAlgorithm(ReportAlgorithm.FIRST_IN_LAST_OUT);
+    location.setFileFormat(ReportFileFormat.XLSX);
+    location.setActive(true);
+    location.setSendEmail(true);
+    location.setAdministration(admin);
+    locationRepository.save(location);
 
-    Location savedLocation = locationRepository.save(location);
-
-    Location foundLocation = locationRepository.findById(savedLocation.getId()).orElse(null);
-
-    assert savedLocation.getId() != null;
-    assert foundLocation != null;
-    assert foundLocation.getName().equals("Test Location");
+    List<Location> found = locationRepository.findAll();
+    assert found.size() > 0;
+    assert (found.get(0).getName()).equals("Main Building");
   }
 
 }

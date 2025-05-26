@@ -62,7 +62,6 @@ class EmailServiceTest {
     when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
     doNothing().when(javaMailSender).send(mimeMessage);
 
-    // Make sure the test file exists
     File file = new File(request.getAttachment());
     assertTrue(file.exists(), "Attachment file must exist for this test.");
 

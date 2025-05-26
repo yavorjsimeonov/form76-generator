@@ -107,9 +107,11 @@ public class Form76ReportService {
       String fileFormat = request.getFileFormat().toString();
       String administration = request.getAdministrationName();
       String location = request.getLocationName();
-      calculateWorkedHours(request.getLocationName(), request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
+      String locationUuid = request.getLocationExtCommunityUuid();
 
-      String generatedFileName = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast, fileFormat, administration, location);
+      calculateWorkedHours(location, locationUuid, monthEmployeeMap, firstLast);
+
+      String generatedFileName = generateReportFile(administration, location, locationUuid, monthEmployeeMap, firstLast, fileFormat);
 
       logger.info("generatedFileName: " + generatedFileName);
 
@@ -304,14 +306,14 @@ public class Form76ReportService {
 
     return 0L;
   }
-  public String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat, String administration, String location) throws IOException, ParseException {
+  public String generateReportFile(String administrationName, String locationName, String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat) throws IOException, ParseException {
 
     String outputFileName = getOutputFileName(locationExtCommunityUuid, firstLast, fileFormat.toLowerCase());
     logger.info("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
-    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build(fileFormat, administration, location).asFileOutputStream(TMP_DIR + outputFileName);
+    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build(fileFormat, administrationName, locationName).asFileOutputStream(TMP_DIR + outputFileName);
     generatedReportFile.flush();
     generatedReportFile.close();
 
