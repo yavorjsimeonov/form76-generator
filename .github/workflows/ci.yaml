@@ -78,6 +78,14 @@ jobs:
 #          SPRING_DATASOURCE_PASSWORD: pwd
         run: ../gradlew clean build --no-daemon --stacktrace
 
+      - name: Upload results to path
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: results
+          path: ${{ github.workspace }}/app/build/testlogs.txt
+          if-no-files-found: ignore
+
       - name: Run Tests
         working-directory: ./server
         run: ../gradlew test --no-daemon
