@@ -14,21 +14,21 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
-          MYSQL_USER: user
-          MYSQL_PASSWORD: pwd
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+#    services:
+#      mysql:
+#        image: mysql:8.0
+#        env:
+#          MYSQL_ROOT_PASSWORD: root
+#          MYSQL_DATABASE: testdb
+#          MYSQL_USER: user
+#          MYSQL_PASSWORD: pwd
+#        ports:
+#          - 3306:3306
+#        options: >-
+#          --health-cmd="mysqladmin ping -h localhost"
+#          --health-interval=10s
+#          --health-timeout=5s
+#          --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -44,6 +44,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'oracle'
+
+      - name: Setup Testcontainers Cloud Client
+        uses: atomicjar/testcontainers-cloud-setup-action@v1
+        with:
+          token: ${{ secrets.TC_CLOUD_TOKEN }}
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
@@ -67,11 +72,11 @@ jobs:
 
       - name: Build with Gradle
         working-directory: ./server
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/testdb
-          SPRING_DATASOURCE_USERNAME: user
-          SPRING_DATASOURCE_PASSWORD: pwd
-        run: ../gradlew clean build --no-daemon
+#        env:
+#          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/testdb
+#          SPRING_DATASOURCE_USERNAME: user
+#          SPRING_DATASOURCE_PASSWORD: pwd
+        run: ../gradlew clean build --no-daemon --stacktrace
 
       - name: Run Tests
         working-directory: ./server
