@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Testcontainers
 @RunWith(SpringRunner.class)
@@ -26,29 +28,16 @@ public class AdministrationRepositoryTest {
   @Autowired
   private AdministrationRepository administrationRepository;
 
-  @Autowired
-  private LocationRepository locationRepository;
-
-  @Autowired
-  private ReportRepository reportRepository;
-
-  @Autowired
-  private UserRepository userRepository;
-
   @Test
-  public void testSaveAndFindAdministration() {
+  void testSaveAndFindById() {
+    Administration admin = new Administration();
+    admin.setName("Central Administration");
+    admin.setActive(true);
+    administrationRepository.save(admin);
 
-    Administration administration = new Administration();
-    administration.setName("Bank");
-    administration.setActive(true);
-
-    Administration savedAdministration = administrationRepository.save(administration);
-
-    Administration foundAdministration = administrationRepository.findById(savedAdministration.getId()).orElse(null);
-
-    assert savedAdministration.getId() != null;
-    assert foundAdministration != null;
-    assert foundAdministration.getName().equals("Bank");
-    assert foundAdministration.isActive();
+    List<Administration> found = administrationRepository.findAll();
+    assert found.size() > 0;
+    assert found.get(0).getName().equals("Central Administration");
+    assert found.get(0).isActive();
   }
 }

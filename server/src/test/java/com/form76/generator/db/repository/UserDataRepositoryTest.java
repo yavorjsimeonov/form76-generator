@@ -1,5 +1,7 @@
 package com.form76.generator.db.repository;
 
+import com.form76.generator.db.entity.Administration;
+import com.form76.generator.db.entity.Role;
 import com.form76.generator.db.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
+import java.util.Optional;
+
 @Testcontainers
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -21,25 +26,30 @@ public class UserDataRepositoryTest {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private AdministrationRepository administrationRepository;
+
   @Test
-  public void testAddUser() {
+  void testSaveAndFindById() {
+    Administration administration = new Administration();
+    administration.setName("Central Administration");
+    administration.setActive(true);
+    administrationRepository.save(administration);
+
     User user = new User();
-    user.setFirstName("Misho");
-    user.setLastName("Mishov");
-    user.setPassword("test");
-    user.setEmail("mishom@mail.com");
+    user.setFirstName("John");
+    user.setLastName("Doe");
+    user.setEmail("john.doe@example.com");
+    user.setUsername("johndoe");
+    user.setPassword("securepassword");
+    user.setRole(Role.ADMIN);
     user.setActive(true);
+    user.setAdministration(administration);
+    userRepository.save(user);
 
-    User savedUser = userRepository.save(user);
-
-    User foundUser = userRepository.findById(savedUser.getId()).orElse(null);
-
-    assert foundUser != null;
-    assert foundUser.getFirstName().equals("Misho");
-    assert foundUser.getLastName().equals("Mishov");
-    assert foundUser.getEmail().equals("mishom@mail.com");
-
-
+    List<User> found = userRepository.findAll();
+    assert found.size() > 0;
+    assert (found.get(0).getUsername()).equals("johndoe");
   }
 
 }

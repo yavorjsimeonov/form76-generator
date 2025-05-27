@@ -19,19 +19,11 @@ import java.nio.file.Paths;
 public class UploadReportService {
 
   @Value("${google.cloud.project-id}")
-  private String projectId;
+  String projectId;
   @Value("${google.cloud.bucket.name}")
-  private String bucketName;
-//  @Value("${google.cloud.project.api.key}")
-//  private String apiKey;
-
+  String bucketName;
 
   public void uploadFile(String fileName) throws IOException {
-//    Storage storage = StorageOptions.newBuilder()
-//        .setProjectId(projectId)
-//        .setCredentials(ApiKeyCredentials.create(apiKey))
-//        .build().getService();
-
     Storage storage = getReportsBucket();
     BlobInfo blobInfo = getBlobInfo(fileName);
     String filePath = "/tmp/" + fileName;
@@ -52,7 +44,7 @@ public class UploadReportService {
     }
   }
 
-  private Storage getReportsBucket() throws IOException {
+  Storage getReportsBucket() throws IOException {
     StorageOptions storageOptions = StorageOptions.newBuilder()
         .setProjectId(projectId)
         .setCredentials(GoogleCredentials.fromStream(
@@ -60,7 +52,7 @@ public class UploadReportService {
     return storageOptions.getService();
   }
 
-  private BlobInfo getBlobInfo(String fileName) {
+  BlobInfo getBlobInfo(String fileName) {
     BlobId blobId = BlobId.of(bucketName, fileName);
     return BlobInfo.newBuilder(blobId).build();
   }

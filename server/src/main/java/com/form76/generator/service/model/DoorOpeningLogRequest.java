@@ -16,9 +16,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DoorOpeningLogRequest {
 
-  private String  locationId;
+  private String administrationName;
 
-  private String  locationName;
+  private String locationId;
+
+  private String locationName;
 
   private Integer locationExtCommunityId;
 
@@ -35,4 +37,9 @@ public class DoorOpeningLogRequest {
   private String emailRecipient;
 
   private boolean sendEmail;
+
+
+  public DoorOpeningLogRequest() {
+  }
+
 }

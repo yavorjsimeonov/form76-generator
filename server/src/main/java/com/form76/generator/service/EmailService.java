@@ -20,13 +20,13 @@ public class EmailService {
   Logger logger = LoggerFactory.getLogger(EmailService.class);
 
   @Autowired
-  private JavaMailSender javaMailSender;
+  JavaMailSender javaMailSender;
 
   @Value("${form76-generator.emails.enabled}")
-  private boolean emailsEnabled = false;
+  boolean emailsEnabled = false;
 
   @Value("${spring.mail.username}")
-  private String sender;
+  String sender;
 
 
   public void sendSimpleMail(EmailRequest details)
@@ -72,7 +72,7 @@ public class EmailService {
 
       FileSystemResource file
           = new FileSystemResource(
-          new File(details.getAttachment()));
+          new File("/tmp/" + details.getAttachment()));
 
       mimeMessageHelper.addAttachment(file.getFilename(), file);
 

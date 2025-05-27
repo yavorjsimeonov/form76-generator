@@ -24,13 +24,13 @@ public class MylinkApiService {
   WebClient.Builder webClientBuilder;
 
   @Value("${mylink.host}")
-  private String myLinkHost;
+  String myLinkHost;
 
   @Value("${mylink.door.opening.report.uri}")
-  private String myLinkDoorOpeningReportUri;
+  String myLinkDoorOpeningReportUri;
 
   @Value("${mylink.api.token}")
-  private String myLinkApiToken;
+  String myLinkApiToken;
 
 
   public DoorOpeningLogResponse loadDoorOpeningLog(DoorOpeningLogRequest doorOpeningLogRequest) {

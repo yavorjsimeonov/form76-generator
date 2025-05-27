@@ -1,6 +1,5 @@
 package com.form76.generator.service;
 
-import com.form76.generator.db.entity.ReportAlgorithm;
 import com.form76.generator.db.entity.ReportFileFormat;
 import com.form76.generator.service.model.DoorEvent;
 import com.form76.generator.service.model.DoorOpeningLog;
@@ -9,27 +8,38 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
+import static com.form76.generator.service.Form76ReportService.TMP_DIR;
 
+
+@SpringBootTest
 public class Form76ReportGeneratorTest {
 
   Logger logger = LoggerFactory.getLogger(Form76ReportGeneratorTest.class);
 
+  @Autowired
+  TestDataGenerator testDataGenerator;
+
+  @Autowired
+  Form76ReportService form76ReportService;
+
+  @Value("${form76-generator.output.file.name.prefix}")
+  String reportFilePrefix;
+
   @Test
   @Ignore
   public void testCalculateWorkedHours() throws IOException, ParseException {
-    TestDataGenerator testDataGenerator = new TestDataGenerator();
-    Form76ReportService form76ReportService = new Form76ReportService();
-    DoorOpeningLog doorOpeningLog = testDataGenerator.generateDoorOpeningLog("2024-11-01 00:00:00", "2024-12-31 23:59:59");
-    logger.info("Employees: " + doorOpeningLog.getList());
 
+    DoorOpeningLog doorOpeningLog = testDataGenerator.generateDoorOpeningLog("2024-11-01 00:00:00", "2024-12-31 23:59:59");
 
     Map<String, Map<String, Employee>> monthEmployeeMap = new HashMap<>();
     List<DoorEvent> allEvents = doorOpeningLog.getList();
@@ -41,29 +51,43 @@ public class Form76ReportGeneratorTest {
 
       employee.getDoorEvents().add(event);
     }
+
+    // assert that worked hours are not populated for the generated test data
+    Collection<Map<String, Employee>> employees = monthEmployeeMap.values();
+    for (Map<String, Employee> employeeDates : employees) {
+      assert employeeDates.values().stream().allMatch(e -> e.getWorkedHoursPerDate().isEmpty());
+    }
+
+    String locationName = "Test Location";
+    String locationUuid = "1234qwert";
+    String administrationName = "Test Administration";
     boolean firstLast = true;
     String fileFormat = "XLSX";
 
-    form76ReportService.calculateWorkedHours("aaa", "cccc", monthEmployeeMap, firstLast);
+    form76ReportService.calculateWorkedHours(locationName, locationUuid, monthEmployeeMap, firstLast);
 
-    String generatedFileName = form76ReportService.generateReportFile("cccc", monthEmployeeMap, firstLast, fileFormat);
+    // assert that worked hours are populated for all employees
+    employees = monthEmployeeMap.values();
+    for (Map<String, Employee> employeeDates : employees) {
+      assert employeeDates.values().stream().noneMatch(e -> e.getWorkedHoursPerDate().isEmpty());
+    }
 
+    String generatedFileName = form76ReportService.generateReportFile(administrationName, locationName, locationUuid, monthEmployeeMap, firstLast, fileFormat);
+    assert generatedFileName.startsWith(reportFilePrefix + locationUuid + "_FL_");
+    assert generatedFileName.endsWith(".xlsx");
 
-
-    String fileName = String.format("/users/maya/Downloads/Report-forma76-%s.xlsx", DateHelper.formatReportDate(new Date()));
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
-    //form76XlsxReportBuilder.setEmployeesData(employees);
-    form76XlsxReportBuilder.build(ReportFileFormat.XLSX.toString()).asFileOutputStream(fileName);
+    form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
+
+    FileOutputStream fileOutputStream = null;
+    try {
+      fileOutputStream = form76XlsxReportBuilder.build(ReportFileFormat.XLSX.toString(), "Test Administration", "Test location").asFileOutputStream(generatedFileName);
+      assert fileOutputStream != null;
+    } finally {
+      File outputFile = new File(TMP_DIR + generatedFileName);
+      outputFile.delete();
+    }
 
   }
 
-//  @Test
-//  public void testReportGenerationFromFile() throws Exception {
-//    String srcFileName = String.format("/users/maya/Downloads/1708687718209_733556.xls", SIMPLE_DATE_FORMAT_FOR_FILE_NAME.format(new Date()));
-//    //TestDataGenerator.createDoorEventsSourceFile(2, 20, srcFileName);
-//
-//    srcFileName = "/users/maya/Downloads/1709287584082_753799-1.xlsx";
-//    Form76ReportService form76ReportService = new Form76ReportService();
-//    //form76ReportService.generateReportFromSource(srcFileName, false);
-//  }
 }

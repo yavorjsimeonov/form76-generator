@@ -25,12 +25,14 @@ public class Form76ReportService {
 
   Logger logger = LoggerFactory.getLogger(Form76ReportService.class);
 
+  public static final String TMP_DIR = "/tmp/";
+
   static boolean xlsxFile = true;
 
   private static final List<String> ACCEPTED_OPEN_DOOR_TYPES = Arrays.asList("Mobile phone bluetooth door", "Face open door", "Open door card", "Open the door remotely");
 
   @Value("${form76-generator.output.file.name.prefix}")
-  private String outputFileNamePrefix;
+  String outputFileNamePrefix;
 
   @Autowired
   LocationService locationService;
@@ -43,6 +45,9 @@ public class Form76ReportService {
 
   @Autowired
   ReportService reportService;
+
+  @Autowired
+  AdministrationService administrationService;
 
   @Autowired
   ReportGenerationRequestEventProducer reportGenerationRequestEventProducer;
@@ -66,8 +71,8 @@ public class Form76ReportService {
       logger.info("Found active locations: " + locations);
 
       for (LocationData locationData : locations) {
-        // Generate DoorOpeningLogRequest for each location
         DoorOpeningLogRequest request = new DoorOpeningLogRequest(
+            administrationService.findById(locationData.getAdministrationId()).getName(),
             locationData.getId(),
             locationData.getName(),
             locationData.getExtCommunityId(),
@@ -85,7 +90,9 @@ public class Form76ReportService {
       }
     } catch (Exception e) {
       logger.error("Failed to generate reports:", e);
+      throw e;
     }
+
   }
 
   public void generateReportForLocation(DoorOpeningLogRequest request) throws ParseException {
@@ -98,17 +105,15 @@ public class Form76ReportService {
       Map<String, Map<String, Employee>> monthEmployeeMap = readDataFromResponse(response);
       boolean firstLast = request.getReportAlgorithm() == ReportAlgorithm.FIRST_IN_LAST_OUT;
       String fileFormat = request.getFileFormat().toString();
-      calculateWorkedHours(request.getLocationName(), request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast);
+      String administration = request.getAdministrationName();
+      String location = request.getLocationName();
+      String locationUuid = request.getLocationExtCommunityUuid();
 
-      String generatedFileName = generateReportFile(request.getLocationExtCommunityUuid(), monthEmployeeMap, firstLast, fileFormat);
+      calculateWorkedHours(location, locationUuid, monthEmployeeMap, firstLast);
+
+      String generatedFileName = generateReportFile(administration, location, locationUuid, monthEmployeeMap, firstLast, fileFormat);
 
       logger.info("generatedFileName: " + generatedFileName);
-
-      EmailRequest emailRequest = new EmailRequest();
-      emailRequest.setRecipient(request.getEmailRecipient());
-      emailRequest.setMsgBody(generatedFileName);
-      emailRequest.setSubject("Присъствена справка Форма 76 (" + generatedFileName + ")");
-      emailRequest.setAttachment(generatedFileName);
 
       uploadReportService.uploadFile(generatedFileName);
 
@@ -121,6 +126,12 @@ public class Form76ReportService {
       ));
 
       if (request.isSendEmail()) {
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRecipient(request.getEmailRecipient());
+        emailRequest.setMsgBody(generatedFileName);
+        emailRequest.setSubject("Присъствена справка Форма 76 (" + generatedFileName + ")");
+        emailRequest.setAttachment(generatedFileName);
+
         logger.info("Going to send generated report " + generatedFileName + " to email: " + request.getEmailRecipient());
         emailService.sendMailWithAttachment(emailRequest);
       } else {
@@ -295,14 +306,14 @@ public class Form76ReportService {
 
     return 0L;
   }
-  public String generateReportFile(String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat) throws IOException, ParseException {
+  public String generateReportFile(String administrationName, String locationName, String locationExtCommunityUuid, Map<String, Map<String, Employee>> monthEmployeeMap, Boolean firstLast, String fileFormat) throws IOException, ParseException {
 
     String outputFileName = getOutputFileName(locationExtCommunityUuid, firstLast, fileFormat.toLowerCase());
     logger.info("Start exporting data in xls file: " + outputFileName);
 
     Form76XlsxReportBuilder form76XlsxReportBuilder = new Form76XlsxReportBuilder();
     form76XlsxReportBuilder.setEmployeesData(monthEmployeeMap);
-    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build(fileFormat).asFileOutputStream("/tmp/" + outputFileName);
+    FileOutputStream generatedReportFile = form76XlsxReportBuilder.build(fileFormat, administrationName, locationName).asFileOutputStream(TMP_DIR + outputFileName);
     generatedReportFile.flush();
     generatedReportFile.close();
 
