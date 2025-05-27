@@ -47,7 +47,6 @@ class Form76ReportServiceTest {
 
   @DynamicPropertySource
   static void overrideProperties(DynamicPropertyRegistry registry) {
-    System.out.println("~~~~~~~~~~~~~~~~~~~~ " + kafka.getBootstrapServers());
     registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
     registry.add("spring.kafka.consumer.bootstrap-servers", kafka::getBootstrapServers);
     registry.add("spring.kafka.producer.bootstrap-servers", kafka::getBootstrapServers);

@@ -22,16 +22,8 @@ public class UploadReportService {
   String projectId;
   @Value("${google.cloud.bucket.name}")
   String bucketName;
-//  @Value("${google.cloud.project.api.key}")
-//  private String apiKey;
-
 
   public void uploadFile(String fileName) throws IOException {
-//    Storage storage = StorageOptions.newBuilder()
-//        .setProjectId(projectId)
-//        .setCredentials(ApiKeyCredentials.create(apiKey))
-//        .build().getService();
-
     Storage storage = getReportsBucket();
     BlobInfo blobInfo = getBlobInfo(fileName);
     String filePath = "/tmp/" + fileName;

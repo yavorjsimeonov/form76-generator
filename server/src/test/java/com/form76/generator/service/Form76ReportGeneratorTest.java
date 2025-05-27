@@ -1,6 +1,5 @@
 package com.form76.generator.service;
 
-import com.form76.generator.db.entity.ReportAlgorithm;
 import com.form76.generator.db.entity.ReportFileFormat;
 import com.form76.generator.service.model.DoorEvent;
 import com.form76.generator.service.model.DoorOpeningLog;
@@ -12,16 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.form76.generator.service.Form76ReportService.TMP_DIR;
 
