@@ -83,7 +83,7 @@ jobs:
         if: failure()
         with:
           name: results
-          path: ${{ github.workspace }}/app/build/testlogs.txt
+          path: ${{ github.workspace }}/server/build/reports
           if-no-files-found: ignore
 
       - name: Run Tests
