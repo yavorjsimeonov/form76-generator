@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, String> {
 
-  @Query("SELECT r FROM Report r WHERE r.location.id = :locationId")
+  @Query("SELECT r FROM Report r WHERE r.location.id = :locationId order by r.creationDate")
   List<Report> findReportsByByLocationId(@Param("locationId")String locationId);
 
 }

@@ -147,27 +147,6 @@ public class Form76ReportService {
     List<DoorEvent> allEvents = doorOpeningLogResponse.getData().getList();
 
     for (DoorEvent event : allEvents) {
-      //Validate event and log errors:
-//      if (timestamp == null && id == null && doorName == null) {
-//        break;
-//      }
-//
-//      if (id == null || names == null) {
-//        rowsWrongPerson.add(row.getRowNum());
-//        continue;
-//      }
-//
-//      if (!(eventPointName != null && (eventPointName.endsWith("-IN") || eventPointName.endsWith("-in") || eventPointName.endsWith("-OUT") || eventPointName.endsWith("-out")))) {
-//        rowsWrongEventPoints.add(row.getRowNum());
-//        continue;
-//      }
-//
-//      if (openDoorType == null || !ACCEPTED_OPEN_DOOR_TYPES.contains(openDoorType)) {
-//        rowsIgnoredDoorOpenTypes.add(row.getRowNum());
-//        ignoredDoorOpenTypes.add(openDoorType);
-//        continue;
-//      }
-
       String yearMonthKey = DateHelper.getYearAndMonthFromDateString(event.getEventTime());
       Map<String, Employee> employeesMap = monthEmployeeMap.computeIfAbsent(yearMonthKey, k -> new HashMap<>());
       Employee employee = employeesMap.computeIfAbsent(Integer.toString(event.getEmpId()), k -> new Employee(event.getEmpId(), event.getEmpName()));

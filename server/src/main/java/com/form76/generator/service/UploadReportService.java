@@ -1,8 +1,5 @@
 package com.form76.generator.service;
 
-//import com.google.auth.ApiKeyCredentials;
-//import com.google.auth.Credentials;
-//import com.google.auth.oauth2.AccessToken;
 import com.form76.generator.rest.model.ReportDownloadResponse;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.BlobId;
@@ -20,8 +17,12 @@ public class UploadReportService {
 
   @Value("${google.cloud.project-id}")
   String projectId;
+
   @Value("${google.cloud.bucket.name}")
   String bucketName;
+
+  @Value("${google.cloud.bucket.credentialsFile}")
+  String credentialsFile;
 
   public void uploadFile(String fileName) throws IOException {
     Storage storage = getReportsBucket();
@@ -48,7 +49,7 @@ public class UploadReportService {
     StorageOptions storageOptions = StorageOptions.newBuilder()
         .setProjectId(projectId)
         .setCredentials(GoogleCredentials.fromStream(
-            new FileInputStream("/app/nimble-theme-448917-u5-c5df7d240535.json"))).build();
+            new FileInputStream("/app/" + credentialsFile))).build();
     return storageOptions.getService();
   }
 
