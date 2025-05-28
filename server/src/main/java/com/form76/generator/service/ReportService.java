@@ -1,11 +1,18 @@
 package com.form76.generator.service;
 
 import com.form76.generator.db.entity.Report;
+import com.form76.generator.db.entity.Role;
+import com.form76.generator.db.entity.User;
 import com.form76.generator.db.repository.LocationRepository;
 import com.form76.generator.db.repository.ReportRepository;
+import com.form76.generator.db.repository.UserRepository;
 import com.form76.generator.rest.model.ReportData;
 import com.form76.generator.rest.model.ReportDownloadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,17 +30,33 @@ public class ReportService {
   @Autowired
   LocationRepository locationRepository;
 
+  @Autowired
+  private UserRepository userRepository;
 
   public ReportData saveReport(ReportData reportData) {
     return convertToReportData(reportRepository.save(convertToReport(reportData)));
   }
 
   public List<ReportData> listReports() {
-    return reportRepository.findAll().stream().map(this::convertToReportData).toList();
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    GrantedAuthority adminRole = userDetails.getAuthorities().stream()
+        .filter(authority -> authority.getAuthority().equals(Role.ADMIN.name()))
+        .findAny()
+        .orElse(null);
+
+    if (adminRole != null) {
+      return reportRepository.findAll().stream().map(this::convertToReportData).toList();
+    } else {
+      User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() ->
+          new RuntimeException("Cannot find user with username: " + userDetails.getUsername()));
+      return reportRepository.findReportsByAdministration(user.getAdministration().getId()).stream().map(this::convertToReportData).toList();
+    }
   }
 
   public List<ReportData> listReportsForLocation(String locationId) {
-    return reportRepository.findReportsByByLocationId(locationId).stream().map(this::convertToReportData).toList();
+    return reportRepository.findReportsByLocationId(locationId).stream().map(this::convertToReportData).toList();
   }
 
   public ReportData findReportById(String reportId) {

@@ -3,34 +3,47 @@ package com.form76.generator.service;
 import com.form76.generator.db.entity.Administration;
 import com.form76.generator.db.entity.Location;
 import com.form76.generator.db.entity.Report;
+import com.form76.generator.db.entity.Role;
 import com.form76.generator.db.repository.LocationRepository;
 import com.form76.generator.db.repository.ReportRepository;
 import com.form76.generator.rest.model.ReportData;
 import com.form76.generator.rest.model.ReportDownloadResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ReportServiceTest {
 
   private ReportRepository reportRepository;
   private UploadReportService uploadReportService;
   private LocationRepository locationRepository;
   private ReportService reportService;
+  private Authentication authentication;
 
   @BeforeEach
   void setup() {
     reportRepository = mock(ReportRepository.class);
     uploadReportService = mock(UploadReportService.class);
     locationRepository = mock(LocationRepository.class);
+    authentication = mock(Authentication.class);
 
     reportService = new ReportService();
     reportService.reportRepository = reportRepository;
@@ -53,9 +66,13 @@ class ReportServiceTest {
   }
 
   @Test
-  void testListReports() {
+  void testListReportsAsAdmin() {
     Report report = createReportEntity();
     when(reportRepository.findAll()).thenReturn(List.of(report));
+
+    when(authentication.getPrincipal()).thenReturn(new User("userName", "pwd", List.of(new SimpleGrantedAuthority(Role.ADMIN.name()))));
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
     List<ReportData> result = reportService.listReports();
 
@@ -66,7 +83,7 @@ class ReportServiceTest {
   @Test
   void testListReportsForLocation() {
     Report report = createReportEntity();
-    when(reportRepository.findReportsByByLocationId("loc1")).thenReturn(List.of(report));
+    when(reportRepository.findReportsByLocationId("loc1")).thenReturn(List.of(report));
 
     List<ReportData> result = reportService.listReportsForLocation("loc1");
 
