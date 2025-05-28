@@ -1,7 +1,7 @@
 import React from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col, Row, Button, Container } from "react-bootstrap";
 
-function LocationDetailsCard({ location }) {
+function LocationDetailsCard({ location, onEdit, onGenerate, onBack }) {
     return (
         <Card className="card mt-5">
             <Card.Title className="mt-3">Детайли</Card.Title>
@@ -20,6 +20,17 @@ function LocationDetailsCard({ location }) {
                         <b>Статус: </b>{location.active ? "Active" : "Inactive"}<br />
                     </Col>
                 </Row>
+            </Card.Body>
+            <Card.Body>
+                <Container>
+                    <Row>
+                        <Col>
+                            <Button variant="warning" onClick={onEdit} className="me-2">Редакция</Button>
+                            <Button variant="primary" onClick={onGenerate} className="me-2">Генериране на справка</Button>
+                            <Button variant="secondary" onClick={onBack}>Назад</Button>
+                        </Col>
+                    </Row>
+                </Container>
             </Card.Body>
         </Card>
     );

@@ -9,17 +9,16 @@ import GenerateReportModal from "../../components/GenerateReportForm";
 import Toast from "../../components/common/Toast";
 import ReportList from "../../components/ReportList";
 import LocationDetailsCard from "../../components/LocationDetailsCard";
-import LocationActionButtons from "../../components/LocationActionButtons";
 import { useLocationDetails } from "../../hooks/useLocationDetails";
 import { useToast } from "../../hooks/useToast";
 import { form76GeneratorApi } from "../../api/Form76GeneratorApi";
 import { useAuth } from "../../components/common/AuthContext";
 
 function LocationDetailsPage() {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const Auth = useAuth();
-    const user = Auth.getUser();
+        const { id } = useParams();
+        const navigate = useNavigate();
+        const Auth = useAuth();
+        const user = Auth.getUser();
 
 
     const { location, loading, error, setLocation } = useLocationDetails(id, user);
@@ -66,8 +65,8 @@ function LocationDetailsPage() {
                         <Container fluid="md">
                             <Row className="justify-content-md-center">
                                 <h2>Локация: <span className="object">{location.name}</span></h2>
-                                <LocationDetailsCard location={location} />
-                                <LocationActionButtons
+                                <LocationDetailsCard
+                                    location={location}
                                     onEdit={() => setShowModal(true)}
                                     onGenerate={() => setShowReportModal(true)}
                                     onBack={() => navigate(-1)}
