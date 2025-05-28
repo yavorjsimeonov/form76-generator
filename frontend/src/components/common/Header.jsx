@@ -14,8 +14,6 @@ function Header(props) {
     const user = Auth.getUser();
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
-    console.log("Current User Object:", user); // Debugging
-
     const handleLogout = () => {
         Auth.userLogout();
     };
@@ -60,7 +58,6 @@ function Header(props) {
                 </Col>
             </Row>
 
-            {/* Change Password Modal */}
             <ChangePasswordForm
                 show={showChangePasswordModal}
                 onHide={() => setShowChangePasswordModal(false)}
