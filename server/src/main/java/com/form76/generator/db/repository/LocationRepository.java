@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface LocationRepository extends JpaRepository<Location, String> {
   @Query("SELECT l FROM Location l " +
-      "WHERE l.active = true and l.administration.active = true")
+      "WHERE l.active = true and l.administration.active = true ORDER BY l.name")
   List<Location> findAllActiveLocationsInActiveAdministrations();
 
-  @Query("SELECT l FROM Location l WHERE l.administration.id = :administrationId")
+  @Query("SELECT l FROM Location l WHERE l.administration.id = :administrationId ORDER BY l.name")
   List<Location> findLocationsByAdministrationId(@Param("administrationId")String administrationId);
 
 }
