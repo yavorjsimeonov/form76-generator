@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import Header from "../../components/common/Header";
-import Menu from "../../components/common/Menu";
 import Footer from "../../components/common/Footer";
 import AdministrationFormModal from "../../components/AdministrationForm";
 import LocationList from "../../components/LocationList";
@@ -22,7 +21,6 @@ function AdministrationPage() {
     const [error, setError] = useState(null);
     const [showAdministrationModal, setShowAdministrationModal] = useState(false);
 
-    // Toast state
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [toastColor, setToastColor] = useState("primary");
@@ -42,7 +40,6 @@ function AdministrationPage() {
         fetchAdministration();
     }, [id]);
 
-    // Handle editing administration details
     const handleEdit = async (updatedAdministration) => {
         try {
             const response = await form76GeneratorApi.updateAdministration(user, id, updatedAdministration);
@@ -59,7 +56,6 @@ function AdministrationPage() {
         }
     };
 
-    // Handle location creation toast
     const handleLocationCreated = (newLocation, success) => {
         if (success) {
             setToastMessage(`Локация ${newLocation.name} успешно създадена`);
@@ -123,7 +119,6 @@ function AdministrationPage() {
                                             </Card.Body>
                                         </Card>
 
-                                        {/* Locations List */}
                                         <LocationList
                                             locations={administration.locations}
                                             administrationId={id}
@@ -140,7 +135,6 @@ function AdministrationPage() {
                 </Row>
             </Container>
 
-            {/* Modal for Editing Administration */}
             <AdministrationFormModal
                 show={showAdministrationModal}
                 onHide={() => setShowAdministrationModal(false)}
@@ -149,7 +143,6 @@ function AdministrationPage() {
                 title="Edit Administration"
             />
 
-            {/* Global Toast */}
             <Toast
                 show={showToast}
                 message={toastMessage}
